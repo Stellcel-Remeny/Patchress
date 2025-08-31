@@ -3,9 +3,9 @@
 The Patchress is a utility/collection of utilities & patches for Operating Systems ranging from MS-DOS to Microsoft Windows 11. This project can be thought as a continuation of the earlier MultiPatcher project, although no actual code is taken from it.
 
 ## Screenshots
-![Patchress under MS-DOS]("media/patchress_dos.png")
-![Patchress under Windows NT 4]("media/patchress_nt4.png")
-![Patchress under Windows 7]("media/patchress_nt61.png")
+![Patchress under MS-DOS](media/patchress_dos.png)
+![Patchress under Windows NT 4](media/patchress_nt4.png)
+![Patchress under Windows 7](media/patchress_nt61.png)
 
 ## Architecture
 The menus (contents to be displayed per window) should be written in a made-up pseudo language (view MENUS.md). This way, no matter if you start Patchress from MS-DOS or Windows XP, the application can correctly display stuff.
