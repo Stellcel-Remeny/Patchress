@@ -1,0 +1,5 @@
+bin/
+utils/
+make.bat
+*.exe
+*.obj
