@@ -1,6 +1,8 @@
 /*
     Remeny Patchress
     16-Bit Application for MS-DOS
+    Feel free to use this for whatever,
+    but I highly doubt it's useful.
 
     (C) Remeny 2025
     // 31st August, 2025
@@ -8,143 +10,21 @@
 
 #include <graph.h>
 #include <dos.h>
-#include <string.h>
-#include <ctype.h>
 #include <conio.h>
+#include <stdlib.h>
+#include <direct.h>
+#include <stdarg.h>
 
-// Color codes
-#define COLOR_BLACK        0
-#define COLOR_BLUE         1
-#define COLOR_GREEN        2
-#define COLOR_AQUA         3
-#define COLOR_RED          4
-#define COLOR_PURPLE       5
-#define COLOR_YELLOW       6
-#define COLOR_WHITE        7
-#define COLOR_GRAY         8
-#define COLOR_LIGHT_BLUE   9
-#define COLOR_LIGHT_GREEN  10
-#define COLOR_LIGHT_AQUA   11
-#define COLOR_LIGHT_RED    12
-#define COLOR_LIGHT_PURPLE 13
-#define COLOR_LIGHT_YELLOW 14
-#define COLOR_BRIGHT_WHITE 15
+#include "patchress_dos.h"
 
-// Other
-#define print _outtext
-typedef int bool;
-#define true  1
-#define false 0
+// ---[ Defines ]--- //
+#define status(fmt, ...) status(screen_rows, fmt, ##__VA_ARGS__)
 
 // ---[ Global variables ]--- //
 int screen_rows = 0;
 bool animate = true;
 
-// ---[ Functions ]--- //
-void clear_line(int row) {
-    if (row < 1 || row > screen_rows) return; // Invalid row
-    _settextposition(row, 1);
-    char blank[81]; // 80 chars + null terminator 
-    for(int i = 0; i < 80; i++)
-        blank[i] = ' ';
-    blank[80] = '\0';
-    print(blank);
-    _settextposition(row, 1);           // reset cursor to start
-}
-
-void intro() {
-    // Navigation Bar
-    _setbkcolor(COLOR_WHITE);
-    _clearscreen(_GCLEARSCREEN);
-
-    _setbkcolor(COLOR_GRAY);
-    for (int i = 0; i < screen_rows; i++) {
-        clear_line(i);
-    }
-
-    // Intro Animation!
-    _setbkcolor(COLOR_BLUE);
-    for (int i = 0; i < screen_rows; i++) {
-        if (animate)
-            delay(5);
-        clear_line(i);
-    }
-
-    _setbkcolor(COLOR_BLUE);
-    _settextcolor(COLOR_WHITE);
-    _settextposition(5, 1);
-}
-
-void title(const char* title) {
-    // Prints the title at the top, similar to Windows XP Setup
-
-    // Capture current position
-    struct rccoord current_position;
-    current_position = _gettextposition();   // returns struct rccoord
-
-    // Now print title
-    clear_line(2);
-    _settextposition(2, 2);
-    print((char *)title);
-
-    // Now print the line beneath
-    clear_line(3);
-    int i = 0;
-    char underline[2] = { 205, '\0' };
-    while (i < strlen(title) + 3) {
-        print(underline);
-        i++;
-    }
-
-    _settextposition(3, 1);
-
-    // Restore position
-    _settextposition(current_position.row, current_position.col);
-}
-
-void print_page(const char* text) {
-    const int LINE_WIDTH = 79;
-    char buffer[81]; // 80 chars + null terminator
-    int i = 0, col = 0; 
-    size_t pos = 0, len = strlen(text);
-    print(" ");
-
-    while (pos < len) {
-        // skip leading spaces
-        while (pos < len && isspace((unsigned char)text[pos])) pos++;
-
-        // collect a word into buffer
-        i = 0;
-        while (pos < len && !isspace((unsigned char)text[pos]) && i < 80) {
-            buffer[i++] = text[pos++];
-        }
-        buffer[i] = '\0'; // null terminate
-
-        if (i == 0) break; // no word collected -> done
-
-        // wrap line if needed
-        if (col + i > LINE_WIDTH) {
-            print("\r\n ");
-            col = 0;
-        }
-
-        // print word
-        print(buffer);
-        col += i;
-
-        // add a space if next char is not end and fits in line
-        if (pos < len) {
-            if (col + 1 > LINE_WIDTH) {
-                print("\n");
-                col = 0;
-            } else {
-                print(" ");
-                col++;
-            }
-        }
-    }
-    print("\n"); // final newline
-}
+// ---[ Main ]--- //
 
 int main() {
     screen_rows = _setvideomode(_TEXTC80);
@@ -154,19 +34,99 @@ int main() {
        return -1;
     }
 
-    intro();
-    title("Remeny Patchress [MS-DOS]");
+    bool menu_selected = false;
+    int key, index, total_num_entries, num_entries, num_menus = 0;
+    char *page;
+    char *menus[MAX_ENTRIES], *entries[MAX_ENTRIES];
+    char current_folder[128] = "RES";
 
-    delay(100);
-    _settextposition(5, 1);
+    intro(screen_rows, animate);
 
-    char *page = "This is a 16-bit application running on MS-DOS."
-                 "Is this a continuation?"
-                 "Press any key to continue...";
-    print_page(page);
+    page1:
+        title("Remeny Patchress [MS-DOS]");
 
-    print_page("The Mitochondria is the Powerhouse of the Cell.");
+        delay(100);
+        _settextposition(5, 1);
 
-    getch();
+        page = "  Welcome to Patchress!\n\n"
+               "   This application contains some utilities.\n\n\n"
+               "   Press any key to continue...";
+        print_page(page);
+        print_page("The Mitochondria is the Powerhouse of the Cell.");
+        status("  ENTER = Continue  F3 = Exit");
+
+        key = getch();
+        if (key == 13)
+            goto page2;
+
+        if (key == 0) { // extended key
+            key = getch();
+            if (key == 61) quit(); // F3 Key
+        }
+
+    // Page 2
+    page2:
+        status("Gathering entries...");
+        wipe();
+        page = "  Please select an item from below.\n\n";
+
+        do {
+            chdir(current_folder);
+            total_num_entries = get_entries(menus, entries, ".", MAX_ENTRIES);
+            delay(100);
+            _settextposition(5, 1);
+            print_page(page);
+
+            if (total_num_entries == 0) {
+                print_page("  No entries found. Please ensure you have the correct folder structure.");
+                status("  ESC = Back  F3 = Exit");
+            } else {
+                for (int i = 0; i < total_num_entries; i++) {
+                    // TODO: Add support for displaying Longer names defined in name=
+                    // TODO: Add support for showing version, author, etc
+                    // TODO: Add support for selecting using Arrow keys
+                    // holy its currently dark here - it was a bundle of sunshine just minutes before! Now omg heavy clouds are covering the sun, guys!
+                    // 8:56am
+
+                    print_page("  %c. %s", 'A' + i, menus[i] ? menus[i] : entries[i]);
+                }
+                num_entries = count_arrays(entries);
+                num_menus = count_arrays(menus);
+                status("  <letter> = Select  ESC = Back  F3 = Exit");
+            }
+            // Get the letter, ESC or F3 key
+            while (true) {
+                key = getch();
+                if (key >= 'A' && key <= 'Z') {
+                    index = key - 'A';
+                } else if (key >= 'a' && key <= 'z') {
+                    index = key - 'a';
+                } else if (key == 0) { // extended key
+                    key = getch();
+                    if (key == 61) quit(); // F3 Key
+                } else {
+                    continue;
+                }
+                // It is expected that entires would be shown first, then menus.
+                // So, we first check if index > number of entries (not num_entries variable).
+                print_page("KEY: %d, TOTAL_ENTRIES: %d, NUMBEROFENTRIES: %d, NUMBEROFMENUS: %d", index, total_num_entries, num_entries, num_menus);
+                if (index < num_entries) {
+                    // An entry was selected
+                    status("You selected entry: %s", entries[index]);
+                    //menu_selected = true;
+                } else {
+                    index = index - num_entries; // This gives us index for menus
+                    if (menus[index]) {
+                        // A menu was selected
+                        //strcpy(current_folder, menus[index]);
+                        menu_selected = false;
+                        //break; // Break inner loop to refresh menu
+                    } else {
+                        status("Invalid selection. Please try again.");
+                    }
+                }
+            }
+        } while (!menu_selected);
+        
     return 0;
 }

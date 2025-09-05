@@ -3,3 +3,6 @@ utils/
 make.bat
 *.exe
 *.obj
+*.err
+.vscode
+real_fail
