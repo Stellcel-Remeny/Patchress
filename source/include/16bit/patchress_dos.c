@@ -187,7 +187,7 @@ int file_exists(const char *fmt, ...) {
     return 0;
 }
 
-int get_entries(char **menus, char **entries, const char *folder, int max_entries) {
+int get_entries(char **menus, char **entries, const char *folder, int max_items) {
     //
     // This function dumps all folders that have the Longfilename file
     // (lfn.ini) in them, in the variable 'menus'. It is expected that
@@ -197,41 +197,45 @@ int get_entries(char **menus, char **entries, const char *folder, int max_entrie
     // 
     struct find_t fblock;
     char path[128];
-    int count, menu_count, entry_count = 0;
+    int count = 0, menu_count = 0, entry_count = 0;
 
-    // Look for everything in folder (8.3 format)
+    // Look inside this folder
     sprintf(path, "%s\\*.*", folder);
 
     // Start search
     if (_dos_findfirst(path, _A_SUBDIR, &fblock) != 0)
-        return 0;
+        return 0;  // no subdirs found
 
     do {
-        if (count >= max_entries) break;
-
         if (fblock.attrib & _A_SUBDIR) {
-            // Skip "." and ".."
-            if (strcmp(fblock.name, ".") == 0 || strcmp(fblock.name, "..") == 0)
+            // Skip files starting with '.'
+            if (fblock.name[0] == '.')
                 continue;
 
             // Check for lfn.ini and info.ini
+
             if (file_exists("%s\\%s\\lfn.ini", folder, fblock.name)) {
                 menus[menu_count] = malloc(strlen(fblock.name) + 1);
                 if (!menus[menu_count]) break;
                 strcpy(menus[menu_count], fblock.name);
                 menu_count++;
-            } else if (file_exists("%s\\%s\\info.ini", folder, fblock.name)) {
+            } 
+            else if (file_exists("%s\\%s\\info.ini", folder, fblock.name)) {
                 entries[entry_count] = malloc(strlen(fblock.name) + 1);
                 if (!entries[entry_count]) break;
                 strcpy(entries[entry_count], fblock.name);
                 entry_count++;
-            } else {
+            } 
+            else {
                 continue; // Neither file exists, skip
             }
-
             count++;
         }
-    } while (_dos_findnext(&fblock) == 0);
+    } while (_dos_findnext(&fblock) == 0 && count < max_items);
+
+    // Null terminate both arrays
+    menus[menu_count] = NULL;
+    entries[entry_count] = NULL;
 
     return count;
 }
@@ -241,4 +245,12 @@ int count_arrays(char *arr[]) {
     while (arr[count] != NULL)
         count++;
     return count;
+}
+
+void quit_check(int key) {
+    if (key == 0) { // extended key
+        key = getch();
+        if (key == 61) quit(); // F3 Key
+    }
+    return;
 }

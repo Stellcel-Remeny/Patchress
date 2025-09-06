@@ -50,7 +50,6 @@ extern "C" {
 // ---[ Other defines ]--- //
 #define print _outtext          // Alias for DOS _outtext
 #define SCREEN_COLUMNS 80       // Default screen width
-#define MAX_ENTRIES 100         // Max menu/entry items
 
 // ---[ Function declarations ]--- //
 void clear_line(int row);
@@ -63,6 +62,7 @@ void quit(void);
 int file_exists(const char *fmt, ...);
 int get_entries(char **menus, char **entries, const char *folder, int max_entries);
 int count_arrays(char *arr[]);
+void quit_check(int key);
 
 #ifdef __cplusplus
 }
