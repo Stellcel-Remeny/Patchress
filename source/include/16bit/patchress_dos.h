@@ -63,6 +63,9 @@ int file_exists(const char *fmt, ...);
 int get_entries(char **menus, char **entries, const char *folder, int max_entries);
 int count_arrays(char *arr[]);
 void quit_check(int key);
+char* get_full_path(const char *path);
+char* get_parent_dir(const char *path);
+int crash(const char* fmt, ...);
 
 #ifdef __cplusplus
 }

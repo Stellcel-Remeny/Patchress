@@ -254,3 +254,42 @@ void quit_check(int key) {
     }
     return;
 }
+
+// Resolve a relative path into an absolute one.
+// Returns pointer to static buffer with full path.
+char* get_full_path(const char *path) {
+    static char buf[128];
+    if (_fullpath(buf, path, sizeof(buf)) == NULL)
+        return NULL;
+    return buf;
+}
+
+char* get_parent_dir(const char *path) {
+    static char buf[128];
+    char *last, *prev;
+
+    // Expand relative path ".." into absolute
+    if (_fullpath(buf, path, sizeof(buf)) == NULL)
+        return NULL;
+
+    // Find last backslash
+    last = strrchr(buf, '\\');
+    if (!last) return NULL;
+    *last = '\0'; // cut off filename / last folder
+
+    // Now find previous backslash (end of parent directory)
+    prev = strrchr(buf, '\\');
+    if (!prev) return buf; // root case (like "C:")
+
+    return prev + 1; // parent dir name
+}
+
+int crash(const char* fmt, ...) {
+    char buf[256];
+    va_list args;
+    va_start(args, fmt);
+    vsnprintf(buf, sizeof(buf), fmt, args);
+    va_end(args);
+    status(2, "%s", buf);
+    return -1;
+}
