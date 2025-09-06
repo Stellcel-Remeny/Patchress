@@ -12,12 +12,13 @@ all: $(LIB)
 
 # Build the static library
 $(LIB): $(OBJS)
-	wlib -q -b $@ +$(OBJS)
+	$(Q)wlib -q -b $@ +$(OBJS)
 	@echo "Library $@ created."
 
 # Compile each .c to .obj
 %.obj: %.c
-	$(WATC) $(WATCFLAGS) -c $<
+	$(Q)$(WATC) $(WATCFLAGS) -c $<
+	$(Q)rm -f "$(LIB)"
 
 # Clean up
 clean:
