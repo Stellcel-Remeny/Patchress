@@ -4,6 +4,6 @@
 
 all: main.exe
 
-main.exe: main.c
+main.exe: main.c $(SRC)/include/16bit/patchress_dos.lib
 	$(Q)$(WATC) $(WATCFLAGS) -fe=main.exe main.c "$(SRC)/include/16bit/patchress_dos.lib"
 	@echo Successfully built 16-bit app
