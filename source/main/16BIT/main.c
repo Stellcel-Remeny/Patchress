@@ -26,35 +26,46 @@ int screen_rows = 0;
 bool animate = true;
 
 // ---[ Functions ]--- //
-void user_select_entry_thing(){
+char* user_select_entry_thing(char *page){
     int total_num_items = 0, num_entries = 0, num_menus = 0;
     int key = 0, i = 0;
-    char *menus[100], *entries[100];
-    char current_folder[128] = "RES";
+    char *menus[MAX_ENTRIES] = { NULL };
+    char *entries[MAX_ENTRIES] = { NULL };
+    const char init_dir[] = "RES";
+    char current_folder[16];
+    strncpy(current_folder, init_dir, sizeof(current_folder)-1);
+    current_folder[sizeof(current_folder)-1] = '\0';
+
+    char *selected_entry = malloc(128);     // heap buffer returned to caller
+    if (!selected_entry) return NULL;
+    selected_entry[0] = '\0';
     bool entry_selected = false;
 
     while (!entry_selected) {
-        chdir(current_folder);
-        total_num_items = get_entries(menus, entries, ".", MAX_ENTRIES);
+        status("Please wait...");
+        wipe();
+
+        // chdir returns 0 on success
+        if (chdir(current_folder) != 0) {
+            total_num_items = 0;
+        } else {
+            total_num_items = get_entries(menus, entries, ".", MAX_ENTRIES);
+        }
 
         if (total_num_items == 0) {
             print_page("No items found here to list. Press ESC to go back.");
             status("  ESC = Go up  F3 = You are a Quitter");
         } else {
+            print_page(page);
             num_entries = count_arrays(entries);
             num_menus = count_arrays(menus);
 
-            i = 0;
-            while (i < num_menus) {
+            for (i = 0; i < num_menus; ++i)
                 print_page("%c: MENU: %s", 'A' + i, menus[i]);
-                i++;
-            }
 
-            i = 0;
-            while (i < num_entries) {
+            for (i = 0; i < num_entries; ++i)
                 print_page("%c: ENTRY: %s", 'A' + num_menus + i, entries[i]);
-                i++;
-            }
+
             status("  <A-Z> = Select item  ESC = Go up  F3 = Quit");
         }
 
@@ -62,14 +73,39 @@ void user_select_entry_thing(){
         key = -1;
         do {
             key = getch();
-            if (key == 27) status("future...."); // ESC key
             if (key == 0) quit_check(key);
-            if ((key >= 'A' && key <= 'Z') || (key >= 'a' && key <= 'z')) {
-                if (key >= 'a' && key <= 'z') key = key - 'a' + 'A';   // convert to uppercase
-                status("You pressed: %c", key);
+            if (key == 27) { // ESC Key - go up to '..' if the current directory isn't init_dir
+                if (!strcmp(get_parent_dir(".."), init_dir)) {
+                    strcpy(current_folder, "..");
+                    break;
+                }
+            } else if ((key >= 'A' && key <= 'Z') || (key >= 'a' && key <= 'z')) {
+                if (key >= 'a' && key <= 'z') key = key - 'a' + 'A';
+                key = key - 'A'; // convert to index
+                if (key < num_menus) {
+                    strncpy(current_folder, menus[key], sizeof(current_folder)-1);
+                    current_folder[sizeof(current_folder)-1] = '\0';
+                    break;
+                } else {
+                    key = key - num_menus;
+                    if (key < num_entries) {
+                        strncpy(selected_entry, entries[key], 127);
+                        selected_entry[127] = '\0';
+                        entry_selected = true;
+                        break;
+                    } else {
+                        continue;
+                    }
+                }
             }
-        } while (true);
+        } while (1);
     }
+
+    // free the menu/entry strings allocated by get_entries
+    for (i = 0; i < MAX_ENTRIES && menus[i]; ++i) free(menus[i]);
+    for (i = 0; i < MAX_ENTRIES && entries[i]; ++i) free(entries[i]);
+
+    return selected_entry;
 }
 
 // ---[ Main ]--- //
@@ -111,10 +147,16 @@ int main() {
     // Page 2
     page2:
     status("Gathering entries...");
-    wipe();
     page = "  Please select an item from below.\n\n";
 
-    user_select_entry_thing();
+    char *selected_entry = user_select_entry_thing(page);
+    if (chdir(selected_entry) != 0) {
+        free(selected_entry);
+        return crash("Failure to swap to %s", selected_entry);
+    }
+    
+    status("%s", selected_entry);
+    free(selected_entry);
     
     return 0;
 }
