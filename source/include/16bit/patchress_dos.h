@@ -54,7 +54,8 @@ extern "C" {
 // ---[ Function declarations ]--- //
 void clear_line(int row);
 void status(int screen_row, const char *fmt, ...);
-void intro(int screen_rows, bool animate);
+void init(int current_screen_rows, bool enable_animation, bool enable_verbose);
+void intro();
 void title(const char* fmt, ...);
 void print_page(const char* fmt, ...);
 void wipe(void);
@@ -66,6 +67,9 @@ void quit_check(int key);
 char* get_full_path(const char *path);
 char* get_parent_dir(const char *path);
 int crash(const char* fmt, ...);
+int selector(char *entries[]);
+bool presence_in_array(char* arr[], char* item);
+bool arg_check(char* arr[], char* item);
 
 #ifdef __cplusplus
 }
