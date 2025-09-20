@@ -8,6 +8,9 @@
     // 31st August, 2025
 */
 
+// Please don't code like yandere simulator
+
+
 #include <graph.h>
 #include <dos.h>
 #include <conio.h>
@@ -26,6 +29,12 @@ int screen_rows = 0;
 bool animate = true;
 
 // ---[ Functions ]--- //
+char* help = "\n  Patchress Arguments\n"
+             "========================\n\n"
+             "  /ni = Disable animations\n"
+             "  /v  = Verbose mode\n"
+             "\n";
+
 char* user_select_entry_thing(char *page){
     int total_num_items = 0, num_entries = 0, num_menus = 0;
     int key = 0, i = 0;
@@ -60,8 +69,10 @@ char* user_select_entry_thing(char *page){
             num_entries = count_arrays(entries);
             num_menus = count_arrays(menus);
 
-            for (i = 0; i < num_menus; ++i)
-                print_page("%c: MENU: %s", 'A' + i, menus[i]);
+            //for (i = 0; i < num_menus; ++i)
+                //print_page("%c: MENU: %s", 'A' + i, menus[i]);
+                _settextposition(18, 2);
+                int hi = selector(menus);
 
             for (i = 0; i < num_entries; ++i)
                 print_page("%c: ENTRY: %s", 'A' + num_menus + i, entries[i]);
@@ -110,18 +121,30 @@ char* user_select_entry_thing(char *page){
 
 // ---[ Main ]--- //
 
-int main() {
+int main(int argc, char* argv[]) {
+    if (presence_in_array(argv, "/?")) {
+        printf(help);
+        return 0;
+    }
     screen_rows = _setvideomode(_TEXTC80);
     
     if (screen_rows == 0) {
-       print("I was unable to set the video mode.\r\n");
+       printf("I was unable to set the video mode.\r\n");
        return -1;
     }
+
+    bool animate = false, verbose = false;
+
+    // Check for arguments
+    if (!arg_check(argv, "/ni")) animate = true;
+    if (arg_check(argv, "/v")) verbose = true;
+
+    init(screen_rows, animate, verbose);
 
     int key = 0, index = 0;
     char *page;
 
-    intro(screen_rows, animate);
+    intro();
 
     page1:
     title("Remeny Patchress [MS-DOS]");
