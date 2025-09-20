@@ -4,7 +4,23 @@
 
 #include "patchress_dos.h"
 
+// ---[ Global variables ]--- //
+static int screen_rows = 0;
+static bool animate = false;
+static bool verbose = false;
+
 // ---[ Functions ]--- //
+void init(int current_screen_rows, bool enable_animation, bool enable_verbose) {
+    // Set screen rows
+    screen_rows = current_screen_rows;
+
+    // Toggle animation
+    if (enable_animation) animate = true;
+
+    // Toggle debug
+    if (enable_verbose) verbose = true;
+}
+
 void clear_line(int row) {
     if (row < 1) return; // Invalid row
     _settextposition(row, 1);
@@ -49,7 +65,7 @@ void status(int screen_row, const char *fmt, ...) {
     _settextposition(current_position.row, current_position.col);
 }
 
-void intro(int screen_rows, bool animate) {
+void intro() {
     // Navigation Bar
     _setbkcolor(COLOR_WHITE);
     _clearscreen(_GCLEARSCREEN);
@@ -90,7 +106,10 @@ void title(const char* fmt, ...) {
     // Print underline at row 3
     clear_line(3);
     char underline[2] = {205, '\0'}; // box-drawing character
-    for (size_t i = 0; i < strlen(buffer) + 3; i++) print(underline);
+    for (size_t i = 0; i < strlen(buffer) + 3; i++) {
+        if (animate) delay(2);
+        print(underline);
+    }
 
     // Restore previous cursor position
     _settextposition(current_position.row, current_position.col);
@@ -153,6 +172,8 @@ void print_page(const char* fmt, ...) {
             }
             pos++;
         }
+
+        if (animate) delay(20);
     }
     print("\n"); // final newline
 }
@@ -161,7 +182,7 @@ void wipe() {
     _setbkcolor(COLOR_BLUE);
     for (int i = 24; i > 4; i--) {
         clear_line(i);
-        delay(5);
+        if (animate) delay(5);
     }
     _setbkcolor(COLOR_BLUE);
     _settextcolor(COLOR_WHITE);
@@ -290,6 +311,55 @@ int crash(const char* fmt, ...) {
     va_start(args, fmt);
     vsnprintf(buf, sizeof(buf), fmt, args);
     va_end(args);
-    status(2, "%s", buf);
-    return -1;
+    status(2, "Crash!: %s", buf);
+    exit(-1);
 }
+
+int selector(char *entries[]) {
+    // If there is nothing in entries, quit.
+    if (entries == NULL || entries[0] == NULL) return -1;
+
+    // Capture current position and color scheme
+    struct rccoord current_position = _gettextposition();
+    int current_bkgd_color = _getbkcolor();
+    int current_fore_color = _gettextcolor();
+
+    // Check if the total amount goes beyond screen limit (+2 is so it would not print on status bar and line before it)
+    int total_size_of_entries = count_arrays(entries);
+    if (current_position.row + total_size_of_entries + 2 > screen_rows)
+        crash("Scrollable functionality not implemented yet.");
+
+    // Print everything in *entries[]
+    int selected_entry = 0, i = 0;
+    while (entries[i] != NULL) {
+        _settextposition(current_position.row + 1, current_position.col);
+        print(entries[i]);
+        i++;
+    }
+
+    getch();
+    crash("sizeof arr: %d not supposed to happen!", total_size_of_entries);
+    return selected_entry;
+}
+
+bool presence_in_array(char* arr[], char* item) {
+// Argument presence checker
+    int size = count_arrays(arr);
+    for (int i = 1; i < size; i++)
+        if (strcmp(arr[i], item) == 0) return true;
+    
+    return false;
+}
+
+bool arg_check(char* arr[], char* item) {
+// Argument checker insensitive to feelings
+    // Lowercase literally everything in the array
+    for (int i = 0; arr[i]; i++)
+        for (char *p = arr[i]; *p; p++)
+            *p = tolower((unsigned char)*p);
+
+    return presence_in_array(arr, item);
+}
+
+//        _setbkcolor(COLOR_BLUE);
+//        _settextcolor(COLOR_WHITE);
