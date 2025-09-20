@@ -14,7 +14,7 @@ goto MSDOS
 if exist %systemroot%\System32\user32.dll (
     REM NT4 or higher (GUI subsystem present)
     if not exist patchx32.exe goto PATCH_32_NOT_FOUND
-    start "" "patchx32.exe"
+    start "" "patchx32.exe" %*
 ) else (
     REM NT3.51 or lower
     echo Your version of Windows NT (NT < 4.0) does not have a dedicated application yet. Sorry!
@@ -23,12 +23,12 @@ goto END
 
 :WIN9X
 if not exist patchx32.exe goto PATCH_32_NOT_FOUND
-start "" "patchx32.exe"
+start "" "patchx32.exe" %*
 goto END
 
 :MSDOS
 if not exist patchx16.exe goto PATCH_16_NOT_FOUND
-patchx16.exe
+patchx16.exe %1 %2 %3 %4 %5 %6 %7 %8 %9
 goto END
 
 :PATCH_16_NOT_FOUND
