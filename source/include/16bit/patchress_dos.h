@@ -52,6 +52,7 @@ extern "C" {
 #define SCREEN_COLUMNS 80       // Default screen width
 
 // ---[ Function declarations ]--- //
+void dbg(const char* fmt, ...);
 void clear_line(int row);
 void status(int screen_row, const char *fmt, ...);
 void init(int current_screen_rows, bool enable_animation, bool enable_verbose);

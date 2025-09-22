@@ -10,6 +10,44 @@ static bool animate = false;
 static bool verbose = false;
 
 // ---[ Functions ]--- //
+void dbg(const char* fmt, ...) {
+    if (!verbose) return; // Quit if verbose mode is not enabled.
+
+    // Format the text into a buffer
+    char buffer[SCREEN_COLUMNS + 1];
+    va_list args;
+    va_start(args, fmt);
+    vsnprintf(buffer, sizeof(buffer), fmt, args);
+    va_end(args);
+
+    // Capture current position and color scheme
+    struct rccoord current_position = _gettextposition();
+    int current_bkgd_color = _getbkcolor();
+    int current_fore_color = _gettextcolor();
+
+    // Print it as a status text, but modified colour. (Code from status()) //
+
+    // Set color scheme
+    _setbkcolor(COLOR_BLACK);
+    _settextcolor(COLOR_LIGHT_GREEN);
+
+    // Move cursor to the bottom. Always assume to be the last row.
+    _settextposition(screen_rows, 2);
+
+    // Clear previous text
+    for(int i = 0; i < SCREEN_COLUMNS - 2; i++)
+        print(" ");
+
+    // Print new text
+    _settextposition(screen_rows, 2);
+    print(buffer);
+
+    // Restore position and color
+    _setbkcolor(current_bkgd_color);
+    _settextcolor(current_fore_color);
+    _settextposition(current_position.row, current_position.col);
+}
+
 void init(int current_screen_rows, bool enable_animation, bool enable_verbose) {
     // Set screen rows
     screen_rows = current_screen_rows;
@@ -202,7 +240,7 @@ int file_exists(const char *fmt, ...) {
     vsnprintf(path, sizeof(path), fmt, args);
     va_end(args);
 
-    status(25, "Checking for file: %s", path);
+    dbg("Checking for file: %s", path);
     FILE *f = fopen(path, "r");
     if (f) { fclose(f); return 1; }
     return 0;
@@ -269,6 +307,7 @@ int count_arrays(char *arr[]) {
 }
 
 void quit_check(int key) {
+// Use only if there is no other Extended-key checks in the main program
     if (key == 0) { // extended key
         key = getch();
         if (key == 61) quit(); // F3 Key
@@ -286,6 +325,8 @@ char* get_full_path(const char *path) {
 }
 
 char* get_parent_dir(const char *path) {
+    // This function returns the name of the parent directory of the given path.
+
     static char buf[128];
     char *last, *prev;
 
@@ -302,7 +343,7 @@ char* get_parent_dir(const char *path) {
     prev = strrchr(buf, '\\');
     if (!prev) return buf; // root case (like "C:")
 
-    return prev + 1; // parent dir name
+    return prev + 1; // parent directory name
 }
 
 int crash(const char* fmt, ...) {
@@ -315,37 +356,82 @@ int crash(const char* fmt, ...) {
     exit(-1);
 }
 
-int selector(char *entries[]) {
-    // If there is nothing in entries, quit.
-    if (entries == NULL || entries[0] == NULL) return -1;
+int selector(char *items[]) {
+    // A simple selector function. Returns the index of the selected item.
+
+    int total_size_of_items = count_arrays(items);
+    // If there is nothing in items, quit.
+    if (total_size_of_items == 0) return -1;
 
     // Capture current position and color scheme
     struct rccoord current_position = _gettextposition();
     int current_bkgd_color = _getbkcolor();
     int current_fore_color = _gettextcolor();
 
-    // Check if the total amount goes beyond screen limit (+2 is so it would not print on status bar and line before it)
-    int total_size_of_entries = count_arrays(entries);
-    if (current_position.row + total_size_of_entries + 2 > screen_rows)
+    // Check if the total amount goes beyond screen limit (+1 is so it would not print on status bar and line before it)
+    if (current_position.row + total_size_of_items + 1 > screen_rows) {
+        dbg("Too many items to display! (%d items)", total_size_of_items);
         crash("Scrollable functionality not implemented yet.");
+    }
 
-    // Print everything in *entries[]
-    int selected_entry = 0, i = 0;
-    while (entries[i] != NULL) {
-        _settextposition(current_position.row + 1, current_position.col);
-        print(entries[i]);
+    // Print everything in *items[] initially
+    int selected_item = 0, i = 0;
+    while (items[i] != NULL) {
+        _settextposition(current_position.row + i, current_position.col);
+        print(items[i]);
         i++;
     }
 
-    getch();
-    crash("sizeof arr: %d not supposed to happen!", total_size_of_entries);
-    return selected_entry;
+    while (true) {
+        // Highlight the selected entry
+        _settextposition(current_position.row + selected_item, current_position.col);
+        _setbkcolor(COLOR_WHITE);
+        _settextcolor(COLOR_BLACK);
+        print(items[selected_item]);
+
+        // Wait for user input
+        int key = getch();
+        if (key == 0) { // extended key
+            key = getch();
+            if (key == 72) { // Up arrow
+                // Remove highlight from current entry
+                _settextposition(current_position.row + selected_item, current_position.col);
+                _setbkcolor(COLOR_BLUE);
+                _settextcolor(COLOR_WHITE);
+                print(items[selected_item]);
+
+                selected_item--;
+                if (selected_item < 0) selected_item = total_size_of_items - 1; // wrap around
+            } else if (key == 80) { // Down arrow
+                // Remove highlight from current entry
+                _settextposition(current_position.row + selected_item, current_position.col);
+                _setbkcolor(COLOR_BLUE);
+                _settextcolor(COLOR_WHITE);
+                print(items[selected_item]);
+
+                selected_item++;
+                if (selected_item >= total_size_of_items) selected_item = 0; // wrap around
+            } else if (key == 61) { // F3 Key
+                quit();
+            }
+        } else if (key == 13) { // Enter key
+            break; // selection made
+        } else if (key == 27) { // ESC key
+            //selected_item = -1; // indicate cancellation
+            //break;
+            // NOT USED CURRENTLY.
+        }
+    }
+
+    return selected_item;
 }
 
 bool presence_in_array(char* arr[], char* item) {
 // Argument presence checker
     int size = count_arrays(arr);
-    for (int i = 1; i < size; i++)
+    if (size < 0) return false; // No arguments
+
+    for (int i = 0; i < size; i++)
         if (strcmp(arr[i], item) == 0) return true;
     
     return false;
@@ -353,7 +439,7 @@ bool presence_in_array(char* arr[], char* item) {
 
 bool arg_check(char* arr[], char* item) {
 // Argument checker insensitive to feelings
-    // Lowercase literally everything in the array
+
     for (int i = 0; arr[i]; i++)
         for (char *p = arr[i]; *p; p++)
             *p = tolower((unsigned char)*p);
