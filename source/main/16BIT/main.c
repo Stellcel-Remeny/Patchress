@@ -36,6 +36,7 @@ char* help = "\n  Patchress Arguments\n"
              "\n";
 
 char* user_select_entry_thing(char *page){
+    /// NOW FIX THIS THINGY UP!
     int total_num_items = 0, num_entries = 0, num_menus = 0;
     int key = 0, i = 0;
     char *menus[MAX_ENTRIES] = { NULL };
@@ -66,6 +67,7 @@ char* user_select_entry_thing(char *page){
             status("  ESC = Go up  F3 = You are a Quitter");
         } else {
             print_page(page);
+            status("  UP = Highlight previous option  DOWN = Highlight next option  ESC = Go up  F3 = Quit");
             num_entries = count_arrays(entries);
             num_menus = count_arrays(menus);
 
@@ -73,48 +75,8 @@ char* user_select_entry_thing(char *page){
                 //print_page("%c: MENU: %s", 'A' + i, menus[i]);
                 _settextposition(18, 2);
                 int hi = selector(menus);
-
-            for (i = 0; i < num_entries; ++i)
-                print_page("%c: ENTRY: %s", 'A' + num_menus + i, entries[i]);
-
-            status("  <A-Z> = Select item  ESC = Go up  F3 = Quit");
         }
-
-        // User option
-        key = -1;
-        do {
-            key = getch();
-            if (key == 0) quit_check(key);
-            if (key == 27) { // ESC Key - go up to '..' if the current directory isn't init_dir
-                if (!strcmp(get_parent_dir(".."), init_dir)) {
-                    strcpy(current_folder, "..");
-                    break;
-                }
-            } else if ((key >= 'A' && key <= 'Z') || (key >= 'a' && key <= 'z')) {
-                if (key >= 'a' && key <= 'z') key = key - 'a' + 'A';
-                key = key - 'A'; // convert to index
-                if (key < num_menus) {
-                    strncpy(current_folder, menus[key], sizeof(current_folder)-1);
-                    current_folder[sizeof(current_folder)-1] = '\0';
-                    break;
-                } else {
-                    key = key - num_menus;
-                    if (key < num_entries) {
-                        strncpy(selected_entry, entries[key], 127);
-                        selected_entry[127] = '\0';
-                        entry_selected = true;
-                        break;
-                    } else {
-                        continue;
-                    }
-                }
-            }
-        } while (1);
     }
-
-    // free the menu/entry strings allocated by get_entries
-    for (i = 0; i < MAX_ENTRIES && menus[i]; ++i) free(menus[i]);
-    for (i = 0; i < MAX_ENTRIES && entries[i]; ++i) free(entries[i]);
 
     return selected_entry;
 }
@@ -160,26 +122,36 @@ int main(int argc, char* argv[]) {
     status("  ENTER = Continue  F3 = Exit");
 
     key = -1;
-    while (key != 13 && key != 0) key = getch();
-    
-    if (key == 13)
-        goto page2;
-
-    quit_check(key);
+    while (true) {
+        key = getch();
+        if (key == 13) goto page2;
+        quit_check(key);
+    }
 
     // Page 2
     page2:
     status("Gathering entries...");
-    page = "  Please select an item from below.\n\n";
+    page = "  Please select an item from below.\n\n  ";
 
-    char *selected_entry = user_select_entry_thing(page);
+    wipe();
+    print(page);
+    char *entries[] = {
+        "Select this",
+        "Select me",
+        "Select dummy"
+    };
+    int selected_entry = selector(entries);
+    status("YOU SELECTED: %d, WHICH IS: %s", selected_entry, entries[selected_entry]);
+    getch();
+
+    /*char *selected_entry = user_select_entry_thing(page);
     if (chdir(selected_entry) != 0) {
         free(selected_entry);
         return crash("Failure to swap to %s", selected_entry);
     }
     
     status("%s", selected_entry);
-    free(selected_entry);
+    free(selected_entry);*/
     
     return 0;
 }
