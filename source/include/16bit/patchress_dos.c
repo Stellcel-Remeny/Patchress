@@ -46,6 +46,9 @@ void dbg(const char* fmt, ...) {
     _setbkcolor(current_bkgd_color);
     _settextcolor(current_fore_color);
     _settextposition(current_position.row, current_position.col);
+
+    // Wait a bit so the user can see it
+    delay(200);
 }
 
 void init(int current_screen_rows, bool enable_animation, bool enable_verbose) {
@@ -447,5 +450,11 @@ bool arg_check(char* arr[], char* item) {
     return presence_in_array(arr, item);
 }
 
-//        _setbkcolor(COLOR_BLUE);
-//        _settextcolor(COLOR_WHITE);
+void combine(char *arr1[], char *arr2[], char *out[]) {
+    int n1 = count_arrays(arr1);
+    int n2 = count_arrays(arr2);
+
+    for (int i = 0; i < n1; i++) out[i] = arr1[i];
+    for (int j = 0; j < n2; j++) out[n1 + j] = arr2[j];
+    out[n1 + n2] = NULL;   // keep it NULL-terminated
+}

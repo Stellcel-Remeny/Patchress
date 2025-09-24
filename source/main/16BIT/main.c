@@ -35,50 +35,61 @@ char* help = "\n  Patchress Arguments\n"
              "  /v  = Verbose mode\n"
              "\n";
 
-char* user_select_entry_thing(char *page){
-    /// NOW FIX THIS THINGY UP!
-    int total_num_items = 0, num_entries = 0, num_menus = 0;
-    int key = 0, i = 0;
-    char *menus[MAX_ENTRIES] = { NULL };
-    char *entries[MAX_ENTRIES] = { NULL };
-    const char init_dir[] = "RES";
-    char current_folder[16];
-    strncpy(current_folder, init_dir, sizeof(current_folder)-1);
-    current_folder[sizeof(current_folder)-1] = '\0';
-
-    char *selected_entry = malloc(128);     // heap buffer returned to caller
-    if (!selected_entry) return NULL;
-    selected_entry[0] = '\0';
+void user_select_entry(const char *init_short_dir){
+// This function is the best part of the program.
+    // Init variables
+    const char *init_dir = get_full_path(init_short_dir);
+    char *menus[MAX_ENTRIES] = {0}, *entries[MAX_ENTRIES] = {0};
+    char *current_directory = (char*) init_dir;
+    char key = '\0';
     bool entry_selected = false;
+    int total_items = 0;
 
+    select_entry:
+    // Here, we let the user select an entry.
     while (!entry_selected) {
-        status("Please wait...");
         wipe();
+        // First, we need to get the entries in the init directory.
+        total_items = get_entries(menus, entries, init_dir, MAX_ENTRIES);
+        dbg("Total items found in init dir: %d", total_items);
 
-        // chdir returns 0 on success
-        if (chdir(current_folder) != 0) {
-            total_num_items = 0;
+        if (total_items == 0) {
+            // We found nothing.
+            print_page("\n No entries or menus were found in the specified directory.\n\n"
+                       " Press ESC to go back...");
+            status("  ESC = Go back  F3 = You are a Quitter");
         } else {
-            total_num_items = get_entries(menus, entries, ".", MAX_ENTRIES);
+            // We found something.
+            print_page("\n Please select an entry from below.\n\n");
+            dbg("Printing %d items from directory %s", total_items, init_dir);
+
+            // Gather all entries and menus in one char* [] variable.
+            // We put menus first, then entries.
+            char *all_items[MAX_ENTRIES * 2] = {0};
+            combine(menus, entries, all_items);
+            status("  ENTER = Select  UP = Previous  DOWN = Next  ESC = Go back  F3 = Exit");
+            selector(all_items);
+            // Implement: return FALSE if ESC pressed, return TRUE if ENTER. And also capture index number
         }
 
-        if (total_num_items == 0) {
-            print_page("No items found here to list. Press ESC to go back.");
-            status("  ESC = Go up  F3 = You are a Quitter");
-        } else {
-            print_page(page);
-            status("  UP = Highlight previous option  DOWN = Highlight next option  ESC = Go up  F3 = Quit");
-            num_entries = count_arrays(entries);
-            num_menus = count_arrays(menus);
-
-            //for (i = 0; i < num_menus; ++i)
-                //print_page("%c: MENU: %s", 'A' + i, menus[i]);
-                _settextposition(18, 2);
-                int hi = selector(menus);
+        // Key checker
+        while (true) {
+            key = getch();
+            if (key == 61) quit();  // F3 Key
+            if (key == 27) {        // ESC key
+                dbg("OLD DIRECTORY: %s", current_directory);
+                current_directory = get_full_path(".."); // Go up one directory
+                dbg("NEW DIRECTORY: %s", current_directory);
+                break;
+            } else if (key == 13 && total_items > 0) { // ENTER key. Only works if there are items.
+                dbg("This isn't implemented yet.");
+                crash("Some vague reason.");
+                break;
+            }
         }
     }
 
-    return selected_entry;
+    return;
 }
 
 // ---[ Main ]--- //
@@ -130,28 +141,13 @@ int main(int argc, char* argv[]) {
 
     // Page 2
     page2:
-    status("Gathering entries...");
-    page = "  Please select an item from below.\n\n  ";
 
-    wipe();
-    print(page);
-    char *entries[] = {
-        "Select this",
-        "Select me",
-        "Select dummy"
-    };
-    int selected_entry = selector(entries);
-    status("YOU SELECTED: %d, WHICH IS: %s", selected_entry, entries[selected_entry]);
-    getch();
-
-    /*char *selected_entry = user_select_entry_thing(page);
-    if (chdir(selected_entry) != 0) {
-        free(selected_entry);
+    user_select_entry("RES");
+    /*if (chdir(selected_entry) != 0) {
         return crash("Failure to swap to %s", selected_entry);
     }
     
-    status("%s", selected_entry);
-    free(selected_entry);*/
+    status("%s", selected_entry);*/
     
     return 0;
 }

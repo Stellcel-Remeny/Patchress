@@ -71,6 +71,7 @@ int crash(const char* fmt, ...);
 int selector(char *entries[]);
 bool presence_in_array(char* arr[], char* item);
 bool arg_check(char* arr[], char* item);
+void combine(char *arr1[], char *arr2[], char *out[]);
 
 #ifdef __cplusplus
 }
