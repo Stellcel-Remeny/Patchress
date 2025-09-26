@@ -5,13 +5,13 @@
 #include "patchress_dos.h"
 
 // ---[ Global variables ]--- //
-static int screen_rows = 0;
-static bool animate = false;
-static bool verbose = false;
+int screen_rows = 0;
+char logfile[128] = {0};
+Flags flags = { false, false, false, false, false };
 
 // ---[ Functions ]--- //
 void dbg(const char* fmt, ...) {
-    if (!verbose) return; // Quit if verbose mode is not enabled.
+    if (!flags.verbose) return; // Quit if verbose mode is not enabled.
 
     // Format the text into a buffer
     char buffer[SCREEN_COLUMNS + 1];
@@ -42,24 +42,31 @@ void dbg(const char* fmt, ...) {
     _settextposition(screen_rows, 2);
     print(buffer);
 
+    // Log if we have to
+    if (flags.v_log && logfile[0] != '\0') {
+        // Append to logfile
+        FILE *f = fopen(logfile, "a");   // "a" = append mode
+        if (!f) {
+            perror("fopen");
+            // Do not use crash() here to avoid recursion
+            status(2, "Unable to open log file for writing.");
+            exit(-1);
+        }
+        fprintf(f, "%s\n", buffer);
+        fclose(f);
+    }
+
     // Restore position and color
     _setbkcolor(current_bkgd_color);
     _settextcolor(current_fore_color);
     _settextposition(current_position.row, current_position.col);
 
     // Wait a bit so the user can see it
-    delay(200);
-}
-
-void init(int current_screen_rows, bool enable_animation, bool enable_verbose) {
-    // Set screen rows
-    screen_rows = current_screen_rows;
-
-    // Toggle animation
-    if (enable_animation) animate = true;
-
-    // Toggle debug
-    if (enable_verbose) verbose = true;
+    if (flags.v_pause) {
+        getch();
+    } else {
+        delay(200);
+    }
 }
 
 void clear_line(int row) {
@@ -118,7 +125,7 @@ void intro() {
     // Intro Animation!
     _setbkcolor(COLOR_BLUE);
     for (int i = 0; i < screen_rows; i++) {
-        if (animate)
+        if (flags.animate)
             delay(5);
         clear_line(i);
     }
@@ -148,7 +155,7 @@ void title(const char* fmt, ...) {
     clear_line(3);
     char underline[2] = {205, '\0'}; // box-drawing character
     for (size_t i = 0; i < strlen(buffer) + 3; i++) {
-        if (animate) delay(2);
+        if (flags.animate) delay(2);
         print(underline);
     }
 
@@ -157,13 +164,13 @@ void title(const char* fmt, ...) {
 }
 
 void print_page(const char* fmt, ...) {
-    char text[1024];  // buffer for formatted text
+    static char text[1024];  // buffer for formatted text
     va_list args;
     va_start(args, fmt);
     vsnprintf(text, sizeof(text), fmt, args);
     va_end(args);
 
-    char buffer[SCREEN_COLUMNS];
+    static char buffer[SCREEN_COLUMNS];
     int i = 0, col = 0;
     size_t pos = 0, len = strlen(text);
     print(" ");  // initial space
@@ -179,7 +186,9 @@ void print_page(const char* fmt, ...) {
 
         // collect a word
         i = 0;
-        while (pos < len && text[pos] != '\n' && !isspace((unsigned char)text[pos]) && i < SCREEN_COLUMNS) {
+        while (pos < len && text[pos] != '\n' &&
+               !isspace((unsigned char)text[pos]) &&
+               i < SCREEN_COLUMNS - 1) {
             buffer[i++] = text[pos++];
         }
         buffer[i] = '\0';
@@ -199,6 +208,8 @@ void print_page(const char* fmt, ...) {
         }
 
         // print word
+        if (flags.v_word_by_word)
+            dbg("PRINTING WORD: '%s' (len=%d)", buffer, i);
         print(buffer);
         col += i;
 
@@ -214,7 +225,7 @@ void print_page(const char* fmt, ...) {
             pos++;
         }
 
-        if (animate) delay(20);
+        if (flags.animate) delay(20);
     }
     print("\n"); // final newline
 }
@@ -223,7 +234,7 @@ void wipe() {
     _setbkcolor(COLOR_BLUE);
     for (int i = 24; i > 4; i--) {
         clear_line(i);
-        if (animate) delay(5);
+        if (flags.animate) delay(5);
     }
     _setbkcolor(COLOR_BLUE);
     _settextcolor(COLOR_WHITE);
@@ -233,6 +244,7 @@ void wipe() {
 void quit() {
     // Quit function
     // TODO: Make this an animated dialog
+    dbg("Session terminated due to quit() request.");
     exit(0);
 }
 
@@ -318,15 +330,6 @@ void quit_check(int key) {
     return;
 }
 
-// Resolve a relative path into an absolute one.
-// Returns pointer to static buffer with full path.
-char* get_full_path(const char *path) {
-    static char buf[128];
-    if (_fullpath(buf, path, sizeof(buf)) == NULL)
-        return NULL;
-    return buf;
-}
-
 char* get_parent_dir(const char *path) {
     // This function returns the name of the parent directory of the given path.
 
@@ -356,11 +359,15 @@ int crash(const char* fmt, ...) {
     vsnprintf(buf, sizeof(buf), fmt, args);
     va_end(args);
     status(2, "Crash!: %s", buf);
+    dbg("Session crash: %s", buf);
     exit(-1);
 }
 
 int selector(char *items[]) {
-    // A simple selector function. Returns the index of the selected item.
+    // A simple selector function.
+    // Returns:
+    //  index of the selected item if ENTER,
+    //  -1 if ESC is pressed.
 
     int total_size_of_items = count_arrays(items);
     // If there is nothing in items, quit.
@@ -420,9 +427,7 @@ int selector(char *items[]) {
         } else if (key == 13) { // Enter key
             break; // selection made
         } else if (key == 27) { // ESC key
-            //selected_item = -1; // indicate cancellation
-            //break;
-            // NOT USED CURRENTLY.
+            return -1; // cancel selection
         }
     }
 

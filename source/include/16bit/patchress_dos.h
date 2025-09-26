@@ -51,11 +51,25 @@ extern "C" {
 #define print _outtext          // Alias for DOS _outtext
 #define SCREEN_COLUMNS 80       // Default screen width
 
+// ---[ Structures ]--- //
+typedef struct {
+    bool animate;
+    bool verbose;
+    bool v_pause;
+    bool v_log;
+    bool v_word_by_word;
+} Flags;
+
+// ---[ Global variables ]--- //
+extern int screen_rows;
+extern char logfile[128];
+extern Flags flags;
+
 // ---[ Function declarations ]--- //
 void dbg(const char* fmt, ...);
 void clear_line(int row);
 void status(int screen_row, const char *fmt, ...);
-void init(int current_screen_rows, bool enable_animation, bool enable_verbose);
+void init(int current_screen_rows, bool enable_animation, bool enable_verbose, bool enable_word_by_word);
 void intro();
 void title(const char* fmt, ...);
 void print_page(const char* fmt, ...);
@@ -65,7 +79,6 @@ int file_exists(const char *fmt, ...);
 int get_entries(char **menus, char **entries, const char *folder, int max_entries);
 int count_arrays(char *arr[]);
 void quit_check(int key);
-char* get_full_path(const char *path);
 char* get_parent_dir(const char *path);
 int crash(const char* fmt, ...);
 int selector(char *entries[]);
