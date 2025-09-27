@@ -135,6 +135,17 @@ void intro() {
     _settextposition(5, 1);
 }
 
+void intro_reverse() {
+    // Intro Animation reversed! (Does not affect status bar)
+    _setbkcolor(COLOR_BLACK);
+    _settextcolor(COLOR_WHITE);
+    for (int i = screen_rows - 1; i > 0; i--) {
+        if (flags.animate)
+            delay(5);
+        clear_line(i);
+    }
+}
+
 void title(const char* fmt, ...) {
     // Capture current position
     struct rccoord current_position = _gettextposition();
@@ -321,15 +332,6 @@ int count_arrays(char *arr[]) {
     return count;
 }
 
-void quit_check(int key) {
-// Use only if there is no other Extended-key checks in the main program
-    if (key == 0) { // extended key
-        key = getch();
-        if (key == 61) quit(); // F3 Key
-    }
-    return;
-}
-
 char* get_parent_dir(const char *path) {
     // This function returns the name of the parent directory of the given path.
 
@@ -353,6 +355,7 @@ char* get_parent_dir(const char *path) {
 }
 
 int crash(const char* fmt, ...) {
+// Crashes the application.
     char buf[256];
     va_list args;
     va_start(args, fmt);
@@ -435,7 +438,7 @@ int selector(char *items[]) {
 }
 
 bool presence_in_array(char* arr[], char* item) {
-// Argument presence checker
+// Checks for the specified string in an array of strings.
     int size = count_arrays(arr);
     if (size < 0) return false; // No arguments
 
@@ -446,8 +449,7 @@ bool presence_in_array(char* arr[], char* item) {
 }
 
 bool arg_check(char* arr[], char* item) {
-// Argument checker insensitive to feelings
-
+// presence_in_array but Case-InSenSiTive
     for (int i = 0; arr[i]; i++)
         for (char *p = arr[i]; *p; p++)
             *p = tolower((unsigned char)*p);
@@ -456,6 +458,7 @@ bool arg_check(char* arr[], char* item) {
 }
 
 void combine(char *arr1[], char *arr2[], char *out[]) {
+// Joins two *arrays[] together into one array
     int n1 = count_arrays(arr1);
     int n2 = count_arrays(arr2);
 
