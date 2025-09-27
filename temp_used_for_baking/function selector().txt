@@ -1,0 +1,21 @@
+current_position = get current cursor position
+
+print( everything in entries );
+
+while true:
+	move_cursor(current_position.row + selected_entry, current_position.column);
+
+	while current_key is not F3,Downkey,Upkey, or Enter:
+		current_key = getch();
+
+	Case current_key in:
+		F3: quit();
+
+		Enter: Break;
+		
+		// We know it is either downkey or upkey
+		redraw_current_line_with_original_colors(entries[selected_entry]);
+
+		Downkey: selected_entry++;
+		Upkey: selected_entry--;
+		

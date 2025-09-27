@@ -1,0 +1,31 @@
+// TIP : Except menus first, over entries!
+
+user_entry_selector(const char* init_directory):
+    bool entry_selected = false;
+
+    if init_directory is Null:
+        init_directory = ".";
+    elif init_directory is not a folder:
+        crash(Specified directory not found!);
+
+    char* current_directory = init_directory;
+
+    while !entry_selected:
+        wipe();
+        print(page);
+        int number_of_stuff = get_entries(menus, entries, current_directory, MAX_ENTRIES);
+        int number_of_menus = count_array(menus);
+        int number_of_entries = count_array(entries);
+        char* combined[MAX_ENTRIES] = combine(menus, entries);
+        int selected_item = selector(combined);
+
+        if selected_item > number_of_menus:
+            selected_entry = selected_item - number_of_menus
+            if (show_entry_details(entries[selected_entry]))
+                entry_selected = True;
+        else:
+            current_directory = menus[selected_item];
+
+    execute_entry(selected_entry)
+
+    return;
