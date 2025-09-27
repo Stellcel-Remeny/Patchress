@@ -14,7 +14,7 @@ In order to provide a seamless experience, 'Patcher.bat' was added. This batch f
 
 Patchx32.exe is an application that is made using Visual Basic 6. This should be able to run on Windows 95+/NT4+. Here, it checks for your Windows version. If it detects Windows XP+, it launches the Delphi app (should be in RES/). Otherwise, it continues execution as normal.
 
-The 'RES/' folder contains required files for Patchress to function properly. Inside 'RES/MODERN', it contains the Delphi application. The patches, utilities, etc. are located inside 'RES/ITEMS'. Each directory shows up as a menu in the Patchress GUI, except if the directory contains 'info.ini'.
+The 'RES/' folder contains required files for Patchress to function properly. Inside 'RES/MODERN', it contains the Delphi application. The patches, utilities, etc. are located inside 'RES/ITEMS'. Each directory containing 'lfn.ini' shows up as a menu in the Patchress GUI, except if the directory contains 'info.ini'.
 
 The 'info.ini' tells Patchress that it is an entry instead of a menu. Under '[MAIN]', it describes the name of the entry in 'NAME=', description in 'DESCRIPTION=', creator's name in 'AUTHOR=', version in 'VERSION=', and the main executable in 'EXEC='. Under the '[OS]' section, you can specify the Operating Systems it will run under. For this, refer OS.md
 
