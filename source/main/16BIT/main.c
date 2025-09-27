@@ -36,6 +36,8 @@ void user_select_entry(const char *init_short_dir){
 // This function is the best part of the program.
 // TODO: Add check to see if we go outside init dir on ESC press
 // TODO: Print the name specified in lfn.ini for Menus.
+// TODO: Add a search system
+// TODO: Add a way to edit execution arguments before running.
     // Init variables
     char current_directory[128] = {0},
          *menus[MAX_ENTRIES] = {0},
