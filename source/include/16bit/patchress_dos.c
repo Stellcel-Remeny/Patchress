@@ -2,6 +2,7 @@
 // Functions file for Patchress and other 16-Bit DOS programs
 //
 
+#include <malloc.h>
 #include "patchress_dos.h"
 
 // ---[ Global variables ]--- //
@@ -254,13 +255,88 @@ void wipe() {
 
 void quit() {
     // Quit function
-    // TODO: Make this an animated dialog
-    dbg("Session terminated due to quit() request.");
-    exit(0);
+
+    // Save current screen
+    save_screen();
+
+    // Capture current position and color
+    struct rccoord current_position = _gettextposition();
+    int current_bkgd_color = _getbkcolor(),
+        current_fore_color = _gettextcolor();
+    
+    // Set color scheme (Red on grey)
+    _setbkcolor(COLOR_WHITE);
+    _settextcolor(COLOR_RED);
+
+    // Print the window
+    _settextposition(7, 14);
+    window(7, 14, 52, 10);
+
+    // Print the text
+    print(" Are you sure you want to quit?");
+    status(screen_rows, "  F3 = Quit  Enter = Cancel ");
+
+    int key = 0;
+    while (key != 13 && key != 61) key = getch();
+
+    if (key == 13) {
+        // Restore previous screen
+        restore_screen();
+        // Restore position and color
+        _setbkcolor(current_bkgd_color);
+        _settextcolor(current_fore_color);
+        _settextposition(current_position.row, current_position.col);
+        return; // Cancel quit
+    } else if (key == 61) {
+        // Proceed to quit
+        status(screen_rows, "");
+        intro_reverse();
+        dbg("Session terminated due to quit() request.");
+        exit(0);
+    }
+}
+
+void window(const int y, const int x, const int width, const int height) {
+    // Draw a grey window with animation. That's all.
+
+    // Capture current position and color
+    struct rccoord current_position = _gettextposition();
+    int current_bkgd_color = _getbkcolor(),
+        i = 0;
+
+    // Set color scheme to White (grey) and go to specified coords
+    _setbkcolor(COLOR_WHITE);
+    _settextposition(y, x);
+
+    int mid_row = height / 2 + y;
+    int mid_col = width / 2 + x;
+
+    // Animate vertical center column
+    for (int i = 0; i <= height / 2; i++) {
+        _settextposition(mid_row - i, mid_col); print(" ");
+        _settextposition(mid_row + i, mid_col); print(" ");
+        if (flags.animate) delay(5);
+    }
+
+    // Expand horizontally
+    for (int offset = 1; offset <= width / 2; offset++) {
+        int left_col  = mid_col - offset;
+        int right_col = mid_col + offset;
+
+        for (int i = 0; i <= height; i++) {
+            _settextposition(y + i, left_col);  print(" ");
+            _settextposition(y + i, right_col); print(" ");
+        }
+        if (flags.animate) delay(5);
+    }
+
+    // Restore position and color
+    _setbkcolor(current_bkgd_color);
+    _settextposition(current_position.row, current_position.col);
 }
 
 int file_exists(const char *fmt, ...) {
-    char path[128];  // buffer for formatted path
+    char path[PATH_MAX];  // buffer for formatted path
     va_list args;
     va_start(args, fmt);
     vsnprintf(path, sizeof(path), fmt, args);
@@ -274,14 +350,13 @@ int file_exists(const char *fmt, ...) {
 
 int get_entries(char **menus, char **entries, const char *folder, int max_items) {
     //
-    // This function dumps all folders that have the Longfilename file
-    // (lfn.ini) in them, in the variable 'menus'. It is expected that
-    // they would hold entries.
+    // This function dumps all folders that have the Name= variable
+    // (lfn.ini) in them, in the variable 'menus'.
     //
     // Folders which have 'info.ini' in them will be added to 'entries'.
     // 
     struct find_t fblock;
-    char path[128];
+    char path[PATH_MAX];
     int count = 0, menu_count = 0, entry_count = 0;
 
     // Look inside this folder
@@ -465,4 +540,17 @@ void combine(char *arr1[], char *arr2[], char *out[]) {
     for (int i = 0; i < n1; i++) out[i] = arr1[i];
     for (int j = 0; j < n2; j++) out[n1 + j] = arr2[j];
     out[n1 + n2] = NULL;   // keep it NULL-terminated
+}
+
+void save_screen(void) {
+    if (!screen_snapshot) {
+        screen_snapshot = malloc(SCREEN_SIZE);
+        if (!screen_snapshot) return;  // allocation failed
+    }
+    movedata(0xB800, 0, FP_SEG(screen_snapshot), FP_OFF(screen_snapshot), SCREEN_SIZE);
+}
+
+void restore_screen(void) {
+    if (!screen_snapshot) return;
+    movedata(FP_SEG(screen_snapshot), FP_OFF(screen_snapshot), 0xB800, 0, SCREEN_SIZE);
 }
