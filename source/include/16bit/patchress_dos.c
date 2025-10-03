@@ -304,8 +304,7 @@ void window(const int y, const int x, const int width, const int height) {
     int current_bkgd_color = _getbkcolor(),
         i = 0;
 
-    // Set color scheme to White (grey) and go to specified coords
-    _setbkcolor(COLOR_WHITE);
+    // Go to specified coords
     _settextposition(y, x);
 
     int mid_row = height / 2 + y;
@@ -313,8 +312,13 @@ void window(const int y, const int x, const int width, const int height) {
 
     // Animate vertical center column
     for (int i = 0; i <= height / 2; i++) {
+        _setbkcolor(COLOR_WHITE); // Window color
         _settextposition(mid_row - i, mid_col); print(" ");
         _settextposition(mid_row + i, mid_col); print(" ");
+        // Shadow
+        _setbkcolor(COLOR_BLACK); // Shadow color
+        _settextposition(mid_row - i + 1, mid_col + 1); print("  "); // Top shadow
+        _settextposition(mid_row + i + 1, mid_col + 1); print("  "); // Bottom shadow
         if (flags.animate) delay(5);
     }
 
@@ -324,9 +328,15 @@ void window(const int y, const int x, const int width, const int height) {
         int right_col = mid_col + offset;
 
         for (int i = 0; i <= height; i++) {
+            _setbkcolor(COLOR_WHITE); // Window color
             _settextposition(y + i, left_col);  print(" ");
             _settextposition(y + i, right_col); print(" ");
+            // Shadow
+            _setbkcolor(COLOR_BLACK); // Shadow color
+            _settextposition(y + i + 1, right_col + 1); print("  "); // RIGHT side shadow
         }
+        _setbkcolor(COLOR_BLACK); // Shadow color
+        _settextposition(y + height + 1, left_col + 1); print(" ");   // LEFT side shadow
         if (flags.animate) delay(5);
     }
 
