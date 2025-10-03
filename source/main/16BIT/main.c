@@ -11,6 +11,7 @@
 // TIP: Please don't code like yandere simulator
 //
 #include <direct.h>
+#include <limits.h>
 #include "patchress_dos.h"
 
 // ---[ Defines ]--- //
@@ -22,7 +23,7 @@ int screen_rows = 0;
 
 // ---[ Structures ]--- //
 typedef struct {
-    char directory[128];
+    char directory[PATH_MAX];
     char long_name[64];
     char version[32];
     char description[512];
@@ -32,24 +33,71 @@ typedef struct {
 } Entry;
 
 // ---[ Functions ]--- //
+void get_fancy_names(char **all_items, char **menus, char **entries, const char *current_directory) {
+    // This function gathers the names from Name= in lfn.ini
+    // files for menus and info.ini files for entries.
+    // It populates the all_items array with these names.
+
+    int i = 0;
+    // First, process menus
+    while (menus[i] != NULL) {
+        char ini_path[PATH_MAX * 2];
+        snprintf(ini_path, sizeof(ini_path), "%s\\%s\\lfn.ini", current_directory, menus[i]);
+        char fancy_name[64] = {0};
+        ini_gets("MAIN", "Name", menus[i], fancy_name, sizeof(fancy_name), ini_path);
+        all_items[i] = malloc(strlen(fancy_name) + 1);
+        if (all_items[i]) {
+            strcpy(all_items[i], fancy_name);
+        } else {
+            all_items[i] = malloc(strlen(menus[i]) + 1);
+            if (all_items[i]) {
+                strcpy(all_items[i], menus[i]);
+            }
+        }
+        i++;
+    }
+
+    int menu_count = i;
+    i = 0;
+    // Now, process entries
+    while (entries[i] != NULL) {
+        char ini_path[PATH_MAX];
+        snprintf(ini_path, sizeof(ini_path), "%s\\%s\\info.ini", current_directory, entries[i]);
+        char fancy_name[64] = {0};
+        ini_gets("MAIN", "Name", entries[i], fancy_name, sizeof(fancy_name), ini_path);
+        all_items[menu_count + i] = malloc(strlen(fancy_name) + 1);
+        if (all_items[menu_count + i]) {
+            strcpy(all_items[menu_count + i], fancy_name);
+        } else {
+            all_items[menu_count + i] = malloc(strlen(entries[i]) + 1);
+            if (all_items[menu_count + i]) {
+                strcpy(all_items[menu_count + i], entries[i]);
+            }
+        }
+        i++;
+    }
+    // Null terminate the array
+    all_items[menu_count + i] = NULL;
+}
+
 void user_select_entry(const char *init_short_dir){
 // This function is the best part of the program.
-// TODO: Add check to see if we go outside init dir on ESC press
-// TODO: Print the name specified in lfn.ini for Menus.
 // TODO: Add a search system
 // TODO: Add a way to edit execution arguments before running.
-    // Init variables
-    char current_directory[128] = {0},
-         *menus[MAX_ENTRIES] = {0},
-         *entries[MAX_ENTRIES] = {0},
-         *all_items[MAX_ENTRIES * 2] = {0};
-
     Entry *entry = malloc(sizeof(Entry));
     if (!entry) crash("Failed to allocate memory for Entry");
     memset(entry, 0, sizeof(Entry));
     
-    _fullpath(current_directory, init_short_dir, sizeof(current_directory)); // Put into current_Directory first, since init_dir is const
-    const char *init_dir = current_directory;
+    // Init variables
+    char current_directory[PATH_MAX] = {0},
+         init_dir[PATH_MAX] = {0},
+         *menus[MAX_ENTRIES / 2] = {0},
+         *entries[MAX_ENTRIES / 2] = {0},
+         *all_items[MAX_ENTRIES] = {0};
+
+    _fullpath(init_dir, init_short_dir, sizeof(init_dir));
+    // Copy the init_dir into current_directory
+    strncpy(current_directory, init_dir, sizeof(current_directory) - 1);
 
     bool entry_selected = false,
          entry_runs_on_msdos = false;
@@ -99,9 +147,9 @@ void user_select_entry(const char *init_short_dir){
             dbg("MENUS: %d, ENTRIES: %d", num_menus, num_entries);
             dbg("Printing %d items from directory %s", total_items, init_dir);
 
-            // Gather all entries and menus in one char* [] variable.
-            // We put menus first, then entries.
-            combine(menus, entries, all_items);
+            // Gather the fancy names
+            get_fancy_names(all_items, menus, entries, current_directory);
+
             status("  ENTER = Select  UP = Previous  DOWN = Next  ESC = Go back  F3 = Exit");
             // Show selector
             print("     ");
@@ -110,6 +158,12 @@ void user_select_entry(const char *init_short_dir){
             if (selected_item == -1) {
                 // User pressed ESC
                 dbg("ESC PRESSED.");
+                // Check if new directory goes outside init_dir
+                if (strcmp(current_directory, init_dir) == 0) {
+                    // We are already in the initial directory. (Assuming we are already NOT above it)
+                    dbg("Already in initial directory, cannot go back further.");
+                    continue; // Go back to the start of the loop
+                }
                 // Move the directory up one level
                 dbg("OLD DIRECTORY: %s", current_directory);
                 char *last_backslash = strrchr(current_directory, '\\');
@@ -149,7 +203,6 @@ void user_select_entry(const char *init_short_dir){
     }
 
     // An entry was chosen.
-    show_entry_info:
     dbg("ENTRY DIRECTORY: %s", entry->directory);
     dbg("Loading information.");
     wipe();
@@ -206,6 +259,7 @@ void user_select_entry(const char *init_short_dir){
         if (key == 13 && entry_runs_on_msdos && entry->exe[0] != '\0') {
                                 // ENTER key
             if (!file_exists(entry->exe)) crash("File not found: %s", entry->exe);
+            save_screen();
             status("");
             dbg("Executing %s with args %s in dir %s", entry->exe, entry->args, entry->directory);
             // Clear current screen and set color scheme to White on black
@@ -218,7 +272,7 @@ void user_select_entry(const char *init_short_dir){
             // Rebuild old screen
             intro();
             title("Remeny Patchress [MS-DOS]");
-            goto show_entry_info;
+            restore_screen();
         }
     }
 
@@ -267,10 +321,10 @@ int main(int argc, char* argv[]) {
     int key = 0;
 
     intro();
-    title("Remeny Patchress [MS-DOS]");
+    title("Remeny MultiPatcher [MS-DOS]");
     if (flags.animate) delay(100);
 
-    print_page("  Welcome to Patchress!\n\n"
+    print_page("  Welcome to MultiPatcher !\n\n"
                "   This application contains some utilities.\n\n\n"
                "   Press ENTER to continue...\n");
     
