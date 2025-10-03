@@ -66,7 +66,7 @@ void dbg(const char* fmt, ...) {
     if (flags.v_pause) {
         getch();
     } else {
-        delay(200);
+        delay(100);
     }
 }
 
@@ -126,8 +126,8 @@ void intro() {
     // Intro Animation!
     _setbkcolor(COLOR_BLUE);
     for (int i = 0; i < screen_rows; i++) {
-        if (flags.animate)
-            delay(5);
+        if (flags.animate && (i % 2 == 0))  // delay every 2nd row
+            delay(1);
         clear_line(i);
     }
 
@@ -141,8 +141,8 @@ void intro_reverse() {
     _setbkcolor(COLOR_BLACK);
     _settextcolor(COLOR_WHITE);
     for (int i = screen_rows - 1; i > 0; i--) {
-        if (flags.animate)
-            delay(5);
+        if (flags.animate && (i % 2 == 0))  // delay every 2nd row
+            delay(1);
         clear_line(i);
     }
 }
@@ -166,9 +166,10 @@ void title(const char* fmt, ...) {
     // Print underline at row 3
     clear_line(3);
     char underline[2] = {205, '\0'}; // box-drawing character
-    for (size_t i = 0; i < strlen(buffer) + 3; i++) {
-        if (flags.animate) delay(2);
+    for (size_t i = 0; i < strlen(buffer) / 2 + 1; i++) {
         print(underline);
+        print(underline);
+        if (flags.animate) delay(2);
     }
 
     // Restore previous cursor position
@@ -237,7 +238,7 @@ void print_page(const char* fmt, ...) {
             pos++;
         }
 
-        if (flags.animate) delay(20);
+        if (flags.animate) delay(1);
     }
     print("\n"); // final newline
 }
@@ -246,7 +247,8 @@ void wipe() {
     _setbkcolor(COLOR_BLUE);
     for (int i = 24; i > 4; i--) {
         clear_line(i);
-        if (flags.animate) delay(5);
+        if (flags.animate && (i % 2 == 0))  // delay only every 2nd line
+            delay(5);
     }
     _setbkcolor(COLOR_BLUE);
     _settextcolor(COLOR_WHITE);
@@ -319,7 +321,9 @@ void window(const int y, const int x, const int width, const int height) {
         _setbkcolor(COLOR_BLACK); // Shadow color
         _settextposition(mid_row - i + 1, mid_col + 1); print("  "); // Top shadow
         _settextposition(mid_row + i + 1, mid_col + 1); print("  "); // Bottom shadow
-        if (flags.animate) delay(5);
+        
+        if (flags.animate && (i % 2 == 0))  // delay every 2nd step
+            delay(1);
     }
 
     // Expand horizontally
@@ -335,9 +339,14 @@ void window(const int y, const int x, const int width, const int height) {
             _setbkcolor(COLOR_BLACK); // Shadow color
             _settextposition(y + i + 1, right_col + 1); print("  "); // RIGHT side shadow
         }
+
         _setbkcolor(COLOR_BLACK); // Shadow color
         _settextposition(y + height + 1, left_col + 1); print(" ");   // LEFT side shadow
-        if (flags.animate) delay(5);
+
+        // Delay every 2nd loop only
+        if (flags.animate && (offset % 2 == 0)) {
+            delay(5);
+        }
     }
 
     // Restore position and color
