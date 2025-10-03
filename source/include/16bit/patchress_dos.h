@@ -50,6 +50,7 @@ extern "C" {
 // ---[ Other defines ]--- //
 #define print _outtext          // Alias for DOS _outtext
 #define SCREEN_COLUMNS 80       // Default screen width
+#define SCREEN_SIZE (80*25*2)
 
 // ---[ Structures ]--- //
 typedef struct {
@@ -64,6 +65,7 @@ typedef struct {
 extern int screen_rows;
 extern char logfile[128];
 extern Flags flags;
+unsigned char *screen_snapshot = NULL;
 
 // ---[ Function declarations ]--- //
 void dbg(const char* fmt, ...);
@@ -75,6 +77,7 @@ void title(const char* fmt, ...);
 void print_page(const char* fmt, ...);
 void wipe(void);
 void quit(void);
+void window(const int x, const int y, const int width, const int height);
 int file_exists(const char *fmt, ...);
 int get_entries(char **menus, char **entries, const char *folder, int max_entries);
 int count_arrays(char *arr[]);
@@ -84,6 +87,8 @@ int selector(char *entries[]);
 bool presence_in_array(char* arr[], char* item);
 bool arg_check(char* arr[], char* item);
 void combine(char *arr1[], char *arr2[], char *out[]);
+void save_screen(void);
+void restore_screen(void);
 
 #ifdef __cplusplus
 }
