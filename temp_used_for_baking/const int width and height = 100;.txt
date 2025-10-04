@@ -1,0 +1,9 @@
+const int width and height = 100;
+int i = 0;
+setcolor(COLOR_GREY);
+
+for (int i = 0; i < height; i++) {
+    _setcursorposition(height - i); print(" ");
+    _setcursorposition(height + i); print(" ");
+} // Now, one row at middle finished.
+
