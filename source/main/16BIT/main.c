@@ -12,7 +12,9 @@
 //
 #include <direct.h>
 #include <limits.h>
+#include <process.h>
 #include "patchress_dos.h"
+#include "minIni.h"
 
 // ---[ Defines ]--- //
 #define status(fmt, ...) status(screen_rows, fmt, ##__VA_ARGS__)
@@ -20,6 +22,7 @@
 
 // ---[ Global variables ]--- //
 int screen_rows = 0;
+char starting_directory[PATH_MAX] = {0};
 
 // ---[ Structures ]--- //
 typedef struct {
@@ -234,16 +237,19 @@ void user_select_entry(const char *init_short_dir){
             status("  ESC = Go back  F3 = Exit");
         } else {
             // Print information
+            print_entry_info:
             print_page(" Details:\n\n"
                        "     Name: %s\n"
                        "     Version: %s\n"
                        "     Author: %s\n"
                        "     Description: %s\n\n"
-                       "     Executable: %s %s [ARGUMENTS NOT PASSED]\n\n"
+                       "     Executable: %s\n"
+                       "     Arguments: %s\n\n"
+                       " Press E to edit arguments.\n"
                        " Press ENTER to run, or ESC to go back...",
                        entry->long_name, entry->version, entry->author, entry->description, entry->exe, entry->args
                     );
-            status("  ENTER = Run  ESC = Go back  F3 = Exit");
+            status("  ENTER = Run  E = Edit arguments ESC = Go back  F3 = Exit");
         }
 
     }
@@ -256,23 +262,39 @@ void user_select_entry(const char *init_short_dir){
             entry_selected = false;
             goto select_entry;
         }
-        if (key == 13 && entry_runs_on_msdos && entry->exe[0] != '\0') {
-                                // ENTER key
-            if (!file_exists(entry->exe)) crash("File not found: %s", entry->exe);
-            save_screen();
-            status("");
-            dbg("Executing %s with args %s in dir %s", entry->exe, entry->args, entry->directory);
-            // Clear current screen and set color scheme to White on black
-            intro_reverse();
+        if (entry_runs_on_msdos && entry->exe[0] != '\0') {
+            if (key == 13) { // ENTER key
+                if (!file_exists(entry->exe)) crash("File not found: %s", entry->exe);
+                save_screen();
+                status("");
+                dbg("Executing %s with args %s in dir %s", entry->exe, entry->args, entry->directory);
+                // Clear current screen and set color scheme to White on black
+                intro_reverse();
 
-            // Execute the program
-            int code = system(entry->exe);
-            dbg("Program exited with code %d\n", code);
+                // Split arguments into array for spawnvp
+                char *arguments[10] = {0};
+                build_argv(entry->args, arguments, entry->exe);
 
-            // Rebuild old screen
-            intro();
-            title("Remeny MultiPatcher [MS-DOS]");
-            restore_screen();
+                // Execute the program
+                int code = spawnvp(P_WAIT, entry->exe, arguments);
+                dbg("Program exited with code %d\n", code);
+
+                // Rebuild old screen
+                intro();
+                title("Remeny MultiPatcher [MS-DOS]");
+                restore_screen();
+            } else if (key == 'e' || key == 'E') { // Edit arguments
+                wipe();
+                print_page(" Current arguments: %s\n", entry->args);
+                print_page("  Press [ENTER] to use the new arguments.\n"
+                           "  Edit arguments:\n");
+                status("  ENTER = Continue");
+                print("     ");
+                input(entry->args, 60, entry->args);
+                // Reprint information page
+                wipe();
+                goto print_entry_info;
+            }
         }
     }
 
@@ -316,7 +338,8 @@ int main(int argc, char* argv[]) {
     }
 
     dbg("New session: Welcome.");
-    dbg("Please wait...");
+    _fullpath(starting_directory, ".", sizeof(starting_directory));
+    dbg("Starting directory: %s", starting_directory);
 
     int key = 0;
 
