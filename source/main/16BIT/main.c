@@ -271,7 +271,7 @@ void user_select_entry(const char *init_short_dir){
 
             // Rebuild old screen
             intro();
-            title("Remeny Patchress [MS-DOS]");
+            title("Remeny MultiPatcher [MS-DOS]");
             restore_screen();
         }
     }
@@ -284,8 +284,8 @@ void user_select_entry(const char *init_short_dir){
 
 int main(int argc, char* argv[]) {
     if (arg_check(argv, "/?")) {
-        printf("\n  Patchress Arguments\n"
-             "========================\n\n"
+        printf("\n  MultiPatcher Arguments\n"
+             "===========================\n\n"
              "  /ni   = Disable animations\n"
              "  /v    = Verbose mode\n"
              "  /vp   = Verbose mode with pauses (needs /v) [Not best to combine /vw]\n"
