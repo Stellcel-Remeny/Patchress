@@ -21,7 +21,7 @@ endif
 export Q SRC BIN WATC WATCFLAGS
 export PATH := $(WATCOM_DIR):$(PATH)
 
-all: init 16bit 32bit bundle
+all: init 16bit 32bit dosapps dosapps_bundle bundle
 
 init:
 	$(Q)export PATH=$(WATCOM_DIR):$$PATH
@@ -31,6 +31,12 @@ init:
 	$(Q)$(MAKE) -C "$(SRC)/main/16BIT"
 
 32bit:
+
+dosapps:
+	$(Q)$(MAKE) -C "$(SRC)/dosapps"
+
+dosapps_bundle:
+	$(Q)cp "$(SRC)/dosapps/w1setver/W1SETVER.EXE" "$(BIN)/RES/PATCHES/W1SETVER/W1SETVER.EXE"
 
 bundle:
 	$(Q)mkdir -p "$(BIN)" "$(BIN)/RES"
