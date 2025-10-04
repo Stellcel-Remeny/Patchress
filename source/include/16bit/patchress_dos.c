@@ -134,6 +134,8 @@ void intro() {
     _setbkcolor(COLOR_BLUE);
     _settextcolor(COLOR_WHITE);
     _settextposition(5, 1);
+
+    status(screen_rows, "");
 }
 
 void intro_reverse() {
@@ -448,7 +450,7 @@ char* get_parent_dir(const char *path) {
     return prev + 1; // parent directory name
 }
 
-int crash(const char* fmt, ...) {
+void crash(const char* fmt, ...) {
 // Crashes the application.
     char buf[256];
     va_list args;
@@ -572,4 +574,62 @@ void save_screen(void) {
 void restore_screen(void) {
     if (!screen_snapshot) return;
     movedata(FP_SEG(screen_snapshot), FP_OFF(screen_snapshot), 0xB800, 0, SCREEN_SIZE);
+}
+
+void input(char str_buffer[], const int length, const char *default_str) {
+    // Capture current position and color
+    struct rccoord current_position = _gettextposition();
+    int current_bkgd_color = _getbkcolor(),
+        current_fore_color = _gettextcolor();
+
+    if (current_position.col + length > SCREEN_COLUMNS)
+        crash("Input length exceeds screen width.");
+
+    // Clear buffer
+    memset(str_buffer, 0, sizeof(str_buffer));
+    
+    // Print the input box
+    _setbkcolor(COLOR_WHITE);
+    _settextcolor(COLOR_BLACK);
+    for (int i = 0; i < length; i++) print(" ");
+
+    // Move cursor to start of input box
+    _settextposition(current_position.row, current_position.col);
+
+    // Copy default_str into str_buffer if provided
+    if (default_str) {
+        strncpy(str_buffer, default_str, length - 1);
+        str_buffer[length - 1] = '\0'; // ensure null-termination
+        print(str_buffer);
+    }
+
+    // Get input
+    int key = 0;
+    while (key != 13) {
+        key = getch();
+        if (key == 8) { // Backspace
+            int len = strlen(str_buffer);
+            if (len > 0) {
+                str_buffer[len - 1] = '\0';
+                _settextposition(current_position.row, current_position.col + len - 1);
+                print(" ");
+                _settextposition(current_position.row, current_position.col + len - 1);
+            }
+        } else if (isprint((unsigned char)key)) {
+            int len = strlen(str_buffer);
+            if (len < length - 1) {
+                str_buffer[len] = (char)key;
+                str_buffer[len + 1] = '\0';
+                // print(str_buffer[len]); // Apparently this method does not work
+
+                // Move to start of input box
+                _settextposition(current_position.row, current_position.col);
+                // Print current buffer
+                print(str_buffer);
+            }
+        } else if (key == 0) { // Extended key
+            key = getch();
+            if (key == 27); // ESC key, TODO: cancel input (make input as int instead of void)
+        }
+    }
 }

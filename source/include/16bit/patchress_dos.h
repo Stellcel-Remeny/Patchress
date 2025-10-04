@@ -82,13 +82,14 @@ int file_exists(const char *fmt, ...);
 int get_entries(char **menus, char **entries, const char *folder, int max_entries);
 int count_arrays(char *arr[]);
 char* get_parent_dir(const char *path);
-int crash(const char* fmt, ...);
+void crash(const char* fmt, ...);
 int selector(char *entries[]);
 bool presence_in_array(char* arr[], char* item);
 bool arg_check(char* arr[], char* item);
 void combine(char *arr1[], char *arr2[], char *out[]);
 void save_screen(void);
 void restore_screen(void);
+void input(char str_buffer[], const int length, const char *default_str);
 
 #ifdef __cplusplus
 }
