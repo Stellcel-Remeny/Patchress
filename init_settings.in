@@ -1,0 +1,13 @@
+#
+# Configuration which contains:
+#  1. Default Configuration
+#  2. Configuration which the configurator itself (Menuconfig) requires
+#  3. Settings which are not exposed via Menuconfig (meant to be unchangable, or changable only in compiler)
+#
+
+# ---[ Variables ]--- #
+SCRIPTS     := scripts
+
+# ---[ UCRT64 C Compiler ]--- #
+HOSTCC     := /usr/bin/gcc
+CC          := /usr/bin/gcc

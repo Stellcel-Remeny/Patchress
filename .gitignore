@@ -1,9 +1,10 @@
 bin/
-utils/
 make.bat
+dbox.bat
 *.exe
 *.obj
 *.err
 .vscode
 real_fail
 *.lib
+bun/

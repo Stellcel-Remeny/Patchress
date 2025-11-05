@@ -1,0 +1,38 @@
+List of patches and utils to be added to Multipatcher:
+
+-[95,98,Me,NT3.5x,NT4,2K,XP] Universal Display driver (VBE)
+
+[MSDOS]
+-MSCDEX CDROM driver
+-Cutemouse Mouse driver
+-4DOS
+-XMGR Replacement [HIMEM.SYS Improved]
+-Cols=80 Lines=50 (or High res driver for MSDOS)
+-Halt.asm file installer
+
+[Win1]
+-256Color driver
+-WIN100.BIN Version changer using SETVER.EXE [plus, install SETVER.EXE]
+
+[Win3]
+[3.x] 386 Enhanced & Standard mode enabler
+[3.x] AHCIFIX.386 modern SSD driver
+[3.1] Video driver
+[3.1] Sound driver
+[3.1] Network driver
+
+[Win9x]
+[9x] Memory cap limit increaser (patchmem & manual method)
+[95] CPU Speed patcher
+[98] IOS Device Protection Error fix
+[Me] MS-DOS Mode enabler
+
+[WinNT]
+[All]  UniATA
+[All]  4NT
+[3.x]  NTLDR Replacement (NTPatcher-like Utility)
+[3.1]  Initial.inf and Setup.inf CPU Speed fix (ProcessorID_I586)
+[3.51] Hotfixes (if space available)
+[4.00] INACCESSIBLE_BOOT_DEVICE error fix SATA (driver from Win2k)
+
+[Win2k, XP, Vista, 7, 8.1] Legacy Update

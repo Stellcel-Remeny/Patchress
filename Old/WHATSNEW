@@ -1,0 +1,10 @@
+- Shows Name= in option selector
+- Does not go up beyond init dir
+- Added short Quit screen
+- Renamed to multipatcher
+- 2x faster animations
+- Minor improvements
+- Return to starting directory on quit()
+- Added a string input()
+
+- Added (patches,utils,etc)
