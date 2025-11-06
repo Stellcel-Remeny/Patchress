@@ -10,7 +10,7 @@ dbox.bat
 
 # Menuconfig
 make/*.cmd
-make/**/.cmd
+make/**/*.cmd
 *.o
 *.o.cmd
 
