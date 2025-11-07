@@ -4,13 +4,16 @@
 To make a build of patchress on your system, *assuming it's MS Windows*:
 
 ## Prerequisites
-1. CMake
-2. Visual Studio Build Tools (https://visualstudio.microsoft.com/downloads/)
+1. Meson
+2. Ninja
 3. DOSBox
 4. Turbo C++ Compiler files
 
 ## Instructions
 
-1. Open the 'Developer Command Prompt for VS Code' shell from your Start menu.
-2. Go into Patchress sourcecode directory root.
-2. Install vital utilities, if not already, via ```utils/pacman_msys_mingw_utils.sh```
+1. In the root of Patchress directory, open the ```meson_options.txt``` file.
+2. Change the value of options:
+    - ```dosbox``` must point to path where DOSBox.exe is located.
+    - ```tcc``` must point to path where TurboC++ is installed. (The path must contain BIN, INCLUDE, etc)
+3. Run ```meson setup build``` if 'build' directory does not exist.
+4. Run ```meson compile -C build``` to build Patchress, for every change you make.
