@@ -11,9 +11,16 @@ To make a build of patchress on your system, *assuming it's MS Windows*:
 
 ## Instructions
 
-1. In the root of Patchress directory, open the ```meson_options.txt``` file.
-2. Change the value of options:
-    - ```dosbox``` must point to path where DOSBox.exe is located.
-    - ```tcc``` must point to path where TurboC++ is installed. (The path must contain BIN, INCLUDE, etc)
-3. Run ```meson setup build``` if 'build' directory does not exist.
-4. Run ```meson compile -C build``` to build Patchress, for every change you make.
+1. In the root of Patchress directory, create a new file named ```local.conf```.
+2. Put ```[project options]``` in it.
+3. Under it, add the following and then save it:
+    - ```dosbox = '<path>'```, where ```<path>``` must point to the path where DOSBox.exe is located.
+        The following is an example:
+        ```dosbox = 'C:\\Program Files (x86)\\DOSBox-0.74-3'```
+    - ```tcc = '<path>'```, where ```<path>``` must point to the path where TurboC is installed. (The path must contain BIN, INCLUDE, etc)
+4. Run ```meson setup builddir --native-file local.conf```.
+5. Run ```meson compile -C builddir``` to build Patchress.
+
+## Tips
+
+You can view ```meson_options.txt``` and enable/edit more options in local.conf, such as DBG (debug)
