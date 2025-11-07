@@ -1,7 +1,11 @@
+## Default meson options ##
+
 # Directories
 option('src_dos', type : 'string', value : 'source/DOS', description : 'Source directory for DOS application')
 
-# Utilities (Change value if you need to)
-option('dosbox', type : 'string', value : 'C:\\Program Files (x86)\\DOSBox-0.74-3', description : 'Folder path to DOSBOX Application')
-option('tcc', type : 'string', value : 'C:\\TURBOC3', description : 'Folder path to TurboC++')
+# Utilities
+option('dosbox', type : 'string', value : '', description : 'Folder path to DOSBOX Application')
+option('tcc', type : 'string', value : '', description : 'Folder path to TurboC++')
 
+# Debug boolean settings
+option('quick_run_16bit', type : 'boolean', value : false, description : 'Immediately run 16-bit application in DOSBox after TCC compilation')
