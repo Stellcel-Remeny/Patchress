@@ -1,6 +1,7 @@
 # out
 bin/
 build/
+builddir/
 make.bat
 dbox.bat
 
