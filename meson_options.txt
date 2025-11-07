@@ -1,0 +1,7 @@
+# Directories
+option('src_dos', type : 'string', value : 'source/DOS', description : 'Source directory for DOS application')
+
+# Utilities (Change value if you need to)
+option('dosbox', type : 'string', value : 'C:\\Program Files (x86)\\DOSBox-0.74-3', description : 'Folder path to DOSBOX Application')
+option('tcc', type : 'string', value : 'C:\\TURBOC3', description : 'Folder path to TurboC++')
+
