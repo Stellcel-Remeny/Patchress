@@ -25,8 +25,15 @@ dosbox_args = [
     '-c', 'PATH %path%;x:\\BIN',
     '-c', 'y:',
     '-c', 'tcc.exe /IX:\\include /LX:\\lib -ms MPC.C',
-    '-c', 'exit'
 ]
+
+# If debug run after compilation is enabled
+if get_option('quick_run_16bit')
+    message('QUICK_RUN_16BIT IS ENABLED.')
+    dosbox_args += ['-c', 'MPC.EXE']
+endif
+
+dosbox_args += ['-c', 'exit']
 
 # Build the application
 custom_target('MPC.EXE',
