@@ -10,11 +10,8 @@ dbox.bat
 *.obj
 *.err
 
-# Menuconfig
-make/*.cmd
-make/**/*.cmd
-*.o
-*.o.cmd
+# user config
+local.conf
 
 # Other
 .vscode
