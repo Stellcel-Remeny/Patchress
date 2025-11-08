@@ -278,8 +278,8 @@ void title(const char* fmt, ...) {
 
 // Prints text page with optional animation
 void print_page(const char* fmt, ...) {
-    char text[512];    // buffer for full page text
-    char buffer[80];   // buffer for each word
+    char text[MAX_SCREEN_COLS * MAX_SCREEN_ROWS];    // buffer for full page text
+    char buffer[MAX_SCREEN_COLS];   // buffer for each word
     va_list args;
     size_t pos = 0, len = 0;
     int i = 0, col = 0;
@@ -345,6 +345,19 @@ void print_page(const char* fmt, ...) {
         if (flags.animate) delay(50);
     }
     cprintf("\r\n"); // final newline
+}
+
+// Wipes the screen with blue color
+void wipe(void) {
+    int i;
+    textbackground(BLUE);
+    for (i = screen_rows - 1; i > 4; i--) {
+        gotoxy(1, i);
+        clreol();
+        if (flags.animate) delay(30);
+    }
+    textbackground(BLUE);
+    textcolor(LIGHTGRAY);
 }
 
 // Draw a grey window with animation. That's all.
