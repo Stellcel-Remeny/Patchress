@@ -9,6 +9,7 @@
 #include <dos.h>
 #include <string.h>
 #include <ctype.h>
+#include <mem.h>
 
 #include "mpclib.h"
 
@@ -16,9 +17,7 @@
 int screen_rows = 0, screen_cols = 0;
 Flags flags = { false, false, false, false, false };
 TTYAttr saved_attr = { 1, 1, 0x8F };
-unsigned char screen[MAX_SCREEN_ROWS * MAX_SCREEN_COLS * 2];
-unsigned int video_segment;
-int saved_row = 1, saved_col = 1; // For cursor position save and restore.
+unsigned char screen_buffer[MAX_SCREEN_COLS * MAX_SCREEN_ROWS * 2];
 
 // ---[ Functions ]--- //
 
@@ -63,16 +62,16 @@ void restore_color(void) {
     textattr(saved_attr.colors);
 }
 
-// Captures snapshot of current screen
+// Save screen contents to memory
 void save_screen(void) {
-    unsigned char far *vidmem = (unsigned char far *)MK_FP(video_segment, 0);
-    memcpy(screen, vidmem, screen_rows * screen_cols * 2);  // use detected rows and cols
+    // Copy from video memory segment 0xB800 to our buffer
+    movedata(0xB800, 0, FP_SEG(screen_buffer), FP_OFF(screen_buffer), screen_rows * screen_cols * 2);
 }
 
-// Restores snapshot of screen
+// Restore screen contents from memory
 void restore_screen(void) {
-    unsigned char far *vidmem = (unsigned char far *)MK_FP(video_segment, 0);
-    memcpy(vidmem, screen, screen_rows * screen_cols * 2);  // restore only used area
+    // Copy from our buffer back to video memory
+    movedata(FP_SEG(screen_buffer), FP_OFF(screen_buffer), 0xB800, 0, screen_rows * screen_cols * 2);
 }
 
 // Logs a message into LOGFILE
@@ -352,8 +351,6 @@ void print_page(const char* fmt, ...) {
 void window(const int x, const int y, const int width, const int height) {
     // Init variables
     int mid_row, mid_col, i, offset, left_col, right_col;
-    // Capture current position and color
-    save_pos_and_color();
 
     // Go to specified coords
     gotoxy(x, y);
@@ -395,14 +392,13 @@ void window(const int x, const int y, const int width, const int height) {
         if (flags.animate) delay(10);
     }
 
-    // Restore position and color
-    restore_pos_and_color();
+    // Goto top left of window
+    gotoxy(x, y);
 }
 
 // Window close animation
 void window_off(const int x, const int y, const int width, const int height) {
     int mid_row, mid_col, i, offset, left_col, right_col;
-    save_pos_and_color();
 
     gotoxy(x, y);
 
@@ -440,8 +436,7 @@ void window_off(const int x, const int y, const int width, const int height) {
 
         if (flags.animate) delay(10);
     }
-
-    restore_pos_and_color();
+    gotoxy(x, y);
 }
 
 // Displays quit dialog
