@@ -20,20 +20,25 @@ endif
 # Arguments to pass into DOSBox
 dosbox_args = [
     '-noconsole',
+    '-c', '@echo off',
+    '-c', 'cls',
     '-c', 'mount x ' + tcc,
     '-c', 'mount y ' + meson.current_source_dir(),
     '-c', 'PATH %path%;x:\\BIN',
     '-c', 'y:',
-    '-c', 'tcc.exe ' + get_option('tcc_args') + ' MPC.C LIB\\MPCLIB.C'
+    '-c', '@echo on',
+    '-c', 'tcc.exe ' + get_option('tcc_args') + ' MPC.C INCLUDE\\MPCLIB.C',
+    '-c', '@echo off',
+    '-c', 'if errorlevel 1 pause',
 ]
 
 # If debug run after compilation is enabled
 if get_option('quick_run_16bit')
     message('QUICK_RUN_16BIT IS ENABLED.')
-    dosbox_args += ['-c', 'MPC.EXE']
+    dosbox_args += ['-c', 'MPC.EXE' + get_option('mpc_dos_args')]
 endif
 
-if not get_option('not_exit_on_16bit_compilation')
+if get_option('exit_on_16bit_compilation')
     dosbox_args += ['-c', 'exit']
 endif
 
@@ -41,6 +46,6 @@ endif
 custom_target('MPC.EXE',
     input: 'MPC.C',
     output: 'MPC.EXE',
-    command: [dosbox, dosbox_args],
+    command: [dosbox] + dosbox_args,
     build_by_default: true,
 )
