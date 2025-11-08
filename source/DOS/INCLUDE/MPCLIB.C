@@ -448,14 +448,15 @@ void quit(void) {
 
     // Capture current position and color
     save_pos_and_color();
-    
-    // Set color scheme (Red on grey)
-    textbackground(WHITE);
-    textcolor(RED);
 
+    status("");
     // Print the window
     gotoxy(14, 7);
     window(14, 7, 52, 10);
+
+    // Set color scheme (Red on grey)
+    textbackground(WHITE);
+    textcolor(RED);
 
     // Print the text
     cprintf(" Are you sure you want to quit?");
@@ -474,10 +475,10 @@ void quit(void) {
         return; // Cancel quit
     } else if (key == 61) {
         // Proceed to quit
-        status("Thank you for using Patchress!");
+        status("Goodbye!");
         //chdir(starting_directory); // Return to starting directory
         intro_reverse();
-        dbg("Session terminated due to quit() request.");
+        dbg("Terminated due to quit() request.");
         exit(0);
     }
 }
