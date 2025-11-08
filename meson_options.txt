@@ -10,6 +10,9 @@ option('tcc', type : 'string', value : '', description : 'Folder path to TurboC+
 # TCC Arguments
 option('tcc_args', type : 'string', value : '/IX:\\include /LX:\\LIB /I.\\INCLUDE -ms', description : 'Arguments to pass into TCC compiler')
 
+# Patchress 16BIT DOS Arguments
+option('mpc_dos_args', type : 'string', value : '', description : 'Arguments to pass into Patchress 16-bit DOS application')
+
 # Debug boolean settings
 option('quick_run_16bit', type : 'boolean', value : false, description : 'Immediately run 16-bit application in DOSBox after TCC compilation')
-option('not_exit_on_16bit_compilation', type : 'boolean', value : false, description : 'Do not exit DOSBox after TCC compilation')
+option('exit_on_16bit_compilation', type : 'boolean', value : true, description : 'Exit DOSBox after TCC compilation')
