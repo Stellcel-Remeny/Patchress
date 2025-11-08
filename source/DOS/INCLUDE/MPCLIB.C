@@ -399,6 +399,51 @@ void window(const int x, const int y, const int width, const int height) {
     restore_pos_and_color();
 }
 
+// Window close animation
+void window_off(const int x, const int y, const int width, const int height) {
+    int mid_row, mid_col, i, offset, left_col, right_col;
+    save_pos_and_color();
+
+    gotoxy(x, y);
+
+    mid_row = height / 2 + y;
+    mid_col = width / 2 + x;
+
+    // Collapse horizontally first (reverse of window())
+    for (offset = width / 2; offset >= 1; offset--) {
+        left_col  = mid_col - offset;
+        right_col = mid_col + offset;
+
+        for (i = 0; i <= height; i++) {
+            textbackground(BLUE); // Closing color
+            gotoxy(left_col, y + i);  cprintf(" ");
+            gotoxy(right_col, y + i); cprintf(" ");
+            // Clear shadows as we collapse
+            textbackground(BLACK);
+            gotoxy(right_col + 1, y + i + 1); cprintf(" ");
+            textbackground(BLUE);
+            gotoxy(right_col + 2, y + i + 1); cprintf(" ");
+        }
+
+        gotoxy(left_col + 1, y + height + 1); cprintf(" ");
+        if (flags.animate) delay(10);
+    }
+
+    // Collapse vertical center (reverse of initial vertical open)
+    for (i = height / 2; i >= 0; i--) {
+        textbackground(BLUE); // Closing color
+        gotoxy(mid_col, mid_row - i); cprintf(" ");
+        gotoxy(mid_col, mid_row + i); cprintf(" ");
+        // Clear old shadows
+        gotoxy(mid_col + 1, mid_row - i + 1); cprintf("  ");
+        gotoxy(mid_col + 1, mid_row + i + 1); cprintf("  ");
+
+        if (flags.animate) delay(10);
+    }
+
+    restore_pos_and_color();
+}
+
 // Displays quit dialog
 void quit(void) {
     // Init variables
@@ -425,6 +470,8 @@ void quit(void) {
     while (key != 13 && key != 61) key = getch();
 
     if (key == 13) {
+        // Window off animation
+        window_off(14, 7, 52, 10);
         // Restore previous screen
         restore_screen();
         // Restore position and color
