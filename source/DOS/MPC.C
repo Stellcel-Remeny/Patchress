@@ -5,11 +5,13 @@
   Compile using Turbo C++ 3.5 compiler
 */
 
-// Include
+// ---[ Include ]--- //
 #include <stdio.h>
 #include <conio.h>
 
-// Main
+// ---[ Functions ]--- //
+
+// ---[ Main ]--- //
 int main(int argc, char *argv[]) {
     return 0;
 }
