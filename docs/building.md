@@ -13,7 +13,7 @@ To make a build of patchress on your system, *assuming it's MS Windows*:
 
 1. In the root of Patchress directory, create a new file named ```local.conf```.
 2. Put ```[project options]``` in it.
-3. Under it, add the following and then save it:
+3. Under it, add the following and then save it (use double backslashes or single forward slashes):
     - ```dosbox = '<path>'```, where ```<path>``` must point to the path where DOSBox.exe is located.
         The following is an example:
         ```dosbox = 'C:\\Program Files (x86)\\DOSBox-0.74-3'```
