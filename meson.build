@@ -7,7 +7,7 @@
 # GNU GPL v3
 #
 
-project('Patchress', 'c',
+project('Patchress',
     version : '0.2',
     default_options : ['warning_level=3'])
 
