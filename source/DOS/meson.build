@@ -24,7 +24,7 @@ dosbox_args = [
     '-c', 'mount y ' + meson.current_source_dir(),
     '-c', 'PATH %path%;x:\\BIN',
     '-c', 'y:',
-    '-c', 'tcc.exe /IX:\\include /LX:\\lib -ms MPC.C',
+    '-c', 'tcc.exe ' + get_option('tcc_args') + ' MPC.C LIB\\MPCLIB.C'
 ]
 
 # If debug run after compilation is enabled
@@ -33,7 +33,9 @@ if get_option('quick_run_16bit')
     dosbox_args += ['-c', 'MPC.EXE']
 endif
 
-dosbox_args += ['-c', 'exit']
+if not get_option('not_exit_on_16bit_compilation')
+    dosbox_args += ['-c', 'exit']
+endif
 
 # Build the application
 custom_target('MPC.EXE',
