@@ -7,5 +7,9 @@ option('src_dos', type : 'string', value : 'source/DOS', description : 'Source d
 option('dosbox', type : 'string', value : '', description : 'Folder path to DOSBOX Application')
 option('tcc', type : 'string', value : '', description : 'Folder path to TurboC++')
 
+# TCC Arguments
+option('tcc_args', type : 'string', value : '/IX:\\include /LX:\\LIB /I.\\INCLUDE -ms', description : 'Arguments to pass into TCC compiler')
+
 # Debug boolean settings
 option('quick_run_16bit', type : 'boolean', value : false, description : 'Immediately run 16-bit application in DOSBox after TCC compilation')
+option('not_exit_on_16bit_compilation', type : 'boolean', value : false, description : 'Do not exit DOSBox after TCC compilation')
