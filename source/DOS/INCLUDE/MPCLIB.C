@@ -426,6 +426,7 @@ void window_off(const int x, const int y, const int width, const int height) {
         for (i = 0; i <= height; i++) {
             textbackground(BLUE); // Closing color
             gotoxy(left_col, y + i);  cprintf(" ");
+            textbackground(BLACK);
             gotoxy(right_col, y + i); cprintf(" ");
             // Clear shadows as we collapse
             textbackground(BLACK);
@@ -434,7 +435,9 @@ void window_off(const int x, const int y, const int width, const int height) {
             gotoxy(right_col + 2, y + i + 1); cprintf(" ");
         }
 
+        textbackground(BLUE);
         gotoxy(left_col + 1, y + height + 1); cprintf(" ");
+        gotoxy(right_col, y); cprintf(" "); // Get rid of pesky shadow residue
         if (flags.animate) delay(10);
     }
 
