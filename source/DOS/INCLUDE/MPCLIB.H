@@ -44,16 +44,10 @@ typedef struct {
     unsigned char col;
     unsigned char colors;
 } TTYAttr;
-/*
-typedef struct {
-    unsigned char ch[MAX_SCREEN_ROWS][MAX_SCREEN_COLS];  // ASCII
-    unsigned char attr[MAX_SCREEN_ROWS][MAX_SCREEN_COLS]; // color/attr
-} ScreenBuffer;*/
 
 // ---[ Global Variables ]--- //
 extern Flags flags;
 extern int screen_rows, screen_cols;
-//unsigned char *screen_snapshot = NULL;
 
 // ---[ Function declarations ]--- //
 void get_screen_size(void);
@@ -74,7 +68,9 @@ void intro(void);
 void intro_reverse(void);
 void title(const char* fmt, ...);
 void print_page(const char* fmt, ...);
+void wipe(void);
 void window(const int x, const int y, const int width, const int height);
+void window_off(const int x, const int y, const int width, const int height);
 void quit(void);
 
 // End of extern "C" block

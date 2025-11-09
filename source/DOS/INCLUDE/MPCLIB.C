@@ -9,6 +9,7 @@
 #include <dos.h>
 #include <string.h>
 #include <ctype.h>
+#include <mem.h>
 
 #include "mpclib.h"
 
@@ -16,9 +17,7 @@
 int screen_rows = 0, screen_cols = 0;
 Flags flags = { false, false, false, false, false };
 TTYAttr saved_attr = { 1, 1, 0x8F };
-unsigned char screen[MAX_SCREEN_ROWS * MAX_SCREEN_COLS * 2];
-unsigned int video_segment;
-int saved_row = 1, saved_col = 1; // For cursor position save and restore.
+unsigned char screen_buffer[MAX_SCREEN_COLS * MAX_SCREEN_ROWS * 2];
 
 // ---[ Functions ]--- //
 
@@ -63,16 +62,16 @@ void restore_color(void) {
     textattr(saved_attr.colors);
 }
 
-// Captures snapshot of current screen
+// Save screen contents to memory
 void save_screen(void) {
-    unsigned char far *vidmem = (unsigned char far *)MK_FP(video_segment, 0);
-    memcpy(screen, vidmem, screen_rows * screen_cols * 2);  // use detected rows and cols
+    // Copy from video memory segment 0xB800 to our buffer
+    movedata(0xB800, 0, FP_SEG(screen_buffer), FP_OFF(screen_buffer), screen_rows * screen_cols * 2);
 }
 
-// Restores snapshot of screen
+// Restore screen contents from memory
 void restore_screen(void) {
-    unsigned char far *vidmem = (unsigned char far *)MK_FP(video_segment, 0);
-    memcpy(vidmem, screen, screen_rows * screen_cols * 2);  // restore only used area
+    // Copy from our buffer back to video memory
+    movedata(FP_SEG(screen_buffer), FP_OFF(screen_buffer), 0xB800, 0, screen_rows * screen_cols * 2);
 }
 
 // Logs a message into LOGFILE
@@ -279,8 +278,8 @@ void title(const char* fmt, ...) {
 
 // Prints text page with optional animation
 void print_page(const char* fmt, ...) {
-    char text[512];    // buffer for full page text
-    char buffer[80];   // buffer for each word
+    char text[MAX_SCREEN_COLS * MAX_SCREEN_ROWS];    // buffer for full page text
+    char buffer[MAX_SCREEN_COLS];   // buffer for each word
     va_list args;
     size_t pos = 0, len = 0;
     int i = 0, col = 0;
@@ -348,12 +347,23 @@ void print_page(const char* fmt, ...) {
     cprintf("\r\n"); // final newline
 }
 
+// Wipes the screen with blue color
+void wipe(void) {
+    int i;
+    textbackground(BLUE);
+    for (i = screen_rows - 1; i > 4; i--) {
+        gotoxy(1, i);
+        clreol();
+        if (flags.animate) delay(30);
+    }
+    textbackground(BLUE);
+    textcolor(LIGHTGRAY);
+}
+
 // Draw a grey window with animation. That's all.
 void window(const int x, const int y, const int width, const int height) {
     // Init variables
     int mid_row, mid_col, i, offset, left_col, right_col;
-    // Capture current position and color
-    save_pos_and_color();
 
     // Go to specified coords
     gotoxy(x, y);
@@ -395,8 +405,51 @@ void window(const int x, const int y, const int width, const int height) {
         if (flags.animate) delay(10);
     }
 
-    // Restore position and color
-    restore_pos_and_color();
+    // Goto top left of window
+    gotoxy(x, y);
+}
+
+// Window close animation
+void window_off(const int x, const int y, const int width, const int height) {
+    int mid_row, mid_col, i, offset, left_col, right_col;
+
+    gotoxy(x, y);
+
+    mid_row = height / 2 + y;
+    mid_col = width / 2 + x;
+
+    // Collapse horizontally first (reverse of window())
+    for (offset = width / 2; offset >= 1; offset--) {
+        left_col  = mid_col - offset;
+        right_col = mid_col + offset;
+
+        for (i = 0; i <= height; i++) {
+            textbackground(BLUE); // Closing color
+            gotoxy(left_col, y + i);  cprintf(" ");
+            gotoxy(right_col, y + i); cprintf(" ");
+            // Clear shadows as we collapse
+            textbackground(BLACK);
+            gotoxy(right_col + 1, y + i + 1); cprintf(" ");
+            textbackground(BLUE);
+            gotoxy(right_col + 2, y + i + 1); cprintf(" ");
+        }
+
+        gotoxy(left_col + 1, y + height + 1); cprintf(" ");
+        if (flags.animate) delay(10);
+    }
+
+    // Collapse vertical center (reverse of initial vertical open)
+    for (i = height / 2; i >= 0; i--) {
+        textbackground(BLUE); // Closing color
+        gotoxy(mid_col, mid_row - i); cprintf(" ");
+        gotoxy(mid_col, mid_row + i); cprintf(" ");
+        // Clear old shadows
+        gotoxy(mid_col + 1, mid_row - i + 1); cprintf("  ");
+        gotoxy(mid_col + 1, mid_row + i + 1); cprintf("  ");
+
+        if (flags.animate) delay(10);
+    }
+    gotoxy(x, y);
 }
 
 // Displays quit dialog
@@ -408,14 +461,15 @@ void quit(void) {
 
     // Capture current position and color
     save_pos_and_color();
-    
-    // Set color scheme (Red on grey)
-    textbackground(WHITE);
-    textcolor(RED);
 
+    status("");
     // Print the window
     gotoxy(14, 7);
     window(14, 7, 52, 10);
+
+    // Set color scheme (Red on grey)
+    textbackground(WHITE);
+    textcolor(RED);
 
     // Print the text
     cprintf(" Are you sure you want to quit?");
@@ -425,6 +479,8 @@ void quit(void) {
     while (key != 13 && key != 61) key = getch();
 
     if (key == 13) {
+        // Window off animation
+        window_off(14, 7, 52, 10);
         // Restore previous screen
         restore_screen();
         // Restore position and color
@@ -432,10 +488,10 @@ void quit(void) {
         return; // Cancel quit
     } else if (key == 61) {
         // Proceed to quit
-        status("Thank you for using Patchress!");
+        status("Goodbye!");
         //chdir(starting_directory); // Return to starting directory
         intro_reverse();
-        dbg("Session terminated due to quit() request.");
+        dbg("Terminated due to quit() request.");
         exit(0);
     }
 }
