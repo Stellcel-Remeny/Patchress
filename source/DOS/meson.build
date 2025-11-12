@@ -20,16 +20,13 @@ endif
 # Arguments to pass into DOSBox
 dosbox_args = [
     '-noconsole',
-    '-c', '@echo off',
     '-c', 'cls',
     '-c', 'mount x "' + tcc + '"',
     '-c', 'mount y "' + meson.current_source_dir() + '"',
+    '-c', 'mount r "' + meson.current_build_dir() + '"',
     '-c', 'PATH %path%;x:\\BIN',
-    '-c', 'y:',
-    '-c', '@echo on',
-    '-c', 'tcc.exe ' + get_option('tcc_args') + ' MPC.C INCLUDE\\MPCLIB.C',
-    '-c', '@echo off',
-    '-c', 'if errorlevel 1 pause',
+    '-c', 'r:',
+    '-c', 'tcc.exe /IX:\\include /LX:\\LIB /IY:\\INCLUDE -ms Y:\\MPC.C Y:\\INCLUDE\\MPCLIB.C Y:\\INCLUDE\\MININI.C > TCC_LOG.TXT',
 ]
 
 # If debug run after compilation is enabled
@@ -48,4 +45,6 @@ custom_target('MPC.EXE',
     output: 'MPC.EXE',
     command: [dosbox] + dosbox_args,
     build_by_default: true,
+    install: true,
+    install_dir: 
 )
