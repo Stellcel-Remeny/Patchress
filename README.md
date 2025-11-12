@@ -1,6 +1,8 @@
-# System Patchress by Remeny
+# MultiPatcher
+![MultiPatcher Logo](media/mpc_banner.png)
 
-The Patchress is a utility/collection of utilities & patches for Operating Systems ranging from MS-DOS to Microsoft Windows 11. This project can be thought as a continuation of the earlier MultiPatcher project, although no actual code is taken from it.
+
+The MultiPatcher is a utility/collection of utilities & patches for Operating Systems ranging from MS-DOS to Microsoft Windows 11.
 
 ## Screenshots
 ![Patchress under MS-DOS](media/patchress_dos.gif)
