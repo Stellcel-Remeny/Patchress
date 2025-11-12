@@ -2,13 +2,11 @@
 
 # Directories
 option('src_dos', type : 'string', value : 'source/DOS', description : 'Source directory for DOS application')
+option('bin_dir', type : 'string', value : 'bin', description : 'Output directory for built binaries')
 
 # Utilities
 option('dosbox', type : 'string', value : '', description : 'Folder path to DOSBOX Application')
 option('tcc', type : 'string', value : '', description : 'Folder path to TurboC++')
-
-# TCC Arguments
-option('tcc_args', type : 'string', value : '/IX:\\include /LX:\\LIB /I.\\INCLUDE -ms', description : 'Arguments to pass into TCC compiler')
 
 # Patchress 16BIT DOS Arguments
 option('mpc_dos_args', type : 'string', value : '', description : 'Arguments to pass into Patchress 16-bit DOS application')
