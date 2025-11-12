@@ -10,6 +10,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <mem.h>
+#include <dir.h>
 
 #include "mpclib.h"
 
@@ -239,6 +240,8 @@ void intro_reverse(void) {
         clreol();
     }
     textcolor(WHITE);
+    textbackground(BLACK);
+    clrscr();
 }
 
 // Title printing function
@@ -453,6 +456,93 @@ void window_off(const int x, const int y, const int width, const int height) {
         if (flags.animate) delay(10);
     }
     gotoxy(x, y);
+}
+
+// A simple selector function.
+// Returns:
+//  index of the selected item if ENTER,
+//  -1 if ESC is pressed.
+int selector(char *items[]) {
+    int total_size_of_items = count_arrays(items);
+    int current_pos_col, current_pos_row;
+    int selected_item = 0, i = 0;
+    int key;
+    // If there is nothing in items, quit.
+    if (total_size_of_items == 0) return -1;
+
+    // Capture current position and color scheme
+    save_pos_and_color();
+    current_pos_col = wherex();
+    current_pos_row = wherey();
+
+    // Check if the total amount goes beyond screen limit (+1 is so it would not print on status bar and line before it)
+    if (current_pos_row + total_size_of_items + 1 > screen_rows) {
+        dbg("Too many items to display! (%d items)", total_size_of_items);
+        crash("Scrollable functionality not implemented yet.");
+    }
+
+    // Print everything in *items[] initially
+    while (items[i] != NULL) {
+        gotoxy(current_pos_col, current_pos_row + i);
+        cprintf(items[i]);
+        i++;
+    }
+
+    while (true) {
+        // Highlight the selected entry
+        gotoxy(current_pos_col, current_pos_row + selected_item);
+        textbackground(WHITE);
+        textcolor(BLACK);
+        cprintf(items[selected_item]);
+
+        // Wait for user input
+        key = getch();
+        if (key == 0) { // extended key
+            key = getch();
+            if (key == 72) { // Up arrow
+                // Remove highlight from current entry
+                gotoxy(current_pos_col, current_pos_row + selected_item);
+                textbackground(BLUE);
+                textcolor(WHITE);
+                cprintf(items[selected_item]);
+
+                selected_item--;
+                if (selected_item < 0) selected_item = total_size_of_items - 1; // wrap around
+            } else if (key == 80) { // Down arrow
+                // Remove highlight from current entry
+                gotoxy(current_pos_col, current_pos_row + selected_item);
+                textbackground(BLUE);
+                textcolor(WHITE);
+                cprintf(items[selected_item]);
+
+                selected_item++;
+                if (selected_item >= total_size_of_items) selected_item = 0; // wrap around
+            } else if (key == 61) { // F3 Key
+                quit();
+            }
+        } else if (key == 13) { // Enter key
+            break; // selection made
+        } else if (key == 27) { // ESC key
+            return -1; // cancel selection
+        }
+    }
+
+    return selected_item;
+}
+
+// Checks if a file exists. 
+int file_exists(const char *fmt, ...) {
+    char path[MAXPATH];  // buffer for formatted path
+    FILE *f;
+    va_list args;
+    va_start(args, fmt);
+    vsprintf(path, fmt, args);
+    va_end(args);
+
+    dbg("Checking for file: %s", path);
+    f = fopen(path, "r");
+    if (f) { fclose(f); return 1; }
+    return 0;
 }
 
 // Displays quit dialog

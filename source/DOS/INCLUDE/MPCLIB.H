@@ -71,6 +71,8 @@ void print_page(const char* fmt, ...);
 void wipe(void);
 void window(const int x, const int y, const int width, const int height);
 void window_off(const int x, const int y, const int width, const int height);
+int selector(char *items[]);
+int file_exists(const char *fmt, ...);
 void quit(void);
 
 // End of extern "C" block
