@@ -137,10 +137,12 @@ void user_select_entry(const char *init_short_dir){
     // Init variables
     char current_directory[MAXPATH] = {0},
          init_dir[MAXPATH] = {0},
-         *menus[MAX_ENTRIES / 2] = {0},
-         *entries[MAX_ENTRIES / 2] = {0},
-         *all_items[MAX_ENTRIES] = {0},
+         *menus[MAX_ENTRIES / 2 + 1] = {0},
+         *entries[MAX_ENTRIES / 2 + 1] = {0},
+         *all_items[MAX_ENTRIES + 1] = {0},
          *last_backslash;
+
+    char newdir[MAXPATH]; // c-gpt fix
 
     bool entry_selected = false,
          entry_runs_on_msdos = false;
@@ -174,16 +176,16 @@ void user_select_entry(const char *init_short_dir){
             dbg("CASE: NOTHING FOUND.");
             print_page("\n No entries or menus were found in the specified directory.\n\n"
                        " Press ESC to go back...");
-            status("  ESC = Go back  F3 = You are a Quitter");
+            status("  ESC = Go back  F3 = Exit");
             // Key checker
             while (true) {
                 key = getch();
                 if (key == 61) quit();  // F3 Key
                 if (key == 27) {        // ESC key
                     dbg("OLD DIRECTORY: %s", current_directory);
-                    strcpy(last_backslash,strchr(current_directory, '\\'));
-                    if (last_backslash != NULL) {
-                        *last_backslash = '\0';  // Truncate the string at the last backslash
+                    last_backslash = strrchr(current_directory, '\\');
+                    if (last_backslash) {
+                        *last_backslash = '\0';   // truncate at last backslash
                     }
                     dbg("NEW DIRECTORY: %s", current_directory);
                     break;
@@ -219,9 +221,9 @@ void user_select_entry(const char *init_short_dir){
                 }
                 // Move the directory up one level
                 dbg("OLD DIRECTORY: %s", current_directory);
-                strcpy(last_backslash, strrchr(current_directory, '\\'));
-                if (last_backslash != NULL) {
-                    *last_backslash = '\0';  // Truncate the string at the last backslash
+                last_backslash = strrchr(current_directory, '\\');
+                if (last_backslash) {
+                    *last_backslash = '\0';   // truncate at last backslash
                 }
                 dbg("NEW DIRECTORY: %s", current_directory);
                 continue; // Go back to the start of the loop
@@ -243,13 +245,12 @@ void user_select_entry(const char *init_short_dir){
             } else {
                 // This case can only mean one thing:
                 // User selected a menu.
+                dbg("BUDDY'S CURRENT DIRECTORY: %s", current_directory);
                 dbg("MENU SELECTED: %s", menus[selected_item]);
                 // Change directory to the selected menu
-                sprintf(current_directory,
-                        //sizeof(current_directory),
-                        "%s\\%s",
-                        current_directory,
-                        menus[selected_item]);
+                memset(newdir, 0, sizeof(newdir));
+                sprintf(newdir, "%s\\%s", current_directory, menus[selected_item]);
+                strcpy(current_directory, newdir);
                 dbg("Changing directory to: %s", current_directory);
             }
         }
@@ -336,6 +337,7 @@ void user_select_entry(const char *init_short_dir){
 // ---[ Main ]--- //
 int main(int argc, char *argv[]) {
     int key = 0;
+    (void)argc;   // prevents unused-variable warning
     // Help documentation
     if (arg_check(argv, "/?")) {
         printf("\n  MultiPatcher Arguments\n"
@@ -381,9 +383,6 @@ int main(int argc, char *argv[]) {
     }
 
     // Page 2
-    wipe();
-    print_page("  Please select an item from below.");
-    status("  UP = Previous  DOWN = Next  ENTER = Select  F3 = Exit");
     user_select_entry("RES");
 
     dbg("Termination due to program end");
