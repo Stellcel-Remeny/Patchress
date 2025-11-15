@@ -143,6 +143,7 @@ void user_select_entry(const char *init_short_dir){
          *last_backslash;
 
     char newdir[MAXPATH]; // c-gpt fix
+    unsigned char screen_buffer[MAX_SCREEN_COLS * MAX_SCREEN_ROWS * 2];
 
     bool entry_selected = false,
          entry_runs_on_msdos = false;
@@ -166,6 +167,7 @@ void user_select_entry(const char *init_short_dir){
     // Here, we let the user select an entry.
     while (!entry_selected) {
         wipe();
+        root_slash_skip:
         print_page(" You are currently in: %s", current_directory);
         // First, we need to get the entries in the current directory.
         total_items = get_entries(menus, entries, current_directory, MAX_ENTRIES);
@@ -217,7 +219,8 @@ void user_select_entry(const char *init_short_dir){
                 if (strcmp(current_directory, init_dir) == 0) {
                     // We are already in the initial directory. (Assuming we are already NOT above it)
                     dbg("Already in initial directory, cannot go back further.");
-                    continue; // Go back to the start of the loop
+                    quick_wipe();
+                    goto root_slash_skip; // What a dumb way.
                 }
                 // Move the directory up one level
                 dbg("OLD DIRECTORY: %s", current_directory);
@@ -245,7 +248,6 @@ void user_select_entry(const char *init_short_dir){
             } else {
                 // This case can only mean one thing:
                 // User selected a menu.
-                dbg("BUDDY'S CURRENT DIRECTORY: %s", current_directory);
                 dbg("MENU SELECTED: %s", menus[selected_item]);
                 // Change directory to the selected menu
                 memset(newdir, 0, sizeof(newdir));
@@ -313,7 +315,7 @@ void user_select_entry(const char *init_short_dir){
         if (key == 13 && entry_runs_on_msdos && entry->exe[0] != '\0') {
                                 // ENTER key
             if (!file_exists(entry->exe)) crash("File not found: %s", entry->exe);
-            save_screen();
+            save_screen(screen_buffer);
             status("");
             dbg("Executing %s with args %s in dir %s", entry->exe, entry->args, entry->directory);
             // Clear current screen and set color scheme to White on black
@@ -326,11 +328,9 @@ void user_select_entry(const char *init_short_dir){
             // Rebuild old screen
             intro();
             title("Remeny MultiPatcher [MS-DOS]");
-            restore_screen();
+            restore_screen(screen_buffer);
         }
     }
-
-    free(entry);
     return;
 }
 

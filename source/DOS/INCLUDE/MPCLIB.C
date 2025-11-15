@@ -341,6 +341,18 @@ void wipe(void) {
     textcolor(LIGHTGRAY);
 }
 
+// Wipe without animation. Made for one dumb little thing.
+void quick_wipe(void) {
+    int i;
+    textbackground(BLUE);
+    for (i = screen_rows - 1; i > 4; i--) {
+        gotoxy(1, i);
+        clreol();
+    }
+    textbackground(BLUE);
+    textcolor(LIGHTGRAY);
+}
+
 // Draw a grey window with animation. That's all.
 void window(const int x, const int y, const int width, const int height) {
     // Init variables

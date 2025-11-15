@@ -70,6 +70,7 @@ void intro_reverse(void);
 void title(const char* fmt, ...);
 void print_page(const char* fmt, ...);
 void wipe(void);
+void quick_wipe(void);
 void window(const int x, const int y, const int width, const int height);
 void window_off(const int x, const int y, const int width, const int height);
 int selector(char *items[]);
