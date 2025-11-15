@@ -1,3 +1,9 @@
+[MSDOS APP]
+    - Pass args into sub apps
+    - Pass MPC args into special flagged sub apps
+    - Add way to edit args
+    - Add search system
+
 List of patches and utils to be added to Multipatcher:
 
 -[95,98,Me,NT3.5x,NT4,2K,XP] Universal Display driver (VBE)
