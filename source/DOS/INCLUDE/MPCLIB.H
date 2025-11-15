@@ -19,14 +19,25 @@ extern "C" {
   #endif
 #endif
 
+// ---[ Save and restore screen items ]--- //
+// Save position:
+#define save_pos(var) save_pos_and_color(var);
+// Save color:
+#define save_color(var) save_pos_and_color(var);
+// Save position and color (text attributes):
+#define save_pos_and_color(var) gettextinfo(&var);
+// Restore position:
+#define restore_pos(var) gotoxy(var.curx, var.cury);
+// Restore color:
+#define restore_color(var) textattr(var.attribute);
+// Restore position and color:
+#define restore_pos_and_color(var) { restore_pos(var); restore_color(var); }
+
 // ---[ Other Defines ]--- //
 #define MIN_SCREEN_COLS 80
 #define MIN_SCREEN_ROWS 25
 #define MAX_SCREEN_COLS 132 // Apparently 50*132 is the max possible vid out for dos
 #define MAX_SCREEN_ROWS 50
-
-#define save_pos_and_color()        save_position();save_color();
-#define restore_pos_and_color()     restore_position();restore_color();
 
 #define LOGFILE "LOGFILE.TXT" // <--- File to be used if logging is enabled
 
@@ -39,24 +50,14 @@ typedef struct {
     bool v_word_by_word;
 } Flags;
 
-typedef struct {
-    unsigned char row;
-    unsigned char col;
-    unsigned char colors;
-} TTYAttr;
-
 // ---[ Global Variables ]--- //
 extern Flags flags;
 extern int screen_rows, screen_cols;
 
 // ---[ Function declarations ]--- //
 void get_screen_size(void);
-void save_position(void);
-void save_color(void);
-void restore_position(void);
-void restore_color(void);
-void save_screen(void);
-void restore_screen(void);
+void save_screen(unsigned char *screen_buffer);
+void restore_screen(unsigned char *screen_buffer);
 void log(const char* fmt, ...);
 void crash(const char* fmt, ...);
 void dbg(const char* fmt, ...);

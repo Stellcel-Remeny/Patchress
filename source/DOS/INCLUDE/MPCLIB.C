@@ -17,8 +17,6 @@
 // ---[ Global variables ]--- //
 int screen_rows = 0, screen_cols = 0;
 Flags flags = { false, false, false, false, false };
-TTYAttr saved_attr = { 1, 1, 0x8F };
-unsigned char screen_buffer[MAX_SCREEN_COLS * MAX_SCREEN_ROWS * 2];
 
 // ---[ Functions ]--- //
 
@@ -37,40 +35,17 @@ void get_screen_size(void) {
     screen_cols = info.screenwidth;
 }
 
-// Saves cursor's XY coords
-void save_position(void) {
-    saved_attr.row = wherey();
-    saved_attr.col = wherex();
-}
-
-// Saves cursor color
-void save_color(void) {
-    struct text_info info;
-    gettextinfo(&info);
-    saved_attr.colors = info.attribute;
-}
-
-// Restores cursor's XY coords
-void restore_position(void) {
-    if (saved_attr.col < 1 || saved_attr.row < 1)
-        return; // invalid position
-    
-    gotoxy(saved_attr.col, saved_attr.row);
-}
-
-// Restores cursor color
-void restore_color(void) {
-    textattr(saved_attr.colors);
-}
-
 // Save screen contents to memory
-void save_screen(void) {
+// Please declare buffer as 'unsigned char screen_buffer[MAX_SCREEN_COLS * MAX_SCREEN_ROWS * 2]'
+void save_screen(unsigned char *screen_buffer) {
+    if(screen_rows == 0 || screen_cols == 0)
+        get_screen_size(); // ensure we have screen size
     // Copy from video memory segment 0xB800 to our buffer
     movedata(0xB800, 0, FP_SEG(screen_buffer), FP_OFF(screen_buffer), screen_rows * screen_cols * 2);
 }
 
 // Restore screen contents from memory
-void restore_screen(void) {
+void restore_screen(unsigned char *screen_buffer) {
     // Copy from our buffer back to video memory
     movedata(FP_SEG(screen_buffer), FP_OFF(screen_buffer), 0xB800, 0, screen_rows * screen_cols * 2);
 }
@@ -118,11 +93,12 @@ void crash(const char* fmt, ...) {
 // Prints a message if verbose is enabled
 void dbg(const char* fmt, ...) {
     va_list args;
+    struct text_info saved_attr;
     char buffer[128];
     if (!flags.verbose) return; // Quit if verbose mode is not enabled.
 
     // Save current position and color scheme
-    save_pos_and_color();
+    save_pos_and_color(saved_attr);
 
     // Set color scheme
     textcolor(LIGHTGREEN);
@@ -143,7 +119,7 @@ void dbg(const char* fmt, ...) {
     log("%s", buffer);      // log
 
     // Restore position and color
-    restore_pos_and_color();
+    restore_pos_and_color(saved_attr);
 
     // Wait a bit so the user can see it
     if (flags.v_pause) {
@@ -187,8 +163,9 @@ bool arg_check(char* arr[], char* item) {
 // Updates the status bar
 void status(const char *fmt, ...) {
     va_list args;
+    struct text_info saved_attr;
     // Save current position and color scheme
-    save_pos_and_color();
+    save_pos_and_color(saved_attr);
 
     // Set color scheme
     textbackground(WHITE);
@@ -205,7 +182,7 @@ void status(const char *fmt, ...) {
     va_end(args);
 
     // Restore position and color
-    restore_pos_and_color();
+    restore_pos_and_color(saved_attr);
 }
 
 // Intro animation
@@ -249,8 +226,9 @@ void title(const char* fmt, ...) {
     va_list args;
     size_t i;
     char buffer[MIN_SCREEN_COLS - 10];
+    struct text_info saved_attr;
     // Capture current position and color
-    save_pos_and_color();
+    save_pos_and_color(saved_attr);
 
     // Color scheme: White on blue
     textcolor(WHITE);
@@ -276,7 +254,7 @@ void title(const char* fmt, ...) {
     }
 
     // Restore previous cursor position and color
-    restore_pos_and_color();
+    restore_pos_and_color(saved_attr);
 }
 
 // Prints text page with optional animation
@@ -464,33 +442,31 @@ void window_off(const int x, const int y, const int width, const int height) {
 //  -1 if ESC is pressed.
 int selector(char *items[]) {
     int total_size_of_items = count_arrays(items);
-    int current_pos_col, current_pos_row;
     int selected_item = 0, i = 0;
     int key;
+    struct text_info saved_attr;
     // If there is nothing in items, quit.
     if (total_size_of_items == 0) return -1;
 
     // Capture current position and color scheme
-    save_pos_and_color();
-    current_pos_col = wherex();
-    current_pos_row = wherey();
+    save_pos_and_color(saved_attr);
 
     // Check if the total amount goes beyond screen limit (+1 is so it would not print on status bar and line before it)
-    if (current_pos_row + total_size_of_items + 1 > screen_rows) {
+    if (saved_attr.cury + total_size_of_items + 1 > screen_rows) {
         dbg("Too many items to display! (%d items)", total_size_of_items);
         crash("Scrollable functionality not implemented yet.");
     }
 
     // Print everything in *items[] initially
     while (items[i] != NULL) {
-        gotoxy(current_pos_col, current_pos_row + i);
+        gotoxy(saved_attr.curx, saved_attr.cury + i);
         cprintf(items[i]);
         i++;
     }
 
     while (true) {
         // Highlight the selected entry
-        gotoxy(current_pos_col, current_pos_row + selected_item);
+        gotoxy(saved_attr.curx, saved_attr.cury + selected_item);
         textbackground(WHITE);
         textcolor(BLACK);
         cprintf(items[selected_item]);
@@ -501,18 +477,16 @@ int selector(char *items[]) {
             key = getch();
             if (key == 72) { // Up arrow
                 // Remove highlight from current entry
-                gotoxy(current_pos_col, current_pos_row + selected_item);
-                textbackground(BLUE);
-                textcolor(WHITE);
+                gotoxy(saved_attr.curx, saved_attr.cury + selected_item);
+                textattr(saved_attr.attribute);
                 cprintf(items[selected_item]);
 
                 selected_item--;
                 if (selected_item < 0) selected_item = total_size_of_items - 1; // wrap around
             } else if (key == 80) { // Down arrow
                 // Remove highlight from current entry
-                gotoxy(current_pos_col, current_pos_row + selected_item);
-                textbackground(BLUE);
-                textcolor(WHITE);
+                gotoxy(saved_attr.curx, saved_attr.cury + selected_item);
+                textattr(saved_attr.attribute);
                 cprintf(items[selected_item]);
 
                 selected_item++;
@@ -549,11 +523,13 @@ int file_exists(const char *fmt, ...) {
 void quit(void) {
     // Init variables
     int key;
+    struct text_info saved_attr;
     // Save current screen
-    save_screen();
+    unsigned char screen_buffer[MAX_SCREEN_COLS * MAX_SCREEN_ROWS * 2];
+    save_screen(screen_buffer);
 
     // Capture current position and color
-    save_pos_and_color();
+    save_pos_and_color(saved_attr);
 
     status("");
     // Print the window
@@ -575,9 +551,9 @@ void quit(void) {
         // Window off animation
         window_off(14, 7, 52, 10);
         // Restore previous screen
-        restore_screen();
+        restore_screen(screen_buffer);
         // Restore position and color
-        restore_pos_and_color();
+        restore_pos_and_color(saved_attr);
         return; // Cancel quit
     } else if (key == 61) {
         // Proceed to quit
