@@ -23,14 +23,15 @@ endif
 
 # Arguments to pass into DOSBox
 dosbox_args = [
-    '-noconsole',
-    '-c', 'cls',
-    '-c', 'mount x "' + tcc + '"',
-    '-c', 'mount y "' + meson.current_source_dir() + '"',
-    '-c', 'mount r "' + meson.current_build_dir() + '"',
-    '-c', 'PATH %path%;x:\\BIN',
-    '-c', 'r:',
-    '-c', 'tcc.exe /IX:\\include /LX:\\LIB /IY:\\INCLUDE -ms Y:\\PATCHX16.C Y:\\INCLUDE\\MPCLIB.C Y:\\INCLUDE\\MININI.C > TCC_LOG.TXT',
+  '-noconsole',
+  '-c', 'cls',
+  '-c', 'mount x "' + tcc + '"',
+  '-c', 'mount y "' + meson.current_source_dir() + '"',
+  '-c', 'mount r "' + meson.current_build_dir() + '"',
+  '-c', 'PATH %path%;x:\\BIN',
+  '-c', 'r:',
+  '-c', 'tcc.exe /IX:\\include /LX:\\LIB /IY:\\INCLUDE -ms Y:\\PATCHX16.C Y:\\INCLUDE\\MPCLIB.C Y:\\INCLUDE\\MININI.C'
+        + (get_option('tcc_output_to_file') ? ' > TCC_LOG.TXT' : ''),
 ]
 
 # If debug run after compilation is enabled
@@ -43,8 +44,6 @@ if get_option('exit_on_16bit_compilation')
     dosbox_args += ['-c', 'exit']
 endif
 
-# To 
-
 # Build the application
 custom_target('16_bit_mpc_dos',
     input: source_file,
@@ -52,7 +51,6 @@ custom_target('16_bit_mpc_dos',
     command: [dosbox] + dosbox_args,
     build_by_default: true,
     build_always_stale: true,
-    native: false
     install: true,
     install_dir: meson.project_source_root() / get_option('bin_dir')
 )
