@@ -17,3 +17,6 @@ local.conf
 .vscode
 real_fail
 bun/
+myutil/
+stderr.txt
+stdout.txt
