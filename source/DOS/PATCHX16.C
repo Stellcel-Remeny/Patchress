@@ -14,9 +14,13 @@
 #include <conio.h>
 #include <dos.h>
 #include <dir.h>
+#include <process.h>
 
 #include "minIni.h"
 #include "mpclib.h"
+
+// ---[ Globals ]--- //
+char *mpc_args;
 
 // ---[ Structures ]--- //
 typedef struct {
@@ -27,6 +31,7 @@ typedef struct {
     char author[64];
     char exe[MAXFILE + MAXEXT];
     char args[128];
+    bool pass_mpc_args;
 } Entry;
 
 // ---[ Functions (Garbage from old MPC PTC MSE Whatever trash) ]--- //
@@ -269,8 +274,8 @@ void user_select_entry(const char *init_short_dir){
     entry_runs_on_msdos = ini_getbool("OS", "MSDOS", 0, "info.ini");
 
     if (!entry_runs_on_msdos) {
-        print_page("The selected entry does not support MS-DOS.\n"
-                    "Press ESC to go back...");
+        print_page(" The selected entry does not support MS-DOS.\n"
+                    " Press ESC to go back...");
         status("  ESC = Go back  F3 = Exit");
     } else { 
         // Gather all information.
@@ -279,27 +284,34 @@ void user_select_entry(const char *init_short_dir){
         ini_gets("MAIN", "Description", "<unspecified>", entry->description, sizeof(entry->description), "info.ini");
         ini_gets("MAIN", "Version", "<unspecified>", entry->version, sizeof(entry->version), "info.ini");
         ini_gets("MAIN", "Author", "<unspecified>", entry->author, sizeof(entry->author), "info.ini");
-        ini_gets("MAIN", "Exec", "", entry->exe, sizeof(entry->exe), "info.ini");
-        ini_gets("MAIN", "Args", "", entry->args, sizeof(entry->args), "info.ini");
+        ini_gets("MSDOS", "Exec", "", entry->exe, sizeof(entry->exe), "info.ini");
+        ini_gets("MSDOS", "Args", "", entry->args, sizeof(entry->args), "info.ini");
+        entry->pass_mpc_args = ini_getbool("MSDOS", "PassArgs", 0, "info.ini");
         dbg("Information gather OK.");
         
         // Check if executable is blank
         if (entry->exe[0] == '\0') {
-            print_page("The selected entry does not specify an executable in exec=\n"
-                        "Press ESC to go back...");
+            print_page(" The selected entry does not specify an executable that can run under MSDOS.\n"
+                        " (Variable EXEC= under [MSDOS] is blank)\n\n"
+                        " Press ESC to go back...");
             status("  ESC = Go back  F3 = Exit");
         } else {
+            // Pass MPC arguments if needed
+            if (entry->pass_mpc_args) 
+                strcat(entry->args, mpc_args);
+
+            show_details:
             // Print information
             print_page(" Details:\n\n"
                        "     Name: %s\n"
                        "     Version: %s\n"
                        "     Author: %s\n"
+                       "     Executable: %s %s\n\n"
                        "     Description: %s\n\n"
-                       "     Executable: %s %s [ARGUMENTS NOT PASSED]\n\n"
                        " Press ENTER to run, or ESC to go back...",
-                       entry->long_name, entry->version, entry->author, entry->description, entry->exe, entry->args
+                       entry->long_name, entry->version, entry->author, entry->exe, entry->args, entry->description
                     );
-            status("  ENTER = Run  ESC = Go back  F3 = Exit");
+            status("  ENTER = Run  ESC = Go back  E = Edit Arguments  F3 = Exit");
         }
 
     }
@@ -311,18 +323,29 @@ void user_select_entry(const char *init_short_dir){
         if (key == 27) {        // ESC key
             entry_selected = false;
             goto select_entry;
+        } else if (key == 'e' || key == 'E') {
+            // Edit arguments
+            wipe();
+            print_page(" Current arguments: %s\n\n"
+                       " Enter new arguments below:\n\n", entry->args);
+            cprintf("    ");
+            input(entry->args, 70, entry->args);
+            dbg("NEW ARGS: %s", entry->args);
+            wipe();
+            goto show_details;
         }
-        if (key == 13 && entry_runs_on_msdos && entry->exe[0] != '\0') {
+        else if (key == 13 && entry_runs_on_msdos && entry->exe[0] != '\0') {
                                 // ENTER key
             if (!file_exists(entry->exe)) crash("File not found: %s", entry->exe);
             save_screen(screen_buffer);
             status("");
             dbg("Executing %s with args %s in dir %s", entry->exe, entry->args, entry->directory);
             // Clear current screen and set color scheme to White on black
-            intro_reverse();
+            if (entry->pass_mpc_args) { wipe(); }
+            else { intro_reverse(); }
 
             // Execute the program
-            code = system(entry->exe);
+            code = spawnv(P_WAIT, entry->exe, build_argv(entry->exe, entry->args));
             dbg("Program exited with code %d\n", code);
 
             // Rebuild old screen
@@ -362,7 +385,8 @@ int main(int argc, char *argv[]) {
     }
 
     get_screen_size(); // Fill screen_rows and screen_cols before doing anything.
-    dbg("INIT: TSIZE ROW: %d, COL: %d", screen_rows, screen_cols);
+    join(mpc_args, argv + 1); // Join all arguments into a single string
+    dbg("INIT: TSIZE ROW: %d, COL: %d, ARGS: %s", screen_rows, screen_cols, mpc_args);
     intro();
     title("Remeny MultiPatcher [MS-DOS]");
 
