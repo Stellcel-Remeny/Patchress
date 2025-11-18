@@ -36,8 +36,8 @@ extern "C" {
 // ---[ Other Defines ]--- //
 #define MIN_SCREEN_COLS 80
 #define MIN_SCREEN_ROWS 25
-#define MAX_SCREEN_COLS 132 // Apparently 50*132 is the max possible vid out for dos
-#define MAX_SCREEN_ROWS 50
+#define MAX_SCREEN_COLS 132 // Apparently 60*132 is the max possible vid out for dos
+#define MAX_SCREEN_ROWS 60
 
 #define LOGFILE "LOGFILE.TXT" // <--- File to be used if logging is enabled
 
@@ -75,6 +75,10 @@ void window(const int x, const int y, const int width, const int height);
 void window_off(const int x, const int y, const int width, const int height);
 int selector(char *items[]);
 int file_exists(const char *fmt, ...);
+int copy_file(const char *src, const char *dst);
+char **build_argv(const char *prog_name, const char *arg_str);
+void join(char *o, char *a[]);
+void input(char str_buffer[], const int length, const char *default_str);
 void quit(void);
 
 // End of extern "C" block

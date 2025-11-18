@@ -81,7 +81,7 @@ void crash(const char* fmt, ...) {
 
     // Clear the line and print message
     clreol();
-    cprintf("Crash: ");
+    cprintf(" Crash: ");
     va_start(args, fmt);
     vprintf(fmt, args);
     log("Crash:");
@@ -399,6 +399,7 @@ void window(const int x, const int y, const int width, const int height) {
     }
 
     // Goto top left of window
+    textbackground(WHITE); // To make sure.
     gotoxy(x, y);
 }
 
@@ -529,6 +530,137 @@ int file_exists(const char *fmt, ...) {
     f = fopen(path, "r");
     if (f) { fclose(f); return 1; }
     return 0;
+}
+
+// Copies a file from src to dst
+int copy_file(const char *src, const char *dst) {
+    FILE *in = fopen(src, "rb");
+    FILE *out = fopen(dst, "wb");
+    char buf[4096];
+    size_t n;
+    
+    if (!in) return 1;
+
+    if (!out) {
+        fclose(in);
+        return 2;
+    }
+
+    while ((n = fread(buf, 1, sizeof(buf), in)) > 0) {
+        if (fwrite(buf, 1, n, out) != n) {
+            fclose(in);
+            fclose(out);
+            return 3;
+        }
+    }
+
+    fclose(in);
+    fclose(out);
+    return 0;   // success
+}
+
+// Splits a string into argv array
+char **build_argv(const char *prog_name, const char *arg_str) {
+    int argc = 0;
+    char **argv;
+    char *token;
+    argv[argc++] = (char *)prog_name;       // argv[0] = program name
+
+    token = strtok(arg_str, " ");
+    while(token) {
+        argv[argc++] = token;
+        token = strtok(NULL, " ");
+    }
+
+    argv[argc] = NULL;                      // terminate argv
+    return argv;                            // return number of args
+}
+
+// Joins an array of strings into a single string with spaces
+void join(char *o, char *a[]) {
+    int i = 0;
+    o[0] = 0;
+    for (i = 0; a[i]; i++) {
+        if (i) strcat(o, " ");
+        strcat(o, a[i]);
+    }
+}
+
+// Shows an input box and captures user input
+void input(char str_buffer[], int length, const char default_string[]) {
+    // Capture current position and color
+    struct text_info saved_attr;
+    int i = 0, key = 0, len = 0;
+
+    char default_str[MAX_SCREEN_COLS]; // In case default_string points to str_buffer:
+
+    save_pos_and_color(saved_attr);
+
+    if (strlen(default_string) > screen_cols - saved_attr.curx - 1) {
+        dbg("DEFAULT_STRING LENGTH SURPASSES AVAILABLE SPACE!");
+        strncpy(default_str, 0, sizeof(default_str));
+    } else {
+        strncpy(default_str, default_string, sizeof(default_str));
+    }
+    if (saved_attr.curx + length > screen_cols) {
+        dbg("LENGTH ROUNDING OFF!");
+        length = screen_cols - saved_attr.curx - 1;
+    }
+    
+    // Clear buffer
+    memset(str_buffer, 0, length + 1);
+
+    // Copy default str
+    strncpy(str_buffer, default_str, sizeof(str_buffer));
+
+    // Print the input box
+    textbackground(WHITE);
+    textcolor(BLACK);
+    for (i = 0; i < length; i++) cprintf(" ");
+
+    // Move cursor to start of input box
+    gotoxy(saved_attr.curx, saved_attr.cury);
+
+    // Copy default_str into str_buffer if provided
+    if (default_str) {
+        strncpy(str_buffer, default_str, length - 1);
+        str_buffer[length - 1] = '\0'; // ensure null-termination
+        cprintf(str_buffer);
+    }
+
+    // Get input
+    key = 0;
+    while (key != 13) {
+        key = getch();
+        if (key == 8) { // Backspace
+            len = strlen(str_buffer);
+            if (len > 0) {
+                str_buffer[len - 1] = '\0';
+                gotoxy(saved_attr.curx + len - 1 , saved_attr.cury);
+                cprintf(" ");
+                gotoxy(saved_attr.curx + len - 1, saved_attr.cury);
+            }
+        } else if (isprint((unsigned char)key)) {
+            len = strlen(str_buffer);
+            if (len < length - 1) {
+                str_buffer[len] = (char)key;
+                str_buffer[len + 1] = '\0';
+                // print(str_buffer[len]); // Apparently this method does not work
+
+                // Move to start of input box
+                gotoxy(saved_attr.curx, saved_attr.cury);
+                // Print current buffer
+                cprintf(str_buffer);
+            }
+        } else if (key == 0) { // Extended key
+            key = getch();
+            if (key == 27); // ESC key, TODO: cancel input (make input as int instead of void)
+        }
+    }
+
+    // Restore position and color
+    textattr(saved_attr.attribute);
+    gotoxy(saved_attr.curx, saved_attr.cury);
 }
 
 // Displays quit dialog
