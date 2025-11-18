@@ -4,16 +4,17 @@
 
 # Get DOS utility paths from options
 dosbox = get_option('dosbox')
-message('DOSbox Directory: ' + dosbox)
+message('DOSbox-X Directory: ' + dosbox)
 tcc = get_option('tcc')
 message('TurboC Directory: ' + tcc)
 
-# Add executable to end of DOSBox path
-dosbox = dosbox + '\\DOSBox.exe'
+# Add executable to end of DOSBox-X path
+dosbox = dosbox + '\\DOSBox-X.exe'
 
 # Variables
 source_file = 'PATCHX16.C'
 output_file = 'PATCHX16.EXE'
+custom_include_path = meson.current_source_dir() / 'INCLUDE'
 
 # Check if Tcc exist
 fs = import('fs')
@@ -28,9 +29,10 @@ dosbox_args = [
   '-c', 'mount x "' + tcc + '"',
   '-c', 'mount y "' + meson.current_source_dir() + '"',
   '-c', 'mount r "' + meson.current_build_dir() + '"',
+  '-c', 'mount i "' + custom_include_path + '"',
   '-c', 'PATH %path%;x:\\BIN',
   '-c', 'r:',
-  '-c', 'tcc.exe /IX:\\include /LX:\\LIB /IY:\\INCLUDE -ms Y:\\PATCHX16.C Y:\\INCLUDE\\MPCLIB.C Y:\\INCLUDE\\MININI.C'
+  '-c', 'tcc.exe /IX:\\include /LX:\\LIB /II:\\ -ms Y:\\PATCHX16.C I:\\MPCLIB.C I:\\MININI.C'
         + (get_option('tcc_output_to_file') ? ' > TCC_LOG.TXT' : ''),
 ]
 
@@ -54,6 +56,9 @@ custom_target('16_bit_mpc_dos',
     install: true,
     install_dir: meson.project_source_root() / get_option('bin_dir')
 )
+
+# Build other DOS apps
+subdir('APPS')
 
 # To run Patchx16.exe (```meson compile -C builddir run```)
 run_target('run_dos',
