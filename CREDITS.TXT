@@ -1,6 +1,7 @@
 ---[ Included Stuff ]---
 4DOS
-
+DOS CD Driver
+Windows 1.0 Setver change
 
 ---[ Info ]---
-Compiler: OpenWatcom
+Compiler: TurboC
