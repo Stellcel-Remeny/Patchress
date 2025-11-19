@@ -20,7 +20,8 @@
 #include "mpclib.h"
 
 // ---[ Globals ]--- //
-char *mpc_args;
+char mpc_args[512]; // Reasonable limit
+char cwd[MAXPATH];
 
 // ---[ Structures ]--- //
 typedef struct {
@@ -35,13 +36,59 @@ typedef struct {
 } Entry;
 
 // ---[ Functions (Garbage from old MPC PTC MSE Whatever trash) ]--- //
+// Displays quit dialog
+void quit(void) {
+    // Init variables
+    int key;
+    struct text_info saved_attr;
+    // Save current screen
+    unsigned char screen_buffer[MAX_SCREEN_COLS * MAX_SCREEN_ROWS * 2];
+    save_screen(screen_buffer);
+
+    // Capture current position and color
+    save_pos_and_color(saved_attr);
+
+    status("");
+    // Print the window
+    gotoxy(14, 7);
+    window(14, 7, 52, 10);
+
+    // Set color scheme (Red on grey)
+    textbackground(WHITE);
+    textcolor(RED);
+
+    // Print the text
+    cprintf(" Are you sure you want to quit?");
+    status("  F3 = Quit  Enter = Cancel ");
+
+    key = 0;
+    while (key != 13 && key != 61) key = getch();
+
+    if (key == 13) {
+        // Window off animation
+        window_off(14, 7, 52, 10);
+        // Restore previous screen
+        restore_screen(screen_buffer);
+        // Restore position and color
+        restore_pos_and_color(saved_attr);
+        return; // Cancel quit
+    } else if (key == 61) {
+        // Proceed to quit
+        status("Goodbye!");
+        if (cwd[0] != '\0') {
+            _chdrive((toupper(cwd[0]) - 'A') + 1); // Starting drive
+            chdir(cwd); // Return to starting directory
+        }
+        intro_reverse();
+        dbg("Terminated due to quit() request.");
+        exit(0);
+    }
+}
+
+// This function dumps all folders that have the Name= variable
+// (lfn.ini) in them, in the variable 'menus'.
+// Folders which have 'info.ini' in them will be added to 'entries'.
 int get_entries(char **menus, char **entries, const char *folder, int max_items) {
-    //
-    // This function dumps all folders that have the Name= variable
-    // (lfn.ini) in them, in the variable 'menus'.
-    //
-    // Folders which have 'info.ini' in them will be added to 'entries'.
-    // 
     struct find_t fblock;
     char path[MAXPATH];
     int count = 0, menu_count = 0, entry_count = 0;
@@ -87,11 +134,10 @@ int get_entries(char **menus, char **entries, const char *folder, int max_items)
     return count;
 }
 
+// This function gathers the names from Name= in lfn.ini
+// files for menus and info.ini files for entries.
+// It populates the all_items array with these names.
 void get_fancy_names(char **all_items, char **menus, char **entries, const char *directory) {
-    // This function gathers the names from Name= in lfn.ini
-    // files for menus and info.ini files for entries.
-    // It populates the all_items array with these names.
-
     int i = 0;
     char ini_path[MAXPATH];
     char fancy_name[64] = {0};
@@ -99,7 +145,6 @@ void get_fancy_names(char **all_items, char **menus, char **entries, const char 
     // First, process menus
     while (menus[i] != NULL) {
         sprintf(ini_path, "%s\\%s\\lfn.ini", directory, menus[i]);
-//        fancy_name[64] = {0};
         ini_gets("MAIN", "Name", menus[i], fancy_name, sizeof(fancy_name), ini_path);
         all_items[i] = (char *)malloc(strlen(fancy_name) + 1);
         if (all_items[i]) {
@@ -118,7 +163,6 @@ void get_fancy_names(char **all_items, char **menus, char **entries, const char 
     // Now, process entries
     while (entries[i] != NULL) {
         sprintf(ini_path, "%s\\%s\\info.ini", directory, entries[i]);
-//        fancy_name[64] = {0};
         ini_gets("MAIN", "Name", entries[i], fancy_name, sizeof(fancy_name), ini_path);
         all_items[menu_count + i] = (char *)malloc(strlen(fancy_name) + 1);
         if (all_items[menu_count + i]) {
@@ -167,6 +211,8 @@ void user_select_entry(const char *init_short_dir){
     strncpy(current_directory, init_dir, sizeof(current_directory) - 1);
     
     dbg("Initial directory: %s", current_directory);
+    if (!dir_exists(init_dir))
+        crash("Init directory '%s' does not exist!", init_dir);
 
     select_entry:
     // Here, we let the user select an entry.
@@ -266,6 +312,7 @@ void user_select_entry(const char *init_short_dir){
     // An entry was chosen.
     dbg("ENTRY DIRECTORY: %s", entry->directory);
     dbg("Loading information.");
+    status("");
     wipe();
 
     // Get information from its INI file
@@ -297,8 +344,10 @@ void user_select_entry(const char *init_short_dir){
             status("  ESC = Go back  F3 = Exit");
         } else {
             // Pass MPC arguments if needed
-            if (entry->pass_mpc_args) 
+            if (entry->pass_mpc_args) {
+                strcat(entry->args, " /MPC ");
                 strcat(entry->args, mpc_args);
+            }
 
             show_details:
             // Print information
@@ -325,9 +374,11 @@ void user_select_entry(const char *init_short_dir){
             goto select_entry;
         } else if (key == 'e' || key == 'E') {
             // Edit arguments
+            status("");
             wipe();
             print_page(" Current arguments: %s\n\n"
                        " Enter new arguments below:\n\n", entry->args);
+            status("  ENTER = Save");
             cprintf("    ");
             input(entry->args, 70, entry->args);
             dbg("NEW ARGS: %s", entry->args);
@@ -387,6 +438,10 @@ int main(int argc, char *argv[]) {
     get_screen_size(); // Fill screen_rows and screen_cols before doing anything.
     join(mpc_args, argv + 1); // Join all arguments into a single string
     dbg("INIT: TSIZE ROW: %d, COL: %d, ARGS: %s", screen_rows, screen_cols, mpc_args);
+
+    // Save current working directory
+    getcwd(cwd, sizeof(cwd));
+
     intro();
     title("Remeny MultiPatcher [MS-DOS]");
 
