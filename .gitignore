@@ -6,9 +6,9 @@ make.bat
 dbox.bat
 
 # item
-*.exe
 *.obj
 *.err
+old/**/*.exe
 
 # user config
 local.conf
