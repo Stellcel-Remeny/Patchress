@@ -152,12 +152,31 @@ bool presence_in_array(char* arr[], char* item) {
 // presence_in_array but Case-InSenSiTive
 bool arg_check(char* arr[], char* item) {
     int i;
-    char *p;
-    for (i = 0; arr[i]; i++)
-        for (p = arr[i]; *p; p++)
-            *p = tolower((unsigned char)*p);
+    char temp[64];
+    char temp2[64];
+    char *a = NULL;
 
-    return presence_in_array(arr, item);
+    // copy arr → temp
+    strncpy(temp2, item, sizeof(temp2)-1);
+    temp2[sizeof(temp2)-1] = 0;
+
+    // Lowercase item in temp2
+    strlwr(temp2);
+
+    for (i = 0; arr[i]; i++) {
+        a = arr[i];
+
+        // copy arg → temp
+        strncpy(temp, a, sizeof(temp)-1);
+        temp[sizeof(temp)-1] = 0;
+
+        // lowercase temp only
+        strlwr(temp);
+
+        if (strcmp(temp, temp2) == 0)
+            return true;
+    }
+    return false;
 }
 
 // Updates the status bar
@@ -323,7 +342,7 @@ void print_page(const char* fmt, ...) {
             pos++;
         }
 
-        if (flags.animate) delay(50);
+        if (flags.animate) delay(30);
     }
     cprintf("\r\n"); // final newline
 }
@@ -532,6 +551,19 @@ int file_exists(const char *fmt, ...) {
     return 0;
 }
 
+// Checks if a directory exists.
+int dir_exists(const char *fmt, ...) {
+    char path[128];
+    struct find_t f;
+    va_list args;
+
+    va_start(args, fmt);
+    vsprintf(path, fmt, args);
+    va_end(args);
+
+    return findfirst(path, &f, FA_DIREC) == 0 && (f.attrib & FA_DIREC);
+}
+
 // Copies a file from src to dst
 int copy_file(const char *src, const char *dst) {
     FILE *in = fopen(src, "rb");
@@ -587,124 +619,66 @@ void join(char *o, char *a[]) {
 }
 
 // Shows an input box and captures user input
-void input(char str_buffer[], int length, const char default_string[]) {
-    // Capture current position and color
-    struct text_info saved_attr;
-    int i = 0, key = 0, len = 0;
+void input(char buf[], int maxlen, const char *def) {
+    struct text_info s;
+    int pos = 0, key, space, i;
 
-    char default_str[MAX_SCREEN_COLS]; // In case default_string points to str_buffer:
+    // By the way, blame me not, fix my cgpt guru
 
-    save_pos_and_color(saved_attr);
+    save_color(s);
 
-    if (strlen(default_string) > screen_cols - saved_attr.curx - 1) {
-        dbg("DEFAULT_STRING LENGTH SURPASSES AVAILABLE SPACE!");
-        strncpy(default_str, 0, sizeof(default_str));
-    } else {
-        strncpy(default_str, default_string, sizeof(default_str));
-    }
-    if (saved_attr.curx + length > screen_cols) {
-        dbg("LENGTH ROUNDING OFF!");
-        length = screen_cols - saved_attr.curx - 1;
-    }
+    /* Clamp maxlen to visible screen space */
+    space = screen_cols - s.curx - 1;
+    if (maxlen > space)
+        maxlen = space;
+
+    if (maxlen < 2)
+        maxlen = 2;
+
+    /* Apply default string */
+    strncpy(buf, def, maxlen - 1);
+    buf[maxlen - 1] = 0;
     
-    // Clear buffer
-    memset(str_buffer, 0, length + 1);
-
-    // Copy default str
-    strncpy(str_buffer, default_str, sizeof(str_buffer));
-
-    // Print the input box
+    /* Draw box */
     textbackground(WHITE);
     textcolor(BLACK);
-    for (i = 0; i < length; i++) cprintf(" ");
+    for (i = 0; i < maxlen - 1; i++)
+        cprintf(" ");
 
-    // Move cursor to start of input box
-    gotoxy(saved_attr.curx, saved_attr.cury);
+    /* Print existing text */
+    gotoxy(s.curx, s.cury);
+    cprintf("%s", buf);
 
-    // Copy default_str into str_buffer if provided
-    if (default_str) {
-        strncpy(str_buffer, default_str, length - 1);
-        str_buffer[length - 1] = '\0'; // ensure null-termination
-        cprintf(str_buffer);
-    }
-
-    // Get input
-    key = 0;
-    while (key != 13) {
+    /* Input edit */
+    for (;;) {
         key = getch();
-        if (key == 8) { // Backspace
-            len = strlen(str_buffer);
-            if (len > 0) {
-                str_buffer[len - 1] = '\0';
-                gotoxy(saved_attr.curx + len - 1 , saved_attr.cury);
-                cprintf(" ");
-                gotoxy(saved_attr.curx + len - 1, saved_attr.cury);
-            }
-        } else if (isprint((unsigned char)key)) {
-            len = strlen(str_buffer);
-            if (len < length - 1) {
-                str_buffer[len] = (char)key;
-                str_buffer[len + 1] = '\0';
-                // print(str_buffer[len]); // Apparently this method does not work
+        // Skip all extended keys. We not cool with the bad guys!
+        if (key == 0) {
+            getch();
+            continue;
+        }
+        if (key == 13) break; /* ENTER */
 
-                // Move to start of input box
-                gotoxy(saved_attr.curx, saved_attr.cury);
-                // Print current buffer
-                cprintf(str_buffer);
+        if (key == 8) { /* BACKSPACE */
+            pos = strlen(buf);
+            if (pos > 0) {
+                buf[pos - 1] = 0;
+                gotoxy(s.curx + pos - 1, s.cury);
+                cprintf(" ");
+                gotoxy(s.curx + pos - 1, s.cury);
             }
-        } else if (key == 0) { // Extended key
-            key = getch();
-            if (key == 27); // ESC key, TODO: cancel input (make input as int instead of void)
+        }
+        else if (isprint(key)) {
+            pos = strlen(buf);
+            if (pos < maxlen - 2) {
+                buf[pos] = key;
+                buf[pos + 1] = 0;
+                gotoxy(s.curx, s.cury);
+                cprintf("%s", buf);
+            }
         }
     }
 
-    // Restore position and color
-    textattr(saved_attr.attribute);
-    gotoxy(saved_attr.curx, saved_attr.cury);
-}
-
-// Displays quit dialog
-void quit(void) {
-    // Init variables
-    int key;
-    struct text_info saved_attr;
-    // Save current screen
-    unsigned char screen_buffer[MAX_SCREEN_COLS * MAX_SCREEN_ROWS * 2];
-    save_screen(screen_buffer);
-
-    // Capture current position and color
-    save_pos_and_color(saved_attr);
-
-    status("");
-    // Print the window
-    gotoxy(14, 7);
-    window(14, 7, 52, 10);
-
-    // Set color scheme (Red on grey)
-    textbackground(WHITE);
-    textcolor(RED);
-
-    // Print the text
-    cprintf(" Are you sure you want to quit?");
-    status("  F3 = Quit  Enter = Cancel ");
-
-    key = 0;
-    while (key != 13 && key != 61) key = getch();
-
-    if (key == 13) {
-        // Window off animation
-        window_off(14, 7, 52, 10);
-        // Restore previous screen
-        restore_screen(screen_buffer);
-        // Restore position and color
-        restore_pos_and_color(saved_attr);
-        return; // Cancel quit
-    } else if (key == 61) {
-        // Proceed to quit
-        status("Goodbye!");
-        //chdir(starting_directory); // Return to starting directory
-        intro_reverse();
-        dbg("Terminated due to quit() request.");
-        exit(0);
-    }
+    textattr(s.attribute);
+    cprintf("\r\n");
 }
