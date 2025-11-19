@@ -20,12 +20,12 @@ extern "C" {
 #endif
 
 // ---[ Save and restore screen items ]--- //
+// Save position and color (text attributes):
+#define save_pos_and_color(var) gettextinfo(&var);
 // Save position:
 #define save_pos(var) save_pos_and_color(var);
 // Save color:
 #define save_color(var) save_pos_and_color(var);
-// Save position and color (text attributes):
-#define save_pos_and_color(var) gettextinfo(&var);
 // Restore position:
 #define restore_pos(var) gotoxy(var.curx, var.cury);
 // Restore color:
@@ -75,11 +75,11 @@ void window(const int x, const int y, const int width, const int height);
 void window_off(const int x, const int y, const int width, const int height);
 int selector(char *items[]);
 int file_exists(const char *fmt, ...);
+int dir_exists(const char *fmt, ...);
 int copy_file(const char *src, const char *dst);
 char **build_argv(const char *prog_name, const char *arg_str);
 void join(char *o, char *a[]);
 void input(char str_buffer[], const int length, const char *default_str);
-void quit(void);
 
 // End of extern "C" block
 #ifdef __cplusplus
