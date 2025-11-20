@@ -27,7 +27,7 @@ char cwd[MAXPATH];
 typedef struct {
     char directory[MAXPATH];
     char long_name[64];
-    char version[8];
+    char version[32];
     char description[512];
     char author[64];
     char exe[MAXFILE + MAXEXT];
@@ -80,6 +80,8 @@ void quit(void) {
             chdir(cwd); // Return to starting directory
         }
         intro_reverse();
+        textbackground(BLACK);
+        textcolor(LIGHTGRAY);
         dbg("Terminated due to quit() request.");
         exit(0);
     }
