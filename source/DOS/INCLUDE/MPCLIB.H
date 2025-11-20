@@ -77,6 +77,7 @@ int selector(char *items[]);
 int file_exists(const char *fmt, ...);
 int dir_exists(const char *fmt, ...);
 int copy_file(const char *src, const char *dst);
+int remove_file(const char *fmt, ...);
 char **build_argv(const char *prog_name, const char *arg_str);
 void join(char *o, char *a[]);
 void input(char str_buffer[], const int length, const char *default_str);

@@ -591,6 +591,18 @@ int copy_file(const char *src, const char *dst) {
     return 0;   // success
 }
 
+// Deletes a file
+int remove_file(const char *fmt, ...) {
+    char path[MAXPATH + 32];
+    va_list ap;
+
+    va_start(ap, fmt);
+    vsprintf(path, fmt, ap);
+    va_end(ap);
+
+    return remove(path);
+}
+
 // Splits a string into argv array
 char **build_argv(const char *prog_name, const char *arg_str) {
     int argc = 0;
