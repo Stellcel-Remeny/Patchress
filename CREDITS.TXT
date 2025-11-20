@@ -2,6 +2,7 @@
 4DOS
 DOS CD Driver
 Windows 1.0 Setver change
+Cutemouse
 
 ---[ Info ]---
 Compiler: TurboC
