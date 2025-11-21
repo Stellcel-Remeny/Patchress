@@ -3,6 +3,8 @@
 DOS CD Driver
 Windows 1.0 Setver change
 Cutemouse
+XMGR
+Change msdos lines to 50 lines
 
 ---[ Info ]---
 Compiler: TurboC
