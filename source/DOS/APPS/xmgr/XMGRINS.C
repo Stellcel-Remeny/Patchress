@@ -2,7 +2,6 @@
 // remeny
 
 #include "MPCLIB.H"
-#include <process.h>
 #include <stdio.h>
 #include <conio.h>
 #include <dir.h>
