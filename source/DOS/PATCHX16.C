@@ -33,6 +33,7 @@ typedef struct {
     char exe[MAXFILE + MAXEXT];
     char args[128];
     bool pass_mpc_args;
+    bool batch_mode;
 } Entry;
 
 // ---[ Functions (Garbage from old MPC PTC MSE Whatever trash) ]--- //
@@ -86,6 +87,20 @@ void quit(void) {
         exit(0);
     }
 }
+
+char **split(const char *s) {
+    char **v = malloc(32 * sizeof(char*));   // Enough for DOS
+    int n = 0;
+    char *p = strdup(s);
+    char *tok = strtok(p, " ");
+    while (tok) {
+        v[n++] = tok;
+        tok = strtok(NULL, " ");
+    }
+    v[n] = NULL;
+    return v;        // Caller frees only 'v', not the strings (p holds them)
+}
+
 
 // This function dumps all folders that have the Name= variable
 // (lfn.ini) in them, in the variable 'menus'.
@@ -203,6 +218,12 @@ void user_select_entry(const char *init_short_dir){
         num_menus = 0, num_entries = 0,
         key = 0,
         code = 0;
+
+    // cgpt fix
+    char *cmd_argv[40];  // Safe DOS size
+    char **arglist;
+    int i = 0, k = 0;
+    // cgptfix end
 
     Entry *entry = (Entry *)malloc(sizeof(Entry));
     if (!entry) crash("Failed to allocate memory for Entry");
@@ -336,6 +357,7 @@ void user_select_entry(const char *init_short_dir){
         ini_gets("MSDOS", "Exec", "", entry->exe, sizeof(entry->exe), "info.ini");
         ini_gets("MSDOS", "Args", "", entry->args, sizeof(entry->args), "info.ini");
         entry->pass_mpc_args = ini_getbool("MSDOS", "PassArgs", 0, "info.ini");
+        entry->batch_mode = ini_getbool("MSDOS", "BatchMode", 0, "info.ini");
         dbg("Information gather OK.");
         
         // Check if executable is blank
@@ -398,7 +420,25 @@ void user_select_entry(const char *init_short_dir){
             else { intro_reverse(); }
 
             // Execute the program
-            code = spawnv(P_WAIT, entry->exe, build_argv(entry->exe, entry->args));
+            if (entry->batch_mode) { // Batch files require COMMAND.COM to be executed
+
+                // cgpt fix
+                i = 0; k = 0;
+                arglist = split(entry->args);
+                cmd_argv[k++] = "COMMAND.COM";
+                cmd_argv[k++] = "/C";
+                cmd_argv[k++] = entry->exe;
+
+                while (arglist[i])
+                    cmd_argv[k++] = arglist[i++];
+
+                cmd_argv[k] = NULL;
+                code = spawnvp(P_WAIT, cmd_argv[0], cmd_argv);
+            } else {
+                dbg("SUB ARGS: %s", entry->args);
+                code = spawnv(P_WAIT, entry->exe, build_argv(entry->exe, entry->args));
+            }
+            
             dbg("Program exited with code %d\n", code);
 
             // Rebuild old screen
