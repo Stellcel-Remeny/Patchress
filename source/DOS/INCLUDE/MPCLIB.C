@@ -554,14 +554,14 @@ int file_exists(const char *fmt, ...) {
 // Checks if a directory exists.
 int dir_exists(const char *fmt, ...) {
     char path[128];
-    struct find_t f;
+    struct ffblk f;
     va_list args;
 
     va_start(args, fmt);
     vsprintf(path, fmt, args);
     va_end(args);
 
-    return findfirst(path, &f, FA_DIREC) == 0 && (f.attrib & FA_DIREC);
+    return findfirst(path, &f, FA_DIREC) == 0 && (f.ff_attrib & FA_DIREC);
 }
 
 // Copies a file from src to dst
@@ -606,11 +606,12 @@ int remove_file(const char *fmt, ...) {
 // Splits a string into argv array
 char **build_argv(const char *prog_name, const char *arg_str) {
     int argc = 0;
-    char **argv;
+    char *argv[512];
     char *token;
+    char *buf = strdup(arg_str); // duplicate string to avoid modifying original
     argv[argc++] = (char *)prog_name;       // argv[0] = program name
 
-    token = strtok(arg_str, " ");
+    token = strtok(buf, " ");
     while(token) {
         argv[argc++] = token;
         token = strtok(NULL, " ");
