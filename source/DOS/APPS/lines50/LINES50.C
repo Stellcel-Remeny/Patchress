@@ -77,7 +77,6 @@ int main(int argc, char* argv[]) {
                " Press F3 to exit.");
     status("  F3 = Exit");
     while (getch() != 61);
-    if (!arg_check(argv, "/MPC")) intro();
     quit(0);
 
     // to shut up
