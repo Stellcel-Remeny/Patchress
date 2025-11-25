@@ -78,9 +78,9 @@ int main(int argc, char* argv[]) {
                  win_path,
                  NULL);
 
-    getch();
-
     if (ret != 0) {
+        err_msg:
+        getch();
         title("Error");
         print_page("An error occured.\n");
         status("  F3 = Exit");
@@ -88,6 +88,34 @@ int main(int argc, char* argv[]) {
         quit(-1);
     }
 
+    // Execute AUXCHECK.COM
+    ret = spawnl(P_WAIT,
+                 "AUXCHECK.COM",
+                 "AUXCHECK.COM",
+                 NULL);
+    if (ret != 0) goto err_msg;
+
+    // Ask user if they want to install AUXSTACK.COM
+    if (!yesno(false, "\n\n Do you want to install AUXSTACK.COM? (Modifies AUTOEXEC.BAT) [Y/N]"))
+        quit(0);
+    
+    // Install AUXSTACK.COM
+    // Copy file to Windows installation
+    intro();
+    title(" AUXSTACK.COM Installation");
+    print_page(" Copying AUXSTACK.COM to %s\n", win_path);
+    if (copy_file("AUXSTACK.COM", fmt_str("%s\\AUXSTACK.COM", win_path)) != 0)
+        goto err_msg;
+
+    // Add line to AUTOEXEC.BAT
+    print_page(" Appending to C:\\AUTOEXEC.BAT");
+    if (file_append("C:\\AUTOEXEC.BAT", "\n%s\\AUXSTACK.COM\n", win_path) != 0)
+        goto err_msg;
+
+    print_page(" Installation completed.\n"
+               " Restart your computer for changes to take effect.");
+    status(" Finished. Press F3 to exit.");
+    while (getch() != 61);
     quit(0);
     return 0;
 }
