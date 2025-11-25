@@ -537,7 +537,7 @@ int selector(char *items[]) {
 }
 
 // Checks if a file exists. 
-int file_exists(const char *fmt, ...) {
+bool file_exists(const char *fmt, ...) {
     char path[MAXPATH];  // buffer for formatted path
     FILE *f;
     va_list args;
@@ -547,8 +547,8 @@ int file_exists(const char *fmt, ...) {
 
     dbg("Checking for file: %s", path);
     f = fopen(path, "r");
-    if (f) { fclose(f); return 1; }
-    return 0;
+    if (f) { fclose(f); return true; }
+    return false;
 }
 
 // Checks if a directory exists.
@@ -694,4 +694,65 @@ void input(char buf[], int maxlen, const char *def) {
 
     textattr(s.attribute);
     cprintf("\r\n");
+}
+
+// Asks the user a question.
+// Returns:
+//   1 (true) = Yes
+//   0 (false) = No
+bool yesno(const bool enable_F3, const char *fmt, ...) {
+    // Init vars
+    int key;
+    va_list args;
+
+    // Print it
+    va_start(args, fmt);
+    print_page(fmt, args);
+    va_end(args);
+
+    // Update status.
+    if (enable_F3)
+        status("  Y = Yes  N = No  F3 = Exit");
+    if (!enable_F3)
+        status("  Y = Yes  N = No");
+
+    // Now we check the keys.
+    while (key != 'Y' && key != 'y') {
+        key = getch();
+        if (key == 'N' || key == 'n') {
+            status("");
+            return false;
+        } else if (enable_F3 && key == 61) {
+            status("");
+            quit();  // F3 Key
+        }
+    }
+    status("");
+    return true;
+}
+
+// Appends to a file
+int file_append(const char *file, const char *fmt, ...) {
+    va_list args;
+
+    // Open file and output
+    FILE *f = fopen(file, "a");
+    if (!f) return -1;
+
+    // Append contents
+    va_start(args, fmt);
+    vfprintf(f, fmt, args);
+    va_end(args);
+    fclose(f);
+    return 0;
+}
+
+// Returns a formatted string
+char *fmt_str(const char *fmt, ...) {
+    static char buffer[1024]; // static buffer to hold formatted string
+    va_list args;
+    va_start(args, fmt);
+    vsprintf(buffer, fmt, args);
+    va_end(args);
+    return buffer;
 }
