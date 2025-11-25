@@ -93,11 +93,17 @@ int main(int argc, char* argv[]) {
     if (!file_exists("CTMOUSE.EXE") || !file_exists("MOUSETST.COM") || !file_exists("PROTOCOL.COM"))
         crash("One or more required files not found.");
 
-    status("Checking for previous files and removing...");
-    // Delete cutemouse if already exist
-    if (file_exists("%s\\CTMOUSE.EXE", ins_path))
-        remove_file("%s\\CTMOUSE.EXE", ins_path);
+    status("Checking for previous files...");
+    // Do not proceed if cutemouse files already exist
+    if (file_exists("%s\\CTMOUSE.EXE", ins_path)) {
+        print_page(" Cutemouse seems to be already installed.\n"
+                   " Press F3 to exit.");
+        status("  F3 = Exit");
+        while (getch() != 61);
+        quit(-1);
+    }
 
+    // We don't care about these
     if (file_exists("%s\\MOUSETST.COM", ins_path))
         remove_file("%s\\MOUSETST.COM", ins_path);
 
@@ -139,6 +145,14 @@ int main(int argc, char* argv[]) {
     }
 
     // Add line to AUTOEXEC.BAT
+    if(!yesno(" Do you want to add CTMOUSE.EXE to C:\\AUTOEXEC.BAT? [Y/N]")) {
+        print_page("\n Setup successfully copied cutemouse to %s.\n"
+                   " Cutemouse will not be loaded automatically on startup.\n"
+                   " Press F3 to exit.", ins_path);
+        status("  F3 = Exit");
+        while (getch() != 61);
+        quit(0);
+    }
     status("Updating C:\\AUTOEXEC.BAT...");
     autoexec_bat = fopen("C:\\AUTOEXEC.BAT", "a");
     if (autoexec_bat == NULL) {
@@ -160,9 +174,9 @@ int main(int argc, char* argv[]) {
                " Please ensure that CTMOUSE.EXE is properly loaded in C:\\AUTOEXEC.BAT.\n"
                " If the following line does not exist, add it:\n\n"
                "    %s\\CTMOUSE.EXE\n\n"
-               " Press Enter to exit.", ins_path);
-    status("  ENTER = Exit");
-    while (getch() != 13);
+               " Press F3 to exit.", ins_path);
+    status("  F3 = Exit");
+    while (getch() != 61);
     if (!arg_check(argv, "/MPC")) intro();
     quit(0);
 
