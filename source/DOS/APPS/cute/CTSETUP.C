@@ -145,7 +145,7 @@ int main(int argc, char* argv[]) {
     }
 
     // Add line to AUTOEXEC.BAT
-    if(!yesno(" Do you want to add CTMOUSE.EXE to C:\\AUTOEXEC.BAT? [Y/N]")) {
+    if(!yesno(false, " Do you want to add CTMOUSE.EXE to C:\\AUTOEXEC.BAT? [Y/N]")) {
         print_page("\n Setup successfully copied cutemouse to %s.\n"
                    " Cutemouse will not be loaded automatically on startup.\n"
                    " Press F3 to exit.", ins_path);
@@ -177,7 +177,6 @@ int main(int argc, char* argv[]) {
                " Press F3 to exit.", ins_path);
     status("  F3 = Exit");
     while (getch() != 61);
-    if (!arg_check(argv, "/MPC")) intro();
     quit(0);
 
     // to shut up
