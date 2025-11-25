@@ -150,9 +150,9 @@ int main(int argc, char* argv[]) {
     // Check if AHCIFIX.386 already exists
     if (file_exists("%s\\SYSTEM\\AHCIFIX.386", win_path)) {
         print_page(" AHCIFIX.386 seems to be already installed.\n\n"
-                   " Press ENTER to exit.");
-        status("  ENTER = Exit");
-        while (getch() != 13);
+                   " Press F3 to exit.");
+        status("  F3 = Exit");
+        while (getch() != 61);
         quit(-1);
     }
     // Copy AHCIFIX.386 from current directory to WIN path
@@ -172,9 +172,9 @@ int main(int argc, char* argv[]) {
 
     if (add_ahcifix(win_path) == 0) {
         print_page("\n Operation completed successfully.\n"
-                   " Press Enter to exit.");
-        status("  ENTER = Exit");
-        while (getch() != 13);
+                   " Press F3 to exit.");
+        status("  F3 = Exit");
+        while (getch() != 61);
         if (!arg_check(argv, "/MPC")) intro();
         quit(0);
     } else {

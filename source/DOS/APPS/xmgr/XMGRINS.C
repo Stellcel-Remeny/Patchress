@@ -133,9 +133,9 @@ int main(int argc, char* argv[]) {
                " Please ensure that XMGR.SYS is properly loaded in C:\\XMGR.SYS.\n"
                " If the following line does not exist, add it:\n\n"
                "    DEVICE=%s\\XMGR.SYS\n\n"
-               " Press Enter to exit.", ins_path);
-    status("  ENTER = Exit");
-    while (getch() != 13);
+               " Press F3 to exit.", ins_path);
+    status("  F3 = Exit");
+    while (getch() != 61);
     if (!arg_check(argv, "/MPC")) intro();
     quit(0);
 

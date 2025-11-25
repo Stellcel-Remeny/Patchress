@@ -187,9 +187,9 @@ int main(int argc, char* argv[]) {
                    " Please ensure that SETVER.EXE is properly loaded in C:\\CONFIG.SYS.\n"
                    " If the following line does not exist, add it:\n\n"
                    "    DEVICE=%s\\SETVER.EXE\n\n"
-                   " Press Enter to exit.", dos_path);
-        status("  ENTER = Exit");
-        while (getch() != 13);
+                   " Press F3 to exit.", dos_path);
+        status("  F3 = Exit");
+        while (getch() != 61);
         if (!arg_check(argv, "/MPC")) intro();
         quit(0);
     } else {
