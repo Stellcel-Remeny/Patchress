@@ -565,6 +565,11 @@ int dir_exists(const char *fmt, ...) {
 }
 
 // Copies a file from src to dst
+// Returns:
+//   0 = Success
+//   1 = Source file open error
+//   2 = Destination file open error
+//   3 = Write error
 int copy_file(const char *src, const char *dst) {
     FILE *in = fopen(src, "rb");
     FILE *out = fopen(dst, "wb");
@@ -592,6 +597,7 @@ int copy_file(const char *src, const char *dst) {
 }
 
 // Deletes a file
+// Returns 0 on success, 1 on failure
 int remove_file(const char *fmt, ...) {
     char path[MAXPATH + 32];
     va_list ap;
@@ -600,7 +606,9 @@ int remove_file(const char *fmt, ...) {
     vsprintf(path, fmt, ap);
     va_end(ap);
 
-    return remove(path);
+    if (remove(path))
+        return 1;
+    return 0;
 }
 
 // Splits a string into argv array
