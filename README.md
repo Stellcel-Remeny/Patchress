@@ -5,6 +5,18 @@
 
 The MultiPatcher is a utility/collection of utilities & patches for Operating Systems ranging from MS-DOS to Microsoft Windows 11.
 
+## Features
+
+MultiPatcher can bundle utilities, patches, visual system modifications, or drivers as-is, or can produce a wrapper around it which expands upon it (ex, a wrapper that lets you modify System environmental paths when the patch itself won't let you).
+
+MultiPatcher:
+- is lightweight
+- can run under MS-DOS, Win3.1 & NT, till the latest and crappiest Win11
+- is your one-stop shop to make your computer pretty (or fix it)
+- provides an easy to use interface
+- tries making system modifications more robust
+- doesn't track you
+
 ## Screenshots
 
 ![Patchress under MS-DOS](media/patchress_dos.gif)
@@ -22,17 +34,15 @@ In order to provide a seamless experience, 'Patcher.bat' was added. This batch f
 
 The 'RES/' folder contains required files for MultiPatcher to function properly. Inside 'RES/MODERN', it contains the Delphi application. The patches, utilities, etc. are located inside 'RES/' with specific corresponding directories. Each directory containing 'lfn.ini' shows up as a menu in the MultiPatcher GUI.
 
-If the directory instead contains the file 'info.ini', MultiPatcher treats it as an entry instead of a menu. To view more, refer [Structure of INFO.INi](docs/info_ini_struct.md)
+If the directory instead contains the file 'info.ini', MultiPatcher treats it as an entry instead of a menu. To view more, refer [Structure of INFO.INI](docs/info_ini_struct.md)
 
 ## Goals
 
 The goal here is to make an independent and lightweight utility where the users can use it to launch other utilities or patches. We don't want heavy applications like some Partition manager, but something like the Windows Update Blocker is welcomed.
 
-MultiPatcher can bundle utilities, patches, visual system modifications, or drivers as-is, or can produce a wrapper around it which expands upon it (ex, a wrapper that lets you modify System environmental paths when the patch itself won't let you)
-
 ## Compiling
 
-See [Building](docs/building.md)
+For compiling, see [Building](docs/building.md)
 
 ## Contributing
 
