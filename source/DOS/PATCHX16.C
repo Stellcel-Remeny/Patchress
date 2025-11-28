@@ -1,5 +1,5 @@
 /*
-  Code for 16-bit version of Patchress
+  Code for 16-bit version of MultiPatcher
   2025 Remeny
 
   Compile using Turbo C++ 3.5 compiler
@@ -7,7 +7,7 @@
 
 // ---[ Defines ]--- //
 #define INI_ANSIONLY // For minini.h
-#define MAX_ENTRIES 50 // Max menu/entry items
+#define MAX_ENTRIES 100 // Max menu/entry items
 
 // ---[ Include ]--- //
 #include <stdio.h>
@@ -20,8 +20,8 @@
 #include "mpclib.h"
 
 // ---[ Globals ]--- //
-char mpc_args[512]; // Reasonable limit
-char cwd[MAXPATH];
+char mpc_args[512]; // Stores arguments passed into MPC
+char root_dir[MAXPATH]; // Root directory of Multipatcher
 
 // ---[ Structures ]--- //
 typedef struct {
@@ -36,11 +36,11 @@ typedef struct {
     bool batch_mode;
 } Entry;
 
-// ---[ Functions (Garbage from old MPC PTC MSE Whatever trash) ]--- //
+// ---[ Functions ]--- //
 // Displays quit dialog
 void quit(void) {
     // Init variables
-    int key;
+    int key = 0;
     struct text_info saved_attr;
     // Save current screen
     unsigned char screen_buffer[MAX_SCREEN_COLS * MAX_SCREEN_ROWS * 2];
@@ -62,30 +62,31 @@ void quit(void) {
     cprintf(" Are you sure you want to quit?");
     status("  F3 = Quit  Enter = Cancel ");
 
-    key = 0;
-    while (key != 13 && key != 61) key = getch();
-
-    if (key == 13) {
-        // Window off animation
-        window_off(14, 7, 52, 10);
-        // Restore previous screen
-        restore_screen(screen_buffer);
-        // Restore position and color
-        restore_pos_and_color(saved_attr);
-        return; // Cancel quit
-    } else if (key == 61) {
-        // Proceed to quit
-        status("Goodbye!");
-        if (cwd[0] != '\0') {
-            _chdrive((toupper(cwd[0]) - 'A') + 1); // Starting drive
-            chdir(cwd); // Return to starting directory
+    while (key != ENTER_KEY) {
+        key = getch();
+        if (key == F3_KEY) {
+            // Proceed to quit
+            status("Goodbye!");
+            if (root_dir[0] != '\0') {
+                _chdrive((toupper(root_dir[0]) - 'A') + 1); // Starting drive
+                chdir(root_dir); // Return to starting directory
+            }
+            intro_reverse();
+            textbackground(BLACK);
+            textcolor(LIGHTGRAY);
+            dbg("Terminated due to quit() request.");
+            exit(0);
         }
-        intro_reverse();
-        textbackground(BLACK);
-        textcolor(LIGHTGRAY);
-        dbg("Terminated due to quit() request.");
-        exit(0);
     }
+
+    // ENTER KEY: don't quit.
+    // Window off animation
+    window_off(14, 7, 52, 10);
+    // Restore previous screen
+    restore_screen(screen_buffer);
+    // Restore position and color
+    restore_pos_and_color(saved_attr);
+    return; // Cancel quit
 }
 
 char **split(const char *s) {
@@ -105,7 +106,9 @@ char **split(const char *s) {
 // This function dumps all folders that have the Name= variable
 // (lfn.ini) in them, in the variable 'menus'.
 // Folders which have 'info.ini' in them will be added to 'entries'.
-int get_entries(char **menus, char **entries, const char *folder, int max_items) {
+// Returns:
+//      number of items found (both menus and entries)
+int get_items(char **menus, char **entries, const char *folder, int max_items) {
     struct find_t fblock;
     char path[MAXPATH];
     int count = 0, menu_count = 0, entry_count = 0;
@@ -196,28 +199,32 @@ void get_fancy_names(char **all_items, char **menus, char **entries, const char 
     all_items[menu_count + i] = NULL;
 }
 
-void user_select_entry(const char *init_short_dir){
-// This function is the best part of the program.
-// TODO: Add a search system
-// TODO: Add a way to edit execution arguments before running.
-    // Init variables
-    char current_directory[MAXPATH] = {0},
-         init_dir[MAXPATH] = {0},
-         *menus[MAX_ENTRIES / 2 + 1] = {0},
-         *entries[MAX_ENTRIES / 2 + 1] = {0},
-         *all_items[MAX_ENTRIES + 1] = {0},
-         *last_backslash;
+// Prints whatever is in the Entry struct
+void print_entry_details(const Entry *entry) {
+    if (!entry) return;
+    print_page(
+        " Details:\n\n"
+        "     Name: %s\n"
+        "     Version: %s\n"
+        "     Author: %s\n"
+        "     Executable: %s %s\n\n"
+        "     Description: %s\n\n"
+        " Press ENTER to run, or ESC to go back...",
+        entry->long_name,
+        entry->version,
+        entry->author,
+        entry->exe,
+        entry->args,
+        entry->description
+    );
+}
 
-    char newdir[MAXPATH]; // c-gpt fix
+// Logic to display information about an entry
+void display_entry(Entry *entry) {
+    // Init vars
     unsigned char screen_buffer[MAX_SCREEN_COLS * MAX_SCREEN_ROWS * 2];
-
-    bool entry_selected = false,
-         entry_runs_on_msdos = false;
-
-    int total_items = 0, selected_item = 0,
-        num_menus = 0, num_entries = 0,
-        key = 0,
-        code = 0;
+    int key = -1, code = 0;
+    bool entry_runs_on_msdos = false;
 
     // cgpt fix
     char *cmd_argv[40];  // Safe DOS size
@@ -225,139 +232,31 @@ void user_select_entry(const char *init_short_dir){
     int i = 0, k = 0;
     // cgptfix end
 
-    Entry *entry = (Entry *)malloc(sizeof(Entry));
-    if (!entry) crash("Failed to allocate memory for Entry");
-    memset(entry, 0, sizeof(Entry));
-
-    _fullpath(init_dir, init_short_dir, sizeof(init_dir));
-    // Copy the init_dir into current_directory
-    strncpy(current_directory, init_dir, sizeof(current_directory) - 1);
-    
-    dbg("Initial directory: %s", current_directory);
-    if (!dir_exists(init_dir))
-        crash("Init directory '%s' does not exist!", init_dir);
-
-    select_entry:
-    // Here, we let the user select an entry.
-    while (!entry_selected) {
-        wipe();
-        root_slash_skip:
-        print_page(" You are currently in: %s", current_directory);
-        // First, we need to get the entries in the current directory.
-        total_items = get_entries(menus, entries, current_directory, MAX_ENTRIES);
-        dbg("Total items found in current dir: %d", total_items);
-
-        if (total_items == 0) {
-            // We found nothing.
-            dbg("CASE: NOTHING FOUND.");
-            print_page("\n No entries or menus were found in the specified directory.\n\n"
-                       " Press ESC to go back...");
-            status("  ESC = Go back  F3 = Exit");
-            // Key checker
-            while (true) {
-                key = getch();
-                if (key == 61) quit();  // F3 Key
-                if (key == 27) {        // ESC key
-                    dbg("OLD DIRECTORY: %s", current_directory);
-                    last_backslash = strrchr(current_directory, '\\');
-                    if (last_backslash) {
-                        *last_backslash = '\0';   // truncate at last backslash
-                    }
-                    dbg("NEW DIRECTORY: %s", current_directory);
-                    break;
-                }
-            }
-        } else {
-            // We found something.
-            dbg("CASE: FOUND.");
-            print_page("\n Please select an entry from below.\n\n");
-            dbg("PRINT PAGE SUCCESSFUL.");
-            // Get the number of menus and entries
-            num_menus = count_arrays(menus);
-            num_entries = count_arrays(entries);
-            dbg("MENUS: %d, ENTRIES: %d", num_menus, num_entries);
-            dbg("Printing %d items from directory %s", total_items, init_dir);
-
-            // Gather the fancy names
-            get_fancy_names(all_items, menus, entries, current_directory);
-
-            status("  ENTER = Select  UP = Previous  DOWN = Next  ESC = Go back  F3 = Exit");
-            // Show selector
-            cprintf("     ");
-            selected_item = selector(all_items);
-
-            if (selected_item == -1) {
-                // User pressed ESC
-                dbg("ESC PRESSED.");
-                // Check if new directory goes outside init_dir
-                if (strcmp(current_directory, init_dir) == 0) {
-                    // We are already in the initial directory. (Assuming we are already NOT above it)
-                    dbg("Already in initial directory, cannot go back further.");
-                    quick_wipe();
-                    goto root_slash_skip; // What a dumb way.
-                }
-                // Move the directory up one level
-                dbg("OLD DIRECTORY: %s", current_directory);
-                last_backslash = strrchr(current_directory, '\\');
-                if (last_backslash) {
-                    *last_backslash = '\0';   // truncate at last backslash
-                }
-                dbg("NEW DIRECTORY: %s", current_directory);
-                continue; // Go back to the start of the loop
-            } else if (selected_item > num_menus - 1) {
-                // We assumed menus to be shown first.
-                // Therefore, if the selected item is greater than the number of menus,
-                // it means the user selected an entry. (Because entries are after menus)
-
-                dbg("ENTRY SELECTED: %s", entries[selected_item - num_menus]);
-                // Clear previous entry information
-                memset(entry, 0, sizeof(Entry));
-                // Copy new entry directory
-                sprintf(entry->directory,
-                        //sizeof(entry->directory),
-                        "%s\\%s",
-                        current_directory,
-                        entries[selected_item - num_menus]);
-                entry_selected = true;
-            } else {
-                // This case can only mean one thing:
-                // User selected a menu.
-                dbg("MENU SELECTED: %s", menus[selected_item]);
-                // Change directory to the selected menu
-                memset(newdir, 0, sizeof(newdir));
-                sprintf(newdir, "%s\\%s", current_directory, menus[selected_item]);
-                strcpy(current_directory, newdir);
-                dbg("Changing directory to: %s", current_directory);
-            }
-        }
-    }
-
-    // An entry was chosen.
     dbg("ENTRY DIRECTORY: %s", entry->directory);
-    dbg("Loading information.");
+    dbg("Gathering information from INI file.");
     status("");
     wipe();
 
     // Get information from its INI file
     if (chdir(entry->directory)) crash("Failure to swap to %s", entry->directory); // Change to entry directory
 
-    entry_runs_on_msdos = ini_getbool("OS", "MSDOS", 0, "info.ini");
+    entry_runs_on_msdos = ini_getbool("OS", "MSDOS", false, "info.ini");
 
     if (!entry_runs_on_msdos) {
+        dbg("Information gather HALT - does not support DOS.");
         print_page(" The selected entry does not support MS-DOS.\n"
                     " Press ESC to go back...");
         status("  ESC = Go back  F3 = Exit");
     } else { 
-        // Gather all information.
-        dbg("Gathering information from INI file.");
+        // Gather all needed information.
         ini_gets("MAIN", "Name", "<unspecified>", entry->long_name, sizeof(entry->long_name), "info.ini");
         ini_gets("MAIN", "Description", "<unspecified>", entry->description, sizeof(entry->description), "info.ini");
         ini_gets("MAIN", "Version", "<unspecified>", entry->version, sizeof(entry->version), "info.ini");
         ini_gets("MAIN", "Author", "<unspecified>", entry->author, sizeof(entry->author), "info.ini");
         ini_gets("MSDOS", "Exec", "", entry->exe, sizeof(entry->exe), "info.ini");
         ini_gets("MSDOS", "Args", "", entry->args, sizeof(entry->args), "info.ini");
-        entry->pass_mpc_args = ini_getbool("MSDOS", "PassArgs", 0, "info.ini");
-        entry->batch_mode = ini_getbool("MSDOS", "BatchMode", 0, "info.ini");
+        entry->pass_mpc_args = ini_getbool("MSDOS", "PassArgs", false, "info.ini");
+        entry->batch_mode = ini_getbool("MSDOS", "BatchMode", false, "info.ini");
         dbg("Information gather OK.");
         
         // Check if executable is blank
@@ -373,45 +272,40 @@ void user_select_entry(const char *init_short_dir){
                 strcat(entry->args, mpc_args);
             }
 
-            show_details:
             // Print information
-            print_page(" Details:\n\n"
-                       "     Name: %s\n"
-                       "     Version: %s\n"
-                       "     Author: %s\n"
-                       "     Executable: %s %s\n\n"
-                       "     Description: %s\n\n"
-                       " Press ENTER to run, or ESC to go back...",
-                       entry->long_name, entry->version, entry->author, entry->exe, entry->args, entry->description
-                    );
-            status("  ENTER = Run  ESC = Go back  E = Edit Arguments  F3 = Exit");
+            print_entry_details(entry);
         }
 
     }
 
-    // Key checker 2
-    while (true) {
+    // Check keys:
+    //  F3 = Execute quit()
+    // ESC = End funct (it means user wants to go back to item selector)
+    // ENT = spawn the executable
+    //   E = Edit arguments
+    key = -1;
+    while (key != ESC_KEY) {
         key = getch();
-        if (key == 61) quit();  // F3 Key
-        if (key == 27) {        // ESC key
-            entry_selected = false;
-            goto select_entry;
-        } else if (key == 'e' || key == 'E') {
+        if      (key == F3_KEY)            { quit(); }
+        else if (key == 'e' || key == 'E') {
+            dbg("EDIT ARGS PAGE OPENING");
+            dbg("OLD ARGS: %s", entry->args);
             // Edit arguments
             status("");
             wipe();
             print_page(" Current arguments: %s\n\n"
                        " Enter new arguments below:\n\n", entry->args);
-            status("  ENTER = Save");
+            status("  ENTER = Update");
             cprintf("    ");
             input(entry->args, 70, entry->args);
             dbg("NEW ARGS: %s", entry->args);
             wipe();
-            goto show_details;
+            print_entry_details(entry);
         }
-        else if (key == 13 && entry_runs_on_msdos && entry->exe[0] != '\0') {
-                                // ENTER key
-            if (!file_exists(entry->exe)) crash("File not found: %s", entry->exe);
+        else if (key == ENTER_KEY) {
+            if (!file_exists(entry->exe))
+                crash("File not found: %s", entry->exe); // We can define an error but this is easier.
+
             save_screen(screen_buffer);
             status("");
             dbg("Executing %s with args %s in dir %s", entry->exe, entry->args, entry->directory);
@@ -421,6 +315,7 @@ void user_select_entry(const char *init_short_dir){
 
             // Execute the program
             if (entry->batch_mode) { // Batch files require COMMAND.COM to be executed
+                dbg("BATCHMODE");
 
                 // cgpt fix
                 i = 0; k = 0;
@@ -435,7 +330,7 @@ void user_select_entry(const char *init_short_dir){
                 cmd_argv[k] = NULL;
                 code = spawnvp(P_WAIT, cmd_argv[0], cmd_argv);
             } else {
-                dbg("SUB ARGS: %s", entry->args);
+                dbg("NOT BATCHMODE");
                 code = spawnv(P_WAIT, entry->exe, build_argv(entry->exe, entry->args));
             }
             
@@ -447,12 +342,145 @@ void user_select_entry(const char *init_short_dir){
             restore_screen(screen_buffer);
         }
     }
-    return;
+}
+
+void user_select_item(const char *init_short_dir){
+// This function is the best part of the program.
+// TODO: Add a search system
+    // Init variables
+    char current_directory[MAXPATH] = {0},     // Holds the Full path of current working directory
+         *menus[MAX_ENTRIES / 2 + 1] = {0},    // Holds short name (dir name) of menus
+         *entries[MAX_ENTRIES / 2 + 1] = {0},  // Holds short name (dir name) of entries
+         *fancy_names[MAX_ENTRIES + 1] = {0},  // Holds fancy name of both menus and entries
+         *last_backslash;                      // Pointer to last backslash in current_directory if ESC pressed to go up one dir
+
+    int total_items = 0, selected_item = 0,
+        num_menus = 0, num_entries = 0,
+        key = -1;
+
+    Entry *entry = (Entry *)malloc(sizeof(Entry));
+    if (!entry) crash("Failed to allocate memory for Entry");
+    memset(entry, 0, sizeof(Entry));
+
+    // Copy the fullpath of init_short_dir into current_directory
+    _fullpath(current_directory, init_short_dir, sizeof(current_directory));
+    
+    dbg("Initial directory: %s", current_directory);
+    if (!dir_exists(current_directory))
+        crash("Init directory '%s' does not exist!", current_directory);
+
+    // Here, we let the user select an entry.
+    for (;;) {
+        wipe();
+        print_page(" You are currently in: %s", current_directory);
+        // First, we need to get the entries in the current directory.
+        total_items = get_items(menus, entries, current_directory, MAX_ENTRIES);
+        dbg("Total items found in current dir: %d", total_items);
+
+        if (total_items == 0) {
+            // We found nothing.
+            dbg("CASE: NOTHING FOUND.");
+            print_page("\n No entries or menus were found in the specified directory.\n\n"
+                    " Press ESC to go back...");
+            status("  ESC = Go back  F3 = Exit");
+            // Key checker
+            key = -1;
+            while (key != ESC_KEY) {
+                key = getch();
+                if (key == F3_KEY) quit();  // F3 Key
+            } // ESC key:
+            
+            dbg("OLD DIRECTORY: %s", current_directory);
+            // Make sure we do not cross higher than Drive Letter level (?)
+            // CHECK ASSUMES WE ARE NOT ABOVE '<root_dir>/RES', HENCE NO CHECKS FOR THAT.
+            last_backslash = strrchr(current_directory, '\\');
+            if (last_backslash) {
+                *last_backslash = '\0';   // truncate at last backslash
+            }
+            dbg("NEW DIRECTORY: %s", current_directory);
+            continue; // Goto start of loop
+        } else {
+            // We found something.
+            dbg("CASE: FOUND.");
+            print_page("\n Please select an item from below.\n\n");
+            // Get the number of menus and entries
+            num_menus = count_arrays(menus);
+            num_entries = count_arrays(entries);
+            dbg("MENUS: %d, ENTRIES: %d", num_menus, num_entries);
+            dbg("Printing %d items from directory %s", total_items, current_directory);
+
+            // Gather the fancy names
+            get_fancy_names(fancy_names, menus, entries, current_directory);
+
+            status("  ENTER = Select  UP = Previous  DOWN = Next  ESC = Go back  F3 = Exit");
+            // Show selector
+            cprintf("     ");
+            selected_item = selector(fancy_names);
+
+            if (selected_item == -1) {
+                // User pressed ESC
+                dbg("ESC PRESSED.");
+                // Get the previous directory
+                dbg("OLD DIRECTORY IN: %s", current_directory);
+                last_backslash = strrchr(current_directory, '\\');
+
+                // Check if new directory goes outside of initial directory
+                dbg("CHK IF STRLEN CURRENT_DIRECTORY: %d", strlen(current_directory));
+                dbg("IS > STRLEN ROOT_DIR: %d", strlen(root_dir));
+                dbg("+ STRLEN INIT_SHORT_DIR: %d + 1", strlen(init_short_dir));
+                if (last_backslash) {
+                    dbg("LAST BACKSLASH FOUND.");
+                    if (strlen(current_directory) > strlen(root_dir) + strlen(init_short_dir) + 1) {
+                        dbg("NOT IN APPROOT DIRECTORY.");
+                        *last_backslash = '\0';   // truncate at last backslash
+                    } else {
+                        dbg("IN APPROOT DIRECTORY.");
+                    }
+                }
+                dbg("NEW DIRECTORY UP: %s", current_directory);
+                continue; // Go back to the start of the loop
+            } else if (selected_item > num_menus - 1) {
+                // We assumed menus to be shown first.
+                // Therefore, if the selected item is greater than the number of menus,
+                // it means the user selected an entry. (Because entries are after menus)
+
+                dbg("ENTRY SELECTED: %s", entries[selected_item - num_menus]);
+                // Clear previous entry information
+                memset(entry, 0, sizeof(Entry));
+                // Copy new entry directory
+                sprintf(entry->directory,
+                        //sizeof(entry->directory),
+                        "%s\\%s",
+                        current_directory,
+                        entries[selected_item - num_menus]);
+                // Display entry information
+                display_entry(entry);
+                // If the funct closes, that means user pressed ESC.
+                // So we don't do anything.
+            } else {
+                // This case can only mean one thing:
+                // User selected a menu.
+                dbg("MENU SELECTED: %s", menus[selected_item]);
+                // Change directory to the selected menu
+                if (strlen(current_directory) + 1 + strlen(menus[selected_item]) < sizeof(current_directory)) {
+                    strcat(current_directory, "\\");
+                    strcat(current_directory, menus[selected_item]);
+                } else {
+                    // New path length exceeds sizeof current_directory
+                    // We can design an error to go back to 'cwd/init_short_dir', but crash() is easier.
+                    crash("New menu path is too long!: %d > %d",
+                        strlen(current_directory) + 1 + strlen(menus[selected_item]),
+                        sizeof(current_directory));
+                }
+                dbg("Changing directory to: %s", current_directory);
+            }
+        }
+    }
 }
 
 // ---[ Main ]--- //
 int main(int argc, char *argv[]) {
-    int key = 0;
+    int key = -1;
     (void)argc;   // prevents unused-variable warning
     // Help documentation
     if (arg_check(argv, "/?")) {
@@ -482,7 +510,7 @@ int main(int argc, char *argv[]) {
     dbg("INIT: TSIZE ROW: %d, COL: %d, ARGS: %s", screen_rows, screen_cols, mpc_args);
 
     // Save current working directory
-    getcwd(cwd, sizeof(cwd));
+    getcwd(root_dir, sizeof(root_dir));
 
     intro();
     title("Remeny MultiPatcher [MS-DOS]");
@@ -496,15 +524,14 @@ int main(int argc, char *argv[]) {
     status("  ENTER = Continue  F3 = Exit");
 
     key = -1;
-    while (true) {
+    while (key != ENTER_KEY) {
         key = getch();
-        if (key == 13) break;
-        if (key == 61) quit();
-        if (key == 96) crash("Crash test.");
+        if      (key == F3_KEY)    { quit(); }
+        else if (key == TILDE_KEY) { crash("Crash test."); }
     }
 
     // Page 2
-    user_select_entry("RES");
+    user_select_item("RES");
 
     dbg("Termination due to program end");
     return 0;
