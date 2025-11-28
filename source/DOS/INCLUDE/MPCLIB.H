@@ -19,6 +19,18 @@ extern "C" {
   #endif
 #endif
 
+// ---[ Special key codes ]--- //
+#define EXT_KEY       0
+#define BACKSPACE_KEY 8
+#define ENTER_KEY     13
+#define ESC_KEY       27
+#define F3_KEY        61
+#define UP_KEY        72
+#define LEFT_KEY      75
+#define RIGHT_KEY     77
+#define DOWN_KEY      80
+#define TILDE_KEY     96
+
 // ---[ Save and restore screen items ]--- //
 // Save position and color (text attributes):
 #define save_pos_and_color(var) gettextinfo(&var);

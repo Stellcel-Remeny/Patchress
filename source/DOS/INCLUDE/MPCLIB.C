@@ -475,7 +475,7 @@ void window_off(const int x, const int y, const int width, const int height) {
 int selector(char *items[]) {
     int total_size_of_items = count_arrays(items);
     int selected_item = 0, i = 0;
-    int key;
+    int key = -1;
     struct text_info saved_attr;
     // If there is nothing in items, quit.
     if (total_size_of_items == 0) return -1;
@@ -496,6 +496,7 @@ int selector(char *items[]) {
         i++;
     }
 
+    key = -1;
     while (true) {
         // Highlight the selected entry
         gotoxy(saved_attr.curx, saved_attr.cury + selected_item);
@@ -505,9 +506,9 @@ int selector(char *items[]) {
 
         // Wait for user input
         key = getch();
-        if (key == 0) { // extended key
+        if (key == EXT_KEY) {
             key = getch();
-            if (key == 72) { // Up arrow
+            if (key == UP_KEY) {
                 // Remove highlight from current entry
                 gotoxy(saved_attr.curx, saved_attr.cury + selected_item);
                 textattr(saved_attr.attribute);
@@ -515,7 +516,7 @@ int selector(char *items[]) {
 
                 selected_item--;
                 if (selected_item < 0) selected_item = total_size_of_items - 1; // wrap around
-            } else if (key == 80) { // Down arrow
+            } else if (key == DOWN_KEY) { // Down arrow
                 // Remove highlight from current entry
                 gotoxy(saved_attr.curx, saved_attr.cury + selected_item);
                 textattr(saved_attr.attribute);
@@ -523,12 +524,12 @@ int selector(char *items[]) {
 
                 selected_item++;
                 if (selected_item >= total_size_of_items) selected_item = 0; // wrap around
-            } else if (key == 61) { // F3 Key
+            } else if (key == F3_KEY) { // F3 Key
                 quit();
             }
-        } else if (key == 13) { // Enter key
+        } else if (key == ENTER_KEY) { // Enter key
             break; // selection made
-        } else if (key == 27) { // ESC key
+        } else if (key == ESC_KEY) { // ESC key
             return -1; // cancel selection
         }
     }
@@ -553,7 +554,7 @@ bool file_exists(const char *fmt, ...) {
 
 // Checks if a directory exists.
 int dir_exists(const char *fmt, ...) {
-    char path[128];
+    char path[MAXPATH];
     struct ffblk f;
     va_list args;
 
@@ -671,16 +672,14 @@ void input(char buf[], int maxlen, const char *def) {
     cprintf("%s", buf);
 
     /* Input edit */
-    for (;;) {
+    while (key !=  ENTER_KEY) {
         key = getch();
         // Skip all extended keys. We not cool with the bad guys!
-        if (key == 0) {
+        if (key == EXT_KEY) {
             getch();
             continue;
         }
-        if (key == 13) break; /* ENTER */
-
-        if (key == 8) { /* BACKSPACE */
+        else if (key == BACKSPACE_KEY) {
             pos = strlen(buf);
             if (pos > 0) {
                 buf[pos - 1] = 0;
@@ -710,7 +709,7 @@ void input(char buf[], int maxlen, const char *def) {
 //   0 (false) = No
 bool yesno(const bool enable_F3, const char *fmt, ...) {
     // Init vars
-    int key;
+    int key = -1;
     va_list args;
 
     // Print it
@@ -730,7 +729,7 @@ bool yesno(const bool enable_F3, const char *fmt, ...) {
         if (key == 'N' || key == 'n') {
             status("");
             return false;
-        } else if (enable_F3 && key == 61) {
+        } else if (enable_F3 && key == F3_KEY) {
             status("");
             quit();  // F3 Key
         }
