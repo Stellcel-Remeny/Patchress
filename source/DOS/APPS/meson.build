@@ -16,7 +16,8 @@ dosbox_args = [
   '-c', 'mount x "' + tcc + '"',
   '-c', 'mount y "' + meson.current_source_dir() + '"',
   '-c', 'mount r "' + meson.current_build_dir() + '"',
-  '-c', 'mount i "' + custom_include_path + '"',
+  '-c', 'mount i "' + custom_include_path + '"', # We now use this only to provide header files.
+  '-c', 'mount o "' + custom_include_path_OBJ + '"', # We use the OBJ variable to not recompile libraries. (EXCPECTS MAIN MESON.BUILD TO HAVE ALREADY COMPILED THEM)
   '-c', 'PATH %PATH%;x:\\BIN',
   '-c', 'r:',
   '-c', 'CMPDAPPS.BAT',
@@ -50,7 +51,7 @@ foreach d : subdirs
     endif
 
     batch_cmds += ['cd ' + d,
-                   'tcc.exe /IX:\\include /LX:\\LIB /II:\\ -ms Y:\\' + d + '\\' + src + ' I:\\MPCLIB.C I:\\MININI.C'
+                   'tcc.exe /IX:\\include /LX:\\LIB /II:\\ -ms Y:\\' + d + '\\' + src + ' O:\\MPCLIB.OBJ O:\\MININI.OBJ'
                    + (get_option('tcc_output_to_file') ? ' >> TCC_LOG.TXT' : ''),
                    'cd ..']
   endif
@@ -76,4 +77,5 @@ custom_target('other_dos_apps',
     command: [dosbox] + dosbox_args,
     build_by_default: true,
     build_always_stale: true,
+    depends: mpc_dos, # Make sure main one builds libraries...
 )

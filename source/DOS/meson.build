@@ -15,6 +15,7 @@ dosbox = dosbox + '\\DOSBox-X.exe'
 source_file = 'PATCHX16.C'
 output_file = 'PATCHX16.EXE'
 custom_include_path = meson.current_source_dir() / 'INCLUDE'
+custom_include_path_OBJ = meson.current_build_dir() # Here, .OBJ files for libraries are built. Not clean but it works.
 
 # Check if Tcc exist
 fs = import('fs')
@@ -47,7 +48,7 @@ if get_option('exit_on_16bit_compilation')
 endif
 
 # Build the application
-custom_target('16_bit_mpc_dos',
+mpc_dos = custom_target('16_bit_mpc_dos',
     input: source_file,
     output: output_file,
     command: [dosbox] + dosbox_args,
