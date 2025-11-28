@@ -18,15 +18,18 @@ They can execute the application specified in `INFO.INI`.
 ## Structure
 
 Under `[MAIN]`:
-    - `name=` The name to be displayed in the MPC interface.
-    - `description=` A short description of the item.
-    - `author=` Creator of the item.
-    - `version=` Version of the item.
+
+- `name=` The name to be displayed in the MPC interface.
+- `description=` A short description of the item.
+- `author=` Creator of the item.
+- `version=` Version of the item.
 
 Under `[OS]`:
-    - `msdos=<true/false>` Boolean to specifiy if supported under MS-DOS.
+
+- `msdos=<true/false>` Boolean to specifiy if supported under MS-DOS.
 
 Under `[MSDOS]`:
-    - `exec=` Name of the executable
-    - `passArgs=<true/false>` Passes arguments from the main MultiPatcher application down, along with the `/MPC` argument.
-    - `batchMode=<true/false>` Run `Exec=` under `system()` (The COMMAND.COM Shell). Must be set to TRUE if `Exec=` is a batch script.
+
+- `exec=` Name of the executable
+- `passArgs=<true/false>` Passes arguments from the main MultiPatcher application down, along with the `/MPC` argument.
+- `batchMode=<true/false>` Run `Exec=` under `system()` (The COMMAND.COM Shell). Must be set to TRUE if `Exec=` is a batch script.
