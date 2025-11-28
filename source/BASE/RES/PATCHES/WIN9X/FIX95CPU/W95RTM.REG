@@ -1,0 +1,53 @@
+REGEDIT4
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Setup\Updates]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Setup\Updates\W95]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Setup\Updates\W95\FLOPUPD5]
+@="Windows 95 PnP Floppy Drives & Fast AMD/Intel CPUs Support Update"
+"C:\\WINDOWS\\SYSTEM\\IOSUBSYS\\CDFS.VXD"="4.0.0.952"
+"C:\\WINDOWS\\SYSTEM\\IOSUBSYS\\DISKTSD.VXD"="4.0.0.953"
+"C:\\WINDOWS\\SYSTEM\\IOSUBSYS\\ESDI_506.PDR"="4.0.0.1118"
+"C:\\WINDOWS\\SYSTEM\\IOSUBSYS\\HSFLOP.PDR"="4.0.0.1113"
+"C:\\WINDOWS\\SYSTEM\\VMM32\\INT13.VXD"="4.0.0.1112"
+"C:\\WINDOWS\\SYSTEM\\VMM32\\IOS.VXD"="4.0.0.1113"
+"C:\\WINDOWS\\SYSTEM\\IOSUBSYS\\SCSIPORT.PDR"="4.0.0.951"
+"C:\\WINDOWS\\SYSTEM\\VMM32\\VFBACKUP.VXD"="4.0.0.1114"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Setup\Updates\UPD990412N1]
+@="IOS.VXD Update"
+"C:\\WINDOWS\\SYSTEM\\VMM32\\ios.vxd"="4.0.0.1114"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Active Setup\Installed Components]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Active Setup\Installed Components\{21cfda8c-f8bc-4b3b-8a75-cd0e34f96320}]
+@="Windows 95 Q274175 Update"
+"IsInstalled"=hex:01,00,00,00
+"Locale"="EN"
+"Version"="4.0.0.950"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Setup\Updates\W95\UPD274175]
+@="Windows 95 Q274175 Update"
+"C:\\WINDOWS\\SYSTEM\\IOSUBSYS\\cdfs.vxd"="4.0.0.952"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Active Setup\Installed Components\{7cb18059-5ea7-4079-a8c3-0a75cfe3c29f}]
+@="Windows 95 Q312108 Update"
+"IsInstalled"=hex:01,00,00,00
+"Locale"="EN"
+"Version"="4.0.0.950"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Setup\Updates\W95\UPD312108]
+@="Windows 95 Q312108 Update"
+"C:\\WINDOWS\\SYSTEM\\NDIS.VXD"="4.0.0.1113"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Setup\Updates\W95\Petr]
+@="Windows 95 RTM SCSIPORT.PDR Patch for Fast AMD/Intel CPUs"
+"C:\\WINDOWS\\SYSTEM\\IOSUBSYS\\SCSIPORT.PDR"="4.0.0.952"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Setup\Updates\RRL]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Setup\Updates\RRL\PTCHCDFS]
+@="CD/DVD DRIVE SIZE PATCH"
+"C:\\WINDOWS\\SYSTEM\\IOSUBSYS\\CDFS.VXD"="4.0.0.953"
+

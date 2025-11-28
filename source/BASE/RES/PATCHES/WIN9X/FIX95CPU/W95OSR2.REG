@@ -1,0 +1,58 @@
+REGEDIT4
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Setup\Updates\UPD990602N1]
+@="AMD-K6-2 Update"
+"C:\\WINDOWS\\SYSTEM\\IOSUBSYS\\ESDI_506.PDR"="4.0.0.1118"
+"C:\\WINDOWS\\SYSTEM\\IOSUBSYS\\HSFLOP.PDR"="4.0.0.1113"
+"C:\\WINDOWS\\SYSTEM\\IOSUBSYS\\SCSIPORT.PDR"="4.0.0.1112"
+"C:\\WINDOWS\\SYSTEM\\IOSUBSYS\\CDFS.VXD"="4.0.0.1112"
+"C:\\WINDOWS\\SYSTEM\\IOSUBSYS\\DISKTSD.VXD"="4.0.0.1112"
+"C:\\WINDOWS\\SYSTEM\\VMM32\\IOS.VXD"="4.0.0.1113"
+"C:\\WINDOWS\\SYSTEM\\VMM32\\INT13.VXD"="4.0.0.1112"
+"C:\\WINDOWS\\SYSTEM\\VMM32\\VFBACKUP.VXD"="4.0.0.1114"
+"C:\\WINDOWS\\SYSTEM\\VMM32\\NTKERN.VXD"="4.0.3.1213"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Setup\Updates\UPD990412N1]
+@="IOS.VXD Update"
+"C:\\WINDOWS\\SYSTEM\\VMM32\\ios.vxd"="4.0.0.1114"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Active Setup\Installed Components]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Active Setup\Installed Components\{6f9c5760-3b26-11d4-a58a-00902766e933}]
+@="Windows 95 OSR2 Q175629 Update"
+"IsInstalled"=hex:01,00,00,00
+"Locale"="EN"
+"Version"="4.00.1212"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Setup\Updates\OSR2]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Setup\Updates\OSR2\UPD175629]
+@="Windows 95 OSR2 Q175629 Update"
+"C:\\WINDOWS\\SYSTEM\\IOSUBSYS\\ESDI_506.PDR"="4.00.1119"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Active Setup\Installed Components\{40e96d6c-136b-4bb5-85ec-8fd9af2c3b3f}]
+@="Windows 95 OSR2 Q274175 Update"
+"IsInstalled"=hex:01,00,00,00
+"Locale"="EN"
+"Version"="4.0.0.1111"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Setup\Updates\OSR2\UPD274175]
+@="Windows 95 OSR2 Q274175 Update"
+"C:\\WINDOWS\\SYSTEM\\IOSUBSYS\\cdfs.vxd"="4.0.0.1113"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Active Setup\Installed Components\{7cb18059-5ea7-4079-a8c3-0a75cfe3c29f}]
+@="Windows 95 OSR2 Q312108 Update"
+"IsInstalled"=hex:01,00,00,00
+"Locale"="EN"
+"Version"="4.0.0.1111"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Setup\Updates\OSR2\UPD312108]
+@="Windows 95 OSR2 Q312108 Update"
+"C:\\WINDOWS\\SYSTEM\\NDIS.VXD"="4.0.0.1113"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Setup\Updates\RRL]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Setup\Updates\RRL\PTCHCDFS]
+@="CD/DVD DRIVE SIZE PATCH"
+"C:\\WINDOWS\\SYSTEM\\IOSUBSYS\\CDFS.VXD"="4.0.0.1114"
+
