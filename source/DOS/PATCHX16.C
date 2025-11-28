@@ -89,20 +89,6 @@ void quit(void) {
     return; // Cancel quit
 }
 
-char **split(const char *s) {
-    char **v = malloc(32 * sizeof(char*));   // Enough for DOS
-    int n = 0;
-    char *p = strdup(s);
-    char *tok = strtok(p, " ");
-    while (tok) {
-        v[n++] = tok;
-        tok = strtok(NULL, " ");
-    }
-    v[n] = NULL;
-    return v;        // Caller frees only 'v', not the strings (p holds them)
-}
-
-
 // This function dumps all folders that have the Name= variable
 // (lfn.ini) in them, in the variable 'menus'.
 // Folders which have 'info.ini' in them will be added to 'entries'.
@@ -226,11 +212,8 @@ void display_entry(Entry *entry) {
     int key = -1, code = 0;
     bool entry_runs_on_msdos = false;
 
-    // cgpt fix
-    char *cmd_argv[40];  // Safe DOS size
-    char **arglist;
-    int i = 0, k = 0;
-    // cgptfix end
+    // Buffer for Batch-mode args
+    char batch_mode_args[sizeof(entry->args) + 32] = {0};
 
     dbg("ENTRY DIRECTORY: %s", entry->directory);
     dbg("Gathering information from INI file.");
@@ -274,6 +257,7 @@ void display_entry(Entry *entry) {
 
             // Print information
             print_entry_details(entry);
+            status("  ENTER = Run  E = Edit args  ESC = Go back  F3 = Exit");
         }
 
     }
@@ -317,18 +301,9 @@ void display_entry(Entry *entry) {
             if (entry->batch_mode) { // Batch files require COMMAND.COM to be executed
                 dbg("BATCHMODE");
 
-                // cgpt fix
-                i = 0; k = 0;
-                arglist = split(entry->args);
-                cmd_argv[k++] = "COMMAND.COM";
-                cmd_argv[k++] = "/C";
-                cmd_argv[k++] = entry->exe;
-
-                while (arglist[i])
-                    cmd_argv[k++] = arglist[i++];
-
-                cmd_argv[k] = NULL;
-                code = spawnvp(P_WAIT, cmd_argv[0], cmd_argv);
+                // Build batch mode args
+                sprintf(batch_mode_args, "/C %s %s", entry->exe, entry->args);
+                code = spawnvp(P_WAIT, "COMMAND.COM", build_argv("COMMAND.COM", batch_mode_args));
             } else {
                 dbg("NOT BATCHMODE");
                 code = spawnv(P_WAIT, entry->exe, build_argv(entry->exe, entry->args));
