@@ -96,7 +96,9 @@ void quit(void) {
 //      number of items found (both menus and entries)
 int get_items(char **menus, char **entries, const char *folder, int max_items) {
     struct find_t fblock;
-    char path[MAXPATH];
+    char path[MAXPATH],
+         path_to_ini[MAXPATH];
+    
     int count = 0, menu_count = 0, entry_count = 0;
 
     // Look inside this folder
@@ -115,12 +117,26 @@ int get_items(char **menus, char **entries, const char *folder, int max_items) {
             // Check for lfn.ini and info.ini
 
             if (file_exists("%s\\%s\\lfn.ini", folder, fblock.name)) {
+                // Menu
+                // Check if lfn.ini should show under 16-bit TUI MPC
+                sprintf(path_to_ini, "%s\\%s\\lfn.ini", folder, fblock.name);
+                if (!ini_getbool("OS", "MSDOS", false, path_to_ini))
+                    continue; // Hidden under MS-DOS, skip
+
+                // Add to menu listing
                 menus[menu_count] = (char *)malloc(strlen(fblock.name) + 1);
                 if (!menus[menu_count]) break;
                 strcpy(menus[menu_count], fblock.name);
                 menu_count++;
             } 
             else if (file_exists("%s\\%s\\info.ini", folder, fblock.name)) {
+                // Entry
+                // Check if info.ini supports MS-DOS
+                sprintf(path_to_ini, "%s\\%s\\info.ini", folder, fblock.name);
+                if (!ini_getbool("OS", "MSDOS", false, path_to_ini))
+                    continue; // Does not support MS-DOS, skip
+                
+                // Add to entry listing
                 entries[entry_count] = (char *)malloc(strlen(fblock.name) + 1);
                 if (!entries[entry_count]) break;
                 strcpy(entries[entry_count], fblock.name);
