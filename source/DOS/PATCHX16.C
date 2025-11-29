@@ -34,6 +34,7 @@ typedef struct {
     char args[128];
     bool pass_mpc_args;
     bool batch_mode;
+    bool pause_on_quit;
 } Entry;
 
 // ---[ Functions ]--- //
@@ -256,6 +257,7 @@ void display_entry(Entry *entry) {
         ini_gets("MSDOS", "Args", "", entry->args, sizeof(entry->args), "info.ini");
         entry->pass_mpc_args = ini_getbool("MSDOS", "PassArgs", false, "info.ini");
         entry->batch_mode = ini_getbool("MSDOS", "BatchMode", false, "info.ini");
+        entry->pause_on_quit = ini_getbool("MSDOS", "PauseOnQuit", false, "info.ini");
         dbg("Information gather OK.");
         
         // Check if executable is blank
@@ -326,6 +328,12 @@ void display_entry(Entry *entry) {
             }
             
             dbg("Program exited with code %d\n", code);
+
+            // Wait if requested
+            if (entry->pause_on_quit) {
+                status("Program exit - press any key to return.");
+                getch();
+            }
 
             // Rebuild old screen
             intro();
