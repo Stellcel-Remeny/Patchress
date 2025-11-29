@@ -32,9 +32,10 @@ MultiPatcher:
 
 In order to provide a seamless experience, 'Patcher.bat' was added. This batch file tries to automatically figure out whether you are running MS-DOS or Windows. If it detects that you are running MS-DOS, it launches 'patchx16.exe'. Otherwise, it launches 'patchx32.exe'.
 
-The 'RES/' folder contains required files for MultiPatcher to function properly. Inside 'RES/MODERN', it contains the Delphi application. The patches, utilities, etc. are located inside 'RES/' with specific corresponding directories. Each directory containing 'lfn.ini' shows up as a menu in the MultiPatcher GUI.
+The 'RES/' folder contains required files for MultiPatcher to function properly. Inside 'RES/MODERN', it contains the Delphi application. The patches, utilities, etc. are located inside 'RES/' with specific corresponding directories.
 
-If the directory instead contains the file 'info.ini', MultiPatcher treats it as an entry instead of a menu. To view more, refer [Structure of INFO.INI](docs/info_ini_struct.md)
+- If the directory contains the file 'lfn.ini', MultiPatcher treats it as a menu. To view more, refer [Structure of LFN.INI](docs/ini_structures.md#structure-of-lfnini)
+- If the directory contains the file 'info.ini', MultiPatcher treats it as an entry. To view more, refer [Structure of INFO.INI](docs/ini_structures.md#structure-of-infoini)
 
 ## Goals
 
