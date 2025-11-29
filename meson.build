@@ -8,7 +8,7 @@
 #
 
 project('Patchress',
-    version : '0.3',
+    version : '0.4',
     default_options : ['warning_level=3'])
 
 # Get directories from options
