@@ -1,0 +1,45 @@
+; Author: Ralf Buschmann
+; This makes some changes to MSDOS.SYS that would be useful when running
+; Windows 3.11 in OSR2 DOS mode. Read W3XSTART.DOC for more information.
+
+[version]
+signature="$CHICAGO$"
+SetupClass=BASE
+
+[DefaultInstall]
+CopyFiles  = Inf.copy
+AddReg     = Uninstall.reg
+UpdateInis = msdos.sys
+
+[DefaultUnInstall]
+DelFiles   = Inf.copy
+DelReg     = Uninstall.reg
+UpdateInis = msdos.sys.undo
+
+[DestinationDirs]
+Inf.copy = 17
+
+[SourceDisksNames]
+1="Win3xStart","",1
+
+[SourceDisksFiles]
+msdossys.inf = 1
+
+[Inf.copy]
+msdossys.inf
+
+[Uninstall.reg]
+HKLM,%UW3X%
+HKLM,%UW3X%,DisplayName,,"Changes to MSDOS.SYS by Win3xStart"
+HKLM,%UW3X%,UninstallString,,"%10%\rundll.exe setupx.dll,InstallHinfSection DefaultUninstall 132 %17%\msdossys.inf"
+
+[msdos.sys]
+%30%\msdos.sys,Options,,"BootGUI=0"
+%30%\msdos.sys,Options,,"Logo=0"
+
+[msdos.sys.undo]
+%30%\msdos.sys,Options,,"BootGUI=1"
+%30%\msdos.sys,Options,,"Logo=1"
+
+[Strings]
+UW3X="Software\Microsoft\Windows\CurrentVersion\Uninstall\Win3xStart"

@@ -1,0 +1,369 @@
+        ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+        ³ Win3xStart - allows to start Windows 3.x under DOS 7.1 ³
+        ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+                          v1.53 - 14 January 1999
+             by Ralf Buschmann, based on an idea by Samuel Leo
+
+   This document will look most pretty in a MS-DOS based text editor ...
+
+ ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+ ³                                Purpose                                ³
+ ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+ Win3xStart makes some changes to the file IO.SYS of  DOS  7.10,  allowing
+ you to install and run Windows 3.x in OSR2/Win98 DOS mode like in earlier
+ versions  of  Windows  95.  Normally,  Windows  3.x  complains  about  an
+ incompatible DOS version.  If  you  say:  "Wait  a  minute:  shouldn't  I
+ re-install OSR2 over an existing DOS  6.x  and  then  use  the  'Previous
+ operating System' menu item in Windows 95 boot menu for that purpose ?" -
+ forget about it. This works for the first time attempt,  but  results  in
+ COMPLETE boot failure the next time you reboot your machine. Dual boot is
+ officially  not supported in  OSR2.  If you  really need  the  dual  boot
+ feature with a previous version of DOS,  use the fix  that I  include  in
+ directory DUALBOOT.BUG here. This installs MS-DOS 6.22 from  the original
+ setup  diskettes and fixes the dual boot failure simultaneously.
+
+ Note: Dual boot capability with earlier versions of DOS has been restored
+ in Windows 98.
+
+ How do you determine that you have OSR2 at all ? Go to a DOS  prompt  and
+ issue the command VER. Windows 95 OSR2 responds
+
+ Windows 95. [version 4.00.1111]
+
+ All earlier versions of Windows 95 display [...  4.00.950],  you  do  not
+ need the patch there. If you plan to install Windows 3.x  under  such  an
+ earlier (also known as 'retail') version of Windows 95, please  read  the
+ installation notes on Windows 3.x in this document carefully too.
+ 
+
+ ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+ ³                                Usage                                  ³
+ ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+ Just start W3XSTART.EXE. The program  gives  you  three  options,  "Apply
+ Changes", "Undo Changes" and "Exit". The first option saves the  data  to
+ be modified to the backup file W3XSTART.BIN in current directory and then
+ patches IO.SYS. The program looks for IO.SYS on C:\, if for any reason it
+ is not found there it prompt's you to enter a full path. In this case  be
+ careful because any filename is accepted and  minimal  error  testing  is
+ done only by checking file  size and searching for an OSR2/Win98 specific
+ string. Normally, IO.SYS is located in the root directory  of  your  boot
+ drive with it's attributes set to Read Only, Hidden and System. But first
+ of all Win3xStart will check your DOS  version  and  terminates  if  it's
+ different from 7.10 (OSR2/Win98).
+
+ The second option restores  all  changes  from  W3XSTART.BIN,  the  third
+ finally aborts the program without any actions.
+
+ Because IO.SYS is an Windows 95/98 system file that is used  during  boot
+ process, I  strongly  recommend  to  use  Win3xStart from a Windows 95/98
+ floppy boot disk.
+
+         ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+         ³IMPORTANT NOTE: This disk must NOT be write protected !³
+         ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+ Doing so, the backup file will be in a safe place and in case of complete
+ failure you are able to boot from that disk again and to  safely  restore
+ all modifications from WIN3XSTART.BIN by the 2nd option in Win3xStart.
+                             
+ After applying the patch, reboot your machine to  DOS  mode  and  install
+ Windows 3.x
+
+
+ ÛÛÛÛÛÛÛÛÛÛÛÛÛ   IMPORTANT NOTES ON INSTALLING WINDOWS 3.X   ÛÛÛÛÛÛÛÛÛÛÛÛÛ
+                 
+ ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+ ³Please choose USER DEFINED SETUP (hope this  is  the  correct  term  in³
+ ³english). Choose  a  directory  DIFFERENT  from where  Windows 95/98 is³
+ ³installed. Then, at the end of setup, it is  very  important  that  you³
+ ³answer                                                                 ³
+ ³                                 NO                                    ³
+ ³                                                                       ³
+ ³when Setup asks you to update AUTOEXEC.BAT and  CONFIG.SYS  !  Updating³
+ ³these files by Windows 3.x will cause some DOS drivers from Windows 3.x³
+ ³to appear there that are NOT compatible with DOS  7.10.  These  drivers³
+ ³then replace the DOS 7.10 ones which may lead to the inability to start³
+ ³EITHER Windows 95/98 OR Windows 3.x. After finishing setup, check  once³
+ ³again that there are NO drivers in AUTOEXEC.BAT and CONFIG.SYS that are³
+ ³loaded  from  the  Windows  3.x  directory,    especially    HIMEM.SYS,³
+ ³IFSHLP.SYS, SETVER.EXE and EMM386.EXE. All drivers must be by DOS  7.10³
+ ³and  therefore  loaded  from  Windows 95/98 directory or  it's  COMMAND³
+ ³subdirectory. Of course, this applies not to third party  drivers  that³
+ ³are installed on your machine.                                         ³
+ ³                                                                       ³
+ ³There is ONE exception: If  you  decide  to  use  an  startup  menu  in³
+ ³CONFIG.SYS as recommended (see below), and ONLY then, you  should  load³
+ ³IFSHLP.SYS from the Windows 3.x  directory  in  the  [DOS]  section  of³
+ ³CONFIG.SYS. This allows to use the Windows 3.11 32bit disk access since³
+ ³this is not available with the DOS 7.10 version of IFSHLP.SYS. In  this³
+ ³case it is not an good idea to start Windows 95/98 later from  the  DOS³
+ ³prompt...                                                              ³
+ ³                                                                       ³
+ ³PLEASE NOTE ALSO: To create and use a permanent swap  file  in  Windows³
+ ³3.x you have to allow direct disk access  by  the  command  LOCK  <DL>:³
+ ³before starting Windows 3.x, where <DL> have  to  be  replaced  by  the³
+ ³drive letter where you want to create / use the  permanent  swap  file.³
+ ³Please read the warning LOCK displays carefully. After exiting  Windows³
+ ³3.x you should disallow direct disk access by UNLOCK <DL>:  .  Further,³
+ ³you will not be able to create the  permanent  swap  file on a  logical³
+ ³drive that resists in an extended partition that was created by the DOS³
+ ³7.10 version of FDISK. These are normally drive letters D:, E:  and  so³
+ ³on. This does not apply to FDISK of the retail version of Windows 95.  ³
+ ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+ And yes, it is possible to install Windows 3.x on a FAT32 drive.  But  be
+ careful, because using a permanent swap file by  locking  this  drive  as
+ described may damage the FAT32 file system !! Do not use a permanent swap
+ file here.
+
+
+ ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+ ³                                Notes                                  ³
+ ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+ In order to avoid problems with Windows 3.x applications  that  scan  for
+ system files such as WIN.INI and SYSTEM.INI, the  Windows 95/98 directory
+ should be removed from your PATH statement before starting  Windows  3.x.
+ Because you have to start your computer in DOS mode to run  Windows  3.x,
+ this can most easily done by a batch file that first  modifies  PATH  and
+ then starts Windows 3.x. Assuming you have Windows 95 in  C:\WINDOWS  and
+ Windows for Workgroups in C:\WIN311, this would look like the following:
+
+ ÄÄÄÄWIN311.BATÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ 
+ @ECHO OFF
+ REM Makes Backup of current path
+ REM
+ SET ORGPATH=%PATH%
+ REM
+ REM Removes Windows 95 from  PATH,  but  leaves  WINDOWS\COMMAND  as  DOS
+ REM directory and adds Windows 3.11 directory. Add further directories as
+ REM needed.
+ REM
+ SET PATH=
+ SET PATH=C:\BAT;C:\WINDOWS\COMMAND;C:\WIN311
+ REM
+ REM Starts Windows 3.11
+ REM
+ C:\WIN311\WIN.COM
+ REM
+ REM Restores old PATH
+ REM
+ SET PATH=%ORGPATH%
+ SET ORGPATH=
+
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄWIN311.BATÄÄÄÄ
+ 
+ Now save this batch, e.g.  as  C:\BAT\WIN311.BAT,  assuming  you  have  a
+ directory C:\BAT. At least, the  directory  where  you  saved  the  batch
+ should be listed in your PATH statement in  AUTOEXEC.BAT  ,  so  you  can
+ start Windows 3.x from any directory. Then start Windows 3.11  by  typing
+ WIN311.
+
+ If you are still having problems (e.g Windows 3.x  hangs  at  the  splash
+ screen, then enter the line
+ 
+ DOS=NOAUTO
+ 
+ to your CONFIG.SYS. This prevents DOS 7.10 from  loading  FILES,  BUFFERS
+ etc. to upper memory. Maybe Windows 3.x is sometimes confused  about this.
+ 
+ IMPORTANT NOTE: DOS=NOAUTO also prevents automatic loading of  HIMEM.SYS,
+ IFSHLP.SYS and SETVER.EXE during boot process. You have to manually enter
+ these drivers into CONFIG.SYS using the DEVICE / DEVICEHIGH command since
+ they are urgently NEEDED to start the Windows 95/98 GUI.
+ 
+ However, I strongly recommend using an startup menu  in  CONFIG.SYS  like
+ the following (please note that the country  specific  settings  are  for
+ germany and that this is a SAMPLE configuration). A line  beginning  with
+ REM indicates an comment and can be removed :
+
+ ÄÄÄÄCONFIG.SYSÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ 
+ [MENU]
+ MENUITEM=WIN95,Windows 95
+ MENUITEM=DOS,DOS Mode for Windows 3.11
+ MENUDEFAULT=WIN95,10
+ 
+ [COMMON]
+ COUNTRY=049,850,C:\WINDOWS\COMMAND\COUNTRY.SYS
+ DEVICE=C:\WINDOWS\HIMEM.SYS /TESTMEM:OFF
+ 
+ [WIN95]
+ DOS=HIGH,UMB
+ REM No DOS drivers in Windows 95/98 please !
+ REM HIMEM.SYS, IFSHLP.SYS and SETVER.EXE are loaded automatically
+ REM since DOS=NOAUTO is not present in this section.
+  
+ [DOS]
+ DOS=HIGH,UMB,NOAUTO
+ BUFFERS=10
+ FILES=40
+ DEVICE=C:\WINDOWS\EMM386.EXE NOEMS
+ REM See notes on IFSHLP.SYS in [Usage] section of this document
+ DEVICEHIGH=C:\WIN311\IFSHLP.SYS
+ DEVICEHIGH=C:\WINDOWS\SETVER.EXE
+ REM Additional DOS drivers here (CD-ROM ...)
+ 
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄCONFIG.SYSÄÄÄÄ
+
+ This gives you the choice between 'Windows 95' and 'DOS Mode for  Windows
+ 3.11' at startup, where Windows 95  is  started  automatically  after  10
+ seconds  (MENUDEFAULT).  You  can  proceed  using  your   selection    in
+ AUTOEXEC.BAT by the environment variable CONFIG,  which  is  now  set  to
+ either 'WIN95' or 'DOS':
+ 
+ ÄÄÄÄAUTOEXEC.BATÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ 
+ 
+ @ECHO OFF
+ REM Common settings here
+ SET TEMP=C:\TEMP
+ SET BLASTER=A220 I5 D1 T4
+ PATH %PATH%;C:\BAT;D:\TP;D:\TP\UTILS;D:\F-PROT
+ LH C:\WINDOWS\COMMAND\KEYB.COM GR,,C:\WINDOWS\COMMAND\KEYBRD2.SYS
+ LH C:\WINDOWS\COMMAND\DOSKEY.COM
+ GOTO %CONFIG%
+ 
+ :DOS
+ REM DOS drivers here (SMARTDRV, MSCDEX)
+ REM GOTO OUT must be the last statement in this section
+ GOTO OUT
+ 
+ :WIN95
+ C:\WINDOWS\WIN.COM
+ 
+ :OUT
+ 
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄAUTOEXEC.BATÄÄÄÄ
+
+ Finally, to get this working, you have to enter 'BootGUI=0' (whithout the
+ quotes) to the [Options]-Section in C:\MSDOS.SYS. Otherwise Windows 95/98
+ would be started althoug 'DOS Mode' has  been  selected.  (DOS 7.x simply
+ executes the command 'WIN' after finishing AUTOEXEC.BAT when  BootGUI=1).
+ You may also  disable  the  splash  screen  here  by  'Logo=0'  (whithout
+ quotes). Since MSDOS.SYS is normally hidden, the easiest way to edit this
+ file is to use the following commands in a DOS window or in DOS mode:
+ 
+ attrib c:\msdos.sys -h -r -s
+ edit c:\msdos.sys
+ attrib c:\msdos.sys +h +r +s
+ 
+ For your convience, I included the file MSDOSSYS.INF. Just right-click it
+ in Explorer and choose 'Install', it will modify  MSDOS.SYS  for  you  as
+ described. You can undo these changes  in  Control  Panel  -  Software  -
+ Install / Uninstall.
+ 
+ As you see, this all can result in really hard work !
+
+ 
+ ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+ ³                            Disclaimer                                 ³
+ ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+   
+ YOU ARE USING WIN3XSTART AT YOUR OWN RISK! THE AUTHOR (RALF BUSCHMANN) IS
+ NOT LIABLE FOR ANY DAMAGE CAUSED BY THE  USE  OF  WIN3XSTART  OR  BY  THE
+ INABILITY TO USE WIN3XSTART. IF YOU ARE NOT SURE ABOUT THIS, OR IF YOU DO
+ NOT ACCEPT THIS, THEN DO NOT USE THIS PROGRAM ! 
+
+ Win3xStart is posted as FREEWARE under the following conditions:
+
+ 1. The copyright notices may not be removed
+ 2. The program may not be sold, only given away WITHOUT any cost
+ 3. The program may not be modified in any way
+ 4. This file (W3XSTART.DOC) should always accompany W3XSTART.EXE
+
+ 
+ ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+ ³                              Credits                                  ³
+ ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+   
+ Thanks to Samuel  Leo  (sam.leo@usa.net)  who  made  this  all  possible,
+ to J”rg Weske for his genuine W95Boot and to Lui Hoi Ming for testing  on
+ chinese OSR 2.
+
+ 
+ ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+ ³                           Known Problems                              ³
+ ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+ 1. File system is said to be damaged
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ 
+ 
+ Sometimes you may get an error message  when  exiting  Windows  3.x  like
+ "File allocation table bad" for some drive. Don't panic, this isn't true.
+ As a workaround, make sure that you  start  Windows  3.x  from  the  root
+ directory of drive C:, e.g.:
+ 
+ C:
+ CD\
+ C:\WIN311\WIN.COM
+ 
+ If you use WIN311.BAT as described above, modify it accordingly.
+
+ 
+ 2. Some programs request loading of SHARE.EXE
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ 
+ Some programs (e.g.  Microsoft  Word  6.0)  diplay  the  following  error
+ message on startup:
+ 
+ YOU MUST EXIT WINDOWS AND LOAD SHARE.EXE IN ORDER TO RUN ....
+ 
+ Normally there should be no need to do this, since Windows  3.x  has  its
+ own   virtual  device  driver,  VSHARE.386, for  file  sharing   purposes.
+ But it seems that there is something in the DOS 7.1 real mode kernel that
+ prevents this driver from proper function.  Unfortunately,  SHARE.EXE  is
+ not shipped with Windows 95/98.  You  may try to use  SHARE.EXE  of  your
+ old DOS 6.22 for instance (remember you have to modify  the  DOS  version
+ passed to  SHARE.EXE by SETVER SHARE.EXE 6.22),  but  unfortunately  this
+ will not solve  the  problem  too.  This  is  because  SHARE.EXE  is  not
+ supported in OSR2/Win98, see
+ 
+ ftp://ftp.microsoft.com/peropsys/win95/kb/Q161/6/19.txt
+ 
+ for more information. Since the 'cheat' mentioned there doesn't work too,
+ it is currently not possible to run these programs.
+ 
+
+ ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+ ³                          Revision History                             ³
+ ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+  
+ v1.0  - First Version released.
+ 
+ v1.1  - Fixed runtime error if current disk is write protected
+       - Attributes of IO.SYS not restored in error case, fixed
+       - Documentation reworked
+
+ v1.2  - Program screen now displays correct version information
+       - Documentation extended
+
+ v1.3  - Included MSDOSSYS.INF, documentation reworked.
+
+ v1.4  - Added installation notes for Windows 3.x
+ 
+ v1.5  - Made the program more verbosely, IO.SYS is now checked
+         for an OSR2 specific string.
+         
+ v1.51 - Minor changes to documentation.
+ 
+ v1.52 - Fixed Win3xStart not working for chinese OSR 2.
+
+ v1.53 - Added note for problem with SHARE.EXE
+
+ v1.53 - January 1999: tested and approved that Win3xStart works with
+         Windows 98, no new release.
+
+  
+ ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+ ³                              Contact                                  ³
+ ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+ 
+ EMail : ralf@conactive.com
+ WWW   : http://www.conactive.com/win95/
+ 
+ Feel free to drop me a line if you liked this program !
+ 
+ Ralf Buschmann, January 1999
