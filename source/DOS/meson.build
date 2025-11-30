@@ -4,12 +4,12 @@
 
 # Get DOS utility paths from options
 dosbox = get_option('dosbox')
-message('DOSbox-X Directory: ' + dosbox)
+message('DOSbox File path: ' + dosbox)
 tcc = get_option('tcc')
 message('TurboC Directory: ' + tcc)
 
 # Add executable to end of DOSBox-X path
-dosbox = dosbox + '\\DOSBox-X.exe'
+# dosbox = dosbox + '\\DOSBox-X.exe' <--- we assume user inputs full path including exe name
 
 # Variables
 source_file = 'PATCHX16.C'
