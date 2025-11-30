@@ -9,15 +9,18 @@
 
 - Cutemouse for MS-DOS
 - DOS IDE CD Driver by Microsoft
+- HIMEM.EXE for MS-DOS
+- RAMDisk Driver for MS-DOS
 - Windows 3.1 SVGA Drivers by PluMGMK
+- XMGR.SYS for MS-DOS
 
 ## Patches
 
+- FIX95CPUPatch by LoneCrusader
+- PatchMem for Win9x by RLOEW
 - Windows 1.0 Setver change
 - Windows 3.1 AHCIFIX.386 by PluMGMK
-- XMGR.SYS for MS-DOS
-- PatchMem for Win9x by RLOEW
-- FIX95CPUPatch by LoneCrusader
+- W3xstart
 
 ## Utilities
 
