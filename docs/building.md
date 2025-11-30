@@ -1,9 +1,10 @@
 
-# Making an instance of Patchress
+# Building MultiPatcher
 
 1st November, 2025 4:10PM
+30th November, 2025 4:54PM
 
-To make a build of patchress on your system, *assuming it's MS Windows*:
+To make a build of MultiPatcher on your system, *assuming it's MS Windows*:
 
 ## Prerequisites
 
@@ -14,15 +15,15 @@ To make a build of patchress on your system, *assuming it's MS Windows*:
 
 ## Instructions
 
-1. In the root of Patchress directory, create a new file named ```local.conf```.
+1. In the root of the MultiPatcher directory, create a new file named ```local.conf```.
 2. Put ```[project options]``` in it.
 3. Under it, add the following and then save it (use double backslashes or single forward slashes):
-    - ```dosbox = '<path>'```, where ```<path>``` must point to the path where DOSBox-X.exe is located.
+    - ```dosbox = '<file>'```, where ```<file>``` must point to the path where DOSBox EXE file is located, including filename.
         The following is an example:
-        ```dosbox = 'C:\\DOSBox-X'```
+        ```dosbox = 'C:\\DOSBox-X\\DOSBox-X.exe'```
     - ```tcc = '<path>'```, where ```<path>``` must point to the path where TurboC is installed. (The path must contain BIN, INCLUDE, etc)
 4. Run ```meson setup builddir --native-file local.conf```.
-5. Run ```meson install -C builddir``` to build Patchress. Finalized output will be located in bin_dir (usually ```bin/```)
+5. Run ```meson install -C builddir``` to build MultiPatcher. Finalized output will be located in bin_dir (usually ```bin/```)
 
 ## Tips
 
