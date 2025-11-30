@@ -67,7 +67,7 @@ void quit(void) {
         key = getch();
         if (key == F3_KEY) {
             // Proceed to quit
-            status("Goodbye!"); // won't show up, intro_Reverse clears status bar.
+            title("See you soon!");
             if (root_dir[0] != '\0') {
                 _chdrive((toupper(root_dir[0]) - 'A') + 1); // Starting drive
                 chdir(root_dir); // Return to starting directory
@@ -229,6 +229,7 @@ void display_entry(Entry *entry) {
     unsigned char screen_buffer[MAX_SCREEN_COLS * MAX_SCREEN_ROWS * 2];
     int key = -1, code = 0;
     bool entry_runs_on_msdos = false;
+    char cwd[MAXPATH] = {0};
 
     // Buffer for Batch-mode args
     char batch_mode_args[sizeof(entry->args) + 32] = {0};
@@ -318,6 +319,12 @@ void display_entry(Entry *entry) {
             if (entry->pass_mpc_args) { wipe(); }
             else { intro_reverse(); }
 
+            // Save current working directory (incase if sub program changes cwd or drive letter)
+            if (getcwd(cwd, sizeof(cwd)) == NULL)
+                crash("Failed to get current working directory.");
+
+            dbg("Current working directory: %s", cwd);
+
             // Execute the program
             if (entry->batch_mode) { // Batch files require COMMAND.COM to be executed
                 dbg("BATCHMODE");
@@ -337,6 +344,10 @@ void display_entry(Entry *entry) {
                 status("Program exit - press any key to return.");
                 getch();
             }
+
+            // Reset drive letter
+            _chdrive((toupper(cwd[0]) - 'A') + 1);
+            chdir(cwd);
 
             // Rebuild old screen
             intro();
