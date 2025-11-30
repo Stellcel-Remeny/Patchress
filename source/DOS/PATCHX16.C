@@ -27,7 +27,7 @@ char root_dir[MAXPATH]; // Root directory of Multipatcher
 typedef struct {
     char directory[MAXPATH];
     char long_name[64];
-    char version[32];
+    char version[48];
     char description[512];
     char author[64];
     char exe[MAXFILE + MAXEXT];
@@ -67,7 +67,7 @@ void quit(void) {
         key = getch();
         if (key == F3_KEY) {
             // Proceed to quit
-            status("Goodbye!");
+            status("Goodbye!"); // won't show up, intro_Reverse clears status bar.
             if (root_dir[0] != '\0') {
                 _chdrive((toupper(root_dir[0]) - 'A') + 1); // Starting drive
                 chdir(root_dir); // Return to starting directory
@@ -81,6 +81,7 @@ void quit(void) {
     }
 
     // ENTER KEY: don't quit.
+    status("");
     // Window off animation
     window_off(14, 7, 52, 10);
     // Restore previous screen
@@ -310,7 +311,9 @@ void display_entry(Entry *entry) {
 
             save_screen(screen_buffer);
             status("");
-            dbg("Executing %s with args %s in dir %s", entry->exe, entry->args, entry->directory);
+            dbg("Executing %s", entry->exe);
+            dbg("args: %s", entry->args);
+            dbg("dir: %s", entry->directory);
             // Clear current screen and set color scheme to White on black
             if (entry->pass_mpc_args) { wipe(); }
             else { intro_reverse(); }
@@ -414,9 +417,13 @@ void user_select_item(const char *init_short_dir){
             status("  ENTER = Select  UP = Previous  DOWN = Next  ESC = Go back  F3 = Exit");
             // Show selector
             cprintf("     ");
-            selected_item = selector(fancy_names);
+            selected_item = selector(true, true, fancy_names);
 
-            if (selected_item == -1) {
+            if (selected_item == -2) {
+                // User pressed F3
+                dbg("F3 PRESSED.");
+                quit();
+            } else if (selected_item == -1) {
                 // User pressed ESC
                 dbg("ESC PRESSED.");
                 // Get the previous directory
