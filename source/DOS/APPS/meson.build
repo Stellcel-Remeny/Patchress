@@ -52,7 +52,7 @@ foreach d : subdirs
 
     batch_cmds += ['cd ' + d,
                    'tcc.exe /IX:\\include /LX:\\LIB /II:\\ -ms Y:\\' + d + '\\' + src + ' O:\\MPCLIB.OBJ O:\\MININI.OBJ'
-                   + (get_option('tcc_output_to_file') ? ' >> TCC_LOG.TXT' : ''),
+                   + (get_option('tcc_output_to_file') ? ' > TCC_LOG.TXT' : ''),
                    'cd ..']
   endif
 endforeach
