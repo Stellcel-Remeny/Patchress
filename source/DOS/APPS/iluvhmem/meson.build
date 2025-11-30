@@ -7,7 +7,7 @@
 # Edit these variables only.
 source_file = 'XMGRINS.C'
 output_file = 'XMGRINS.EXE'
-install_bin_dir = bin_drivers / 'XMGR'
+install_bin_dir = bin_drivers / 'ILUVHMEM'
 
 # Stop right there.
 
