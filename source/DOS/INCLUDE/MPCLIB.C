@@ -87,6 +87,9 @@ void crash(const char* fmt, ...) {
     log("Crash:");
     log(fmt, args);
     va_end(args);
+
+    // Wait for user
+    getch();
     exit(-1);
 }
 
@@ -469,10 +472,12 @@ void window_off(const int x, const int y, const int width, const int height) {
 }
 
 // A simple selector function.
+// INDEX BEGINS AT 0, NOT 1
 // Returns:
 //  index of the selected item if ENTER,
 //  -1 if ESC is pressed.
-int selector(char *items[]) {
+//  -2 if F3 is pressed.
+int selector(bool enable_esc, bool enable_f3, char *items[]) {
     int total_size_of_items = count_arrays(items);
     int selected_item = 0, i = 0;
     int key = -1;
@@ -524,12 +529,18 @@ int selector(char *items[]) {
 
                 selected_item++;
                 if (selected_item >= total_size_of_items) selected_item = 0; // wrap around
-            } else if (key == F3_KEY) { // F3 Key
-                quit();
+            } else if (key == F3_KEY && enable_f3) { // F3 Key
+                gotoxy(1, saved_attr.cury + total_size_of_items); // Go to the newline below the selector
+                restore_color(saved_attr);
+                return -2;
             }
         } else if (key == ENTER_KEY) { // Enter key
+            gotoxy(1, saved_attr.cury + total_size_of_items); // Go to the newline below the selector
+            restore_color(saved_attr);
             break; // selection made
-        } else if (key == ESC_KEY) { // ESC key
+        } else if (key == ESC_KEY && enable_esc) { // ESC key
+            gotoxy(1, saved_attr.cury + total_size_of_items); // Go to the newline below the selector
+            restore_color(saved_attr);
             return -1; // cancel selection
         }
     }
@@ -698,6 +709,72 @@ void input(char buf[], int maxlen, const char *def) {
             }
         }
     }
+
+    textattr(s.attribute);
+    cprintf("\r\n");
+}
+
+// Shows an input box that only captures numbers
+// Expects long instead of int
+void input_num(long *buf, int maxlen, const long def) {
+    struct text_info s;
+    char tmp[16];              /* buffer for editing */
+    int key, pos, space, i;
+
+    save_color(s);
+
+    /* Clamp maxlen to visible space */
+    space = screen_cols - s.curx - 1;
+    if (maxlen > space) maxlen = space;
+    if (maxlen < 1) maxlen = 1;
+
+    /* Load default into tmp[] */
+    sprintf(tmp, "%ld", def);
+    tmp[maxlen] = 0;
+
+    /* Draw box */
+    textbackground(WHITE);
+    textcolor(BLACK);
+    for (i = 0; i < maxlen; i++)
+        cprintf(" ");
+
+    /* Print default */
+    gotoxy(s.curx, s.cury);
+    cprintf("%s", tmp);
+
+    /* Input loop */
+    key = 0;
+    while (key != ENTER_KEY) {
+        key = getch();
+
+        if (key == EXT_KEY) { getch(); continue; }
+
+        /* Backspace */
+        if (key == BACKSPACE_KEY) {
+            pos = strlen(tmp);
+            if (pos > 0) {
+                tmp[pos - 1] = 0;
+                gotoxy(s.curx + pos - 1, s.cury);
+                cprintf(" ");
+                gotoxy(s.curx + pos - 1, s.cury);
+            }
+            continue;
+        }
+
+        /* Accept only digits */
+        if (isdigit(key)) {
+            pos = strlen(tmp);
+            if (pos < maxlen - 1) {
+                tmp[pos] = key;
+                tmp[pos + 1] = 0;
+                gotoxy(s.curx, s.cury);
+                cprintf("%s", tmp);
+            }
+        }
+    }
+
+    /* Convert final string to long */
+    *buf = atol(tmp);
 
     textattr(s.attribute);
     cprintf("\r\n");
