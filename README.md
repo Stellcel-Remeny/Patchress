@@ -46,10 +46,6 @@ The goal here is to make an independent and lightweight utility where the users 
 
 For compiling, see [Building](docs/building.md)
 
-## Contributing
-
-If you want to add anything that you think would make a great addition to this project, please send an email to <remenycompany@gmail.com>.
-
 ## Credits
 
 For a list of Utilities included, please view [CREDITS](CREDITS.md). Thank you.
