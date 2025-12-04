@@ -10,6 +10,7 @@ The MultiPatcher is a utility/collection of utilities & patches for Operating Sy
 MultiPatcher can bundle utilities, patches, visual system modifications, or drivers as-is, or can produce a wrapper around it which expands upon it (ex, a wrapper that lets you modify System environmental paths when the patch itself won't let you).
 
 MultiPatcher:
+
 - is lightweight
 - can run under MS-DOS, Win3.1 & NT, till the latest and crappiest Win11
 - is your one-stop shop to make your computer pretty (or fix it)
