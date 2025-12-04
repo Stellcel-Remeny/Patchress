@@ -3,22 +3,32 @@ Begin VB.Form main
    BorderStyle     =   1  'Fixed Single
    Caption         =   "Remeny MultiPatcher"
    ClientHeight    =   6045
-   ClientLeft      =   855
-   ClientTop       =   3015
+   ClientLeft      =   9000
+   ClientTop       =   3915
    ClientWidth     =   8955
    Enabled         =   0   'False
    Height          =   6555
-   Left            =   795
+   Left            =   8940
    LinkTopic       =   "main"
    MaxButton       =   0   'False
    MinButton       =   0   'False
    Picture         =   "MAIN.frx":0000
    ScaleHeight     =   6045
    ScaleWidth      =   8955
-   Top             =   2565
+   Top             =   3465
    Visible         =   0   'False
    WhatsThisHelp   =   -1  'True
    Width           =   9075
+   Begin VB.CommandButton backButton 
+      Caption         =   "Go up  <---"
+      Enabled         =   0   'False
+      Height          =   615
+      Left            =   4560
+      TabIndex        =   8
+      Top             =   240
+      Visible         =   0   'False
+      Width           =   615
+   End
    Begin VB.CommandButton itemList 
       Height          =   495
       Index           =   8
@@ -100,16 +110,6 @@ Begin VB.Form main
       Top             =   840
       Width           =   3495
    End
-   Begin VB.CommandButton backButton 
-      Caption         =   "Go up  <---"
-      Enabled         =   0   'False
-      Height          =   615
-      Left            =   4560
-      TabIndex        =   8
-      Top             =   240
-      Visible         =   0   'False
-      Width           =   615
-   End
    Begin VB.CommandButton itemList 
       Height          =   495
       Index           =   0
@@ -156,7 +156,7 @@ Begin VB.Form main
       Caption         =   "No items found. Select 'Go Up'"
       BeginProperty Font 
          name            =   "MS Sans Serif"
-         charset         =   0
+         charset         =   1
          weight          =   700
          size            =   9.75
          underline       =   0   'False
@@ -356,6 +356,7 @@ Dim curPage As Integer
 Dim EntryExec As String
 Dim EntryArgs As String
 
+Dim selectedEntry As String
 Sub resetDisplayEntry()
     ' Display defaults
     Author.Caption = ""
@@ -369,68 +370,73 @@ Sub displayEntry(ByVal relativePath As String)
     Dim iniPath As String
     iniPath = FullCurPath & "\" & relativePath & "\INFO.INI"
     Debug.Print "ENTRY RELATIVE PATH: " & relativePath
+    ' Populate executable
+    EntryExec = ReadIniStr(WinVer, "Exec", iniPath)
+    EntryArgs = ReadIniStr(WinVer, "Args", iniPath)
     ' Display information
     Author.Caption = "Author: " & ReadIniStr("MAIN", "Author", iniPath)
     Version.Caption = "Version: " & ReadIniStr("MAIN", "Version", iniPath)
     Description.Caption = "Description: " & ReadIniStr("MAIN", "Description", iniPath)
-    execLabel.Caption = "Command: " & ReadIniStr(WinVer, "Exec", iniPath) & " " & ReadIniStr(WinVer, "Args", iniPath)
+    execLabel.Caption = "Command: " & EntryExec & " " & EntryArgs
 End Sub
 
 
 Sub GetItems()
-    ' Wait cursor'
+
     Screen.MousePointer = vbHourglass
-    ' Update current directory label
+
     dirLabel.Caption = currentDir
-    ' Update Full path
+
+    ' Build full path safely
     FullCurDir = App.Path
     If Right$(FullCurDir, 1) <> "\" Then FullCurDir = FullCurDir & "\"
     FullCurDir = FullCurDir & currentDir
     If Right$(FullCurDir, 1) <> "\" Then FullCurDir = FullCurDir & "\"
+
     Debug.Print "CURRENT FULLPATH:" & FullCurDir
     Debug.Print "Current RelPath:" & currentDir
-    
-    ' Scan for items
     Debug.Print "Scanning NOW"
-    ' init vars
-    Dim item As String, prefix As String
-    Set menus = New Collection ' Clear old stuff
+
+    Set menus = New Collection
     Set entries = New Collection
-    ' Directory
+
+    Dim item As String, prefix As String
+
     item = Dir$(FullCurDir & "*", vbDirectory)
-    Debug.Print "Val of ITEM start: " & item
-    ' Get entries and menus
+
     Do While item <> ""
-        Debug.Print "Checking Dir: " & item
+    
         If item <> "." And item <> ".." Then
-            prefix = FullCurDir & "\" & item
-            Debug.Print prefix
-            Debug.Print "ATTR: "; GetAttr(prefix); " NAME: "; item
+            prefix = FullCurDir & item
+
             If (GetAttr(prefix) And vbDirectory) = vbDirectory Then
-                ' This is a valid folder.
+
+                ' -------- MENU ----------
                 If FileExists(prefix & "\LFN.INI") Then
-                    ' Check if this Menu can be added
                     If ReadIniBool("OS", WinVer, prefix & "\LFN.INI", False) Then
-                        Debug.Print "GET ITEM: FOUND MENU: " & item
+                        Debug.Print "FOUND MENU: " & item
                         menus.Add item
                     End If
+
+                ' -------- ENTRY ----------
                 ElseIf FileExists(prefix & "\INFO.INI") Then
-                    ' Check if this Menu can be added
-                    If ReadIniBool("OS", WinVer, prefix & "\LFN.INI", False) Then
-                        Debug.Print "GET ITEM: FOUND ENTRY: " & item
+                    If ReadIniBool("OS", WinVer, prefix & "\INFO.INI", False) Then
+                        Debug.Print "FOUND ENTRY: " & item
                         entries.Add item
                     End If
                 End If
+
             End If
         End If
-        ' Next dir
+
         item = Dir$
     Loop
-    Debug.Print "Val of ITEM end: " & item
+
     Debug.Print "Count of MENUS " & menus.Count
     Debug.Print "Count of ENTRIES " & entries.Count
-    ' Restore cursor
+
     Screen.MousePointer = vbDefault
+
 End Sub
 
 
@@ -439,6 +445,7 @@ Sub populateItems(ByVal Page As Integer)
     Dim Index As Integer
     Dim itemPos As Integer
     Dim longName As String
+    selectedEntry = ""
 
     ' Wait cursor
     Screen.MousePointer = vbHourglass
@@ -550,8 +557,7 @@ Private Sub previousButton_click()
     ' Decrease page number
     curPage = curPage - 1
     ' If page is 1 (first page), disable previous button
-    If curPage < 2 Then
-        previousButton.Enabled = False
+    previousButton.Enabled = (curPage >= 2)
     ' Redraw items
     populateItems (curPage)
 End Sub
@@ -562,45 +568,41 @@ Private Sub exitButton_Click()
 End Sub
 
 Private Sub Form_Load()
+
     ' Center window
     Me.Left = (Screen.Width - Me.Width) \ 2
     Me.Top = (Screen.Height - Me.Height) \ 2
-    ' Get starting directory
+
+    ' Init directories
     initDir = "RES\"
     currentDir = initDir
-    FullCurDir = App.Path + "\RES\"
+    FullCurDir = App.Path & "\RES\"
+
     ' Play select sound
     Debug.Print "Playing VBSELECT.WAV"
-    Dim s$
-    s = App.Path & "\DATA\VBSELECT.WAV"
-    PlayWavAsync s
+    PlayWavAsync App.Path & "\DATA\VBSELECT.WAV"
+
     ' Display Windows version
     Debug.Print "OS=" & WinVer
-    If WinVer = "nt31" Then
-        OSLabel.Caption = "Windows NT 3.1"
-    ElseIf WinVer = "nt35" Then
-        OSLabel.Caption = "Windows NT 3.5"
-    ElseIf WinVer = "nt351" Then
-        OSLabel.Caption = "Windows NT 3.51"
-    ElseIf WinVer = "nt4" Then
-        OSLabel.Caption = "Windows NT 4.0"
-    ElseIf WinVer = "w2k" Then
-        OSLabel.Caption = "Windows 2000"
-    ElseIf WinVer = "wxp" Then
-        OSLabel.Caption = "Windows XP"
-    ElseIf WinVer = "w31" Then
-        OSLabel.Caption = "Windows 3.1"
-    ElseIf WinVer = "w95" Then
-        OSLabel.Caption = "Windows 95"
-    ElseIf WinVer = "w98" Then
-        OSLabel.Caption = "Windows 98"
-    ElseIf WinVer = "wme" Then
-        OSLabel.Caption = "Windows Me"
-    End If
-    ' Trigger first wave of item population
+    Select Case WinVer
+        Case "nt31":  OSLabel.Caption = "Windows NT 3.1"
+        Case "nt35":  OSLabel.Caption = "Windows NT 3.5"
+        Case "nt351": OSLabel.Caption = "Windows NT 3.51"
+        Case "nt4":   OSLabel.Caption = "Windows NT 4.0"
+        Case "w2k":   OSLabel.Caption = "Windows 2000"
+        Case "wxp":   OSLabel.Caption = "Windows XP"
+        Case "w31":   OSLabel.Caption = "Windows 3.1"
+        Case "w95":   OSLabel.Caption = "Windows 95"
+        Case "w98":   OSLabel.Caption = "Windows 98"
+        Case "wme":   OSLabel.Caption = "Windows Me"
+    End Select
+
+    ' First load
     GetItems
-    populateItems (1)
+    populateItems 1
+
 End Sub
+
 
 
 
@@ -643,11 +645,29 @@ Private Sub itemList_Click(Index As Integer)
         itemList(Index).Enabled = False
 
         ' PASS CORRECT ENTRY INDEX
+        selectedEntry = entries.item(entryPos)
         displayEntry entries.item(entryPos)
-
     End If
 
 End Sub
+
+Private Sub startbutton_Click()
+    If Not selectedEntry = "" Then
+        Debug.Print "[Relpath] Running entry: " & selectedEntry
+        Dim exePath As String
+        exePath = FullCurDir & selectedEntry & "\" & EntryExec
+        If EntryExec = "" Then
+            MsgBox "Executable must be specified under [" & WinVer & "] in key 'Exec=', but no exec value was specified."
+        ElseIf Not FileExists(exePath) Then
+            MsgBox "Executable specified '" & exePath & "' was not found."
+        Else
+            ' Execute the application
+            Debug.Print "Command: " & exePath & " " & EntryArgs
+            Shell exePath & " " & EntryArgs
+        End If
+    End If
+End Sub
+
 Private Sub starttimer_Timer()
     If startlabel.Left > 1250 Then
         startlabel.Left = startlabel.Left - 200
