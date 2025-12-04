@@ -95,7 +95,8 @@ void join(char *o, char *a[]);
 void input(char str_buffer[], const int length, const char *default_str);
 void input_num(long *buf, int maxlen, const long def);
 bool yesno(const bool enable_F3, const char *fmt, ...);
-int file_append(const char *file, const char *fmt, ...);
+int file_append(const char *fname, const char *fmt, ...);
+int file_prepend(const char *fname, const char *fmt, ...);
 char *fmt_str(const char *fmt, ...);
 
 // End of extern "C" block

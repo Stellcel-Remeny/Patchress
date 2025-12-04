@@ -816,11 +816,11 @@ bool yesno(const bool enable_F3, const char *fmt, ...) {
 }
 
 // Appends to a file
-int file_append(const char *file, const char *fmt, ...) {
+int file_append(const char *fname, const char *fmt, ...) {
     va_list args;
 
     // Open file and output
-    FILE *f = fopen(file, "a");
+    FILE *f = fopen(fname, "a");
     if (!f) return -1;
 
     // Append contents
@@ -828,6 +828,50 @@ int file_append(const char *file, const char *fmt, ...) {
     vfprintf(f, fmt, args);
     va_end(args);
     fclose(f);
+    return 0;
+}
+
+// Prepends to a file by cgpt
+int file_prepend(const char *fname, const char *fmt, ...) {
+    FILE *in, *out;
+    va_list ap;
+    int ch;
+    char tmpname[128];
+    char *p;
+
+    /* build temp file in SAME directory */
+    strcpy(tmpname, fname);
+    p = strrchr(tmpname, '\\');
+    if (p)
+        strcpy(p + 1, "$$tmp$$.tmp");
+    else
+        strcpy(tmpname, "$$tmp$$.tmp");
+
+    in = fopen(fname, "rb");
+    if (!in)
+        in = fopen(fname, "wb+");   /* create if missing */
+
+    out = fopen(tmpname, "wb");
+    if (!in || !out) return -1;
+
+    /* write formatted line first */
+    va_start(ap, fmt);
+    vfprintf(out, fmt, ap);
+    va_end(ap);
+
+    fputs("\r\n", out);
+
+    /* copy old file after it */
+    while ((ch = fgetc(in)) != EOF)
+        fputc(ch, out);
+
+    fclose(in);
+    fclose(out);
+
+    remove(fname);
+    if (rename(tmpname, fname) != 0)
+        return -1;
+
     return 0;
 }
 
