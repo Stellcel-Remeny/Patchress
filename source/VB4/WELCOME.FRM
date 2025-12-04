@@ -3,98 +3,108 @@ Begin VB.Form welcome
    BorderStyle     =   1  'Fixed Single
    Caption         =   "Welcome to MultiPatcher"
    ClientHeight    =   6045
-   ClientLeft      =   4575
-   ClientTop       =   3570
+   ClientLeft      =   8190
+   ClientTop       =   2355
    ClientWidth     =   8955
    Height          =   6555
-   Left            =   4515
+   Left            =   8130
    LinkTopic       =   "main"
    MaxButton       =   0   'False
    MinButton       =   0   'False
    Picture         =   "WELCOME.frx":0000
    ScaleHeight     =   6045
    ScaleWidth      =   8955
-   Top             =   3120
+   Top             =   1905
    WhatsThisHelp   =   -1  'True
    Width           =   9075
-   Begin VB.CommandButton NT351 
-      Caption         =   "Windows NT 3.51"
+   Begin VB.CommandButton WINBUTTON 
+      Caption         =   "Windows Me"
       Height          =   735
-      Left            =   3240
-      TabIndex        =   13
-      Top             =   3840
-      Width           =   1095
-   End
-   Begin VB.CommandButton W31 
-      Caption         =   "Windows 3.1"
-      Height          =   735
-      Left            =   1800
-      TabIndex        =   5
+      Index           =   9
+      Left            =   6120
+      TabIndex        =   15
       Top             =   4920
       Width           =   1095
    End
-   Begin VB.CommandButton WXP 
-      Caption         =   "Windows XP"
+   Begin VB.CommandButton WINBUTTON 
+      Caption         =   "Windows 98"
       Height          =   735
-      Left            =   7560
+      Index           =   8
+      Left            =   4680
       TabIndex        =   14
-      Top             =   3840
+      Top             =   4920
       Width           =   1095
    End
-   Begin VB.CommandButton NT35 
-      Caption         =   "Windows NT 3.5"
+   Begin VB.CommandButton WINBUTTON 
+      Caption         =   "Windows 95"
       Height          =   735
+      Index           =   7
+      Left            =   3240
+      TabIndex        =   13
+      Top             =   4920
+      Width           =   1095
+   End
+   Begin VB.CommandButton WINBUTTON 
+      Caption         =   "Windows 3.1"
+      Height          =   735
+      Index           =   6
       Left            =   1800
       TabIndex        =   12
-      Top             =   3840
+      Top             =   4920
       Width           =   1095
    End
-   Begin VB.CommandButton NT4 
-      Caption         =   "Windows NT 4.0"
+   Begin VB.CommandButton WINBUTTON 
+      Caption         =   "Windows XP"
       Height          =   735
-      Left            =   4680
+      Index           =   5
+      Left            =   7560
       TabIndex        =   11
       Top             =   3840
       Width           =   1095
    End
-   Begin VB.CommandButton W2K 
+   Begin VB.CommandButton WINBUTTON 
       Caption         =   "Windows 2000"
       Height          =   735
+      Index           =   4
       Left            =   6120
       TabIndex        =   10
       Top             =   3840
       Width           =   1095
    End
-   Begin VB.CommandButton NT31 
-      Caption         =   "Windows NT 3.1"
+   Begin VB.CommandButton WINBUTTON 
+      Caption         =   "Windows NT 4.0"
       Height          =   735
-      Left            =   360
+      Index           =   3
+      Left            =   4680
       TabIndex        =   9
       Top             =   3840
       Width           =   1095
    End
-   Begin VB.CommandButton WME 
-      Caption         =   "Windows Me"
+   Begin VB.CommandButton WINBUTTON 
+      Caption         =   "Windows NT 3.51"
       Height          =   735
-      Left            =   6120
-      TabIndex        =   8
-      Top             =   4920
-      Width           =   1095
-   End
-   Begin VB.CommandButton W98 
-      Caption         =   "Windows 98"
-      Height          =   735
-      Left            =   4680
-      TabIndex        =   7
-      Top             =   4920
-      Width           =   1095
-   End
-   Begin VB.CommandButton W95 
-      Caption         =   "Windows 95"
-      Height          =   735
+      Index           =   2
       Left            =   3240
-      TabIndex        =   6
-      Top             =   4920
+      TabIndex        =   8
+      Top             =   3840
+      Width           =   1095
+   End
+   Begin VB.CommandButton WINBUTTON 
+      Caption         =   "Windows NT 3.5"
+      Height          =   735
+      Index           =   1
+      Left            =   1800
+      TabIndex        =   7
+      Top             =   3840
+      Width           =   1095
+   End
+   Begin VB.CommandButton WINBUTTON 
+      Caption         =   "Windows NT 3.1"
+      Height          =   735
+      Index           =   0
+      Left            =   360
+      TabIndex        =   5
+      Top             =   3840
       Width           =   1095
    End
    Begin VB.TextBox Text1 
@@ -166,7 +176,7 @@ Begin VB.Form welcome
       ForeColor       =   &H00FFFFFF&
       Height          =   255
       Left            =   0
-      TabIndex        =   15
+      TabIndex        =   6
       Top             =   0
       Width           =   1455
    End
@@ -213,8 +223,8 @@ End
 Attribute VB_Name = "welcome"
 Attribute VB_Creatable = False
 Attribute VB_Exposed = False
+Dim WinMap(0 To 9) As String
 
-'
 Sub enableAllButtons()
     NT31.Enabled = True
     NT35.Enabled = True
@@ -244,6 +254,17 @@ Private Sub Form_Load()
     Dim s$
     s = App.Path & "\DATA\VBBEGIN.WAV"
     PlayWavAsync s
+    ' Populate Windows versions
+    WinMap(0) = "nt31"
+    WinMap(1) = "nt35"
+    WinMap(2) = "nt351"
+    WinMap(3) = "nt4"
+    WinMap(4) = "w2k"
+    WinMap(5) = "wxp"
+    WinMap(6) = "w31"
+    WinMap(7) = "w95"
+    WinMap(8) = "w98"
+    WinMap(9) = "wme"
 End Sub
 
 
@@ -352,6 +373,15 @@ End Sub
 
 Private Sub WXP_Click()
     WinVer = "wxp"
+    main.Enabled = True
+    main.Visible = True
+    Load main
+    Unload Me
+End Sub
+
+
+Private Sub WINBUTTON_Click(Index As Integer)
+    WinVer = WinMap(Index)
     main.Enabled = True
     main.Visible = True
     Load main
