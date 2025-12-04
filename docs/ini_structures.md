@@ -55,6 +55,11 @@ Under `[OS]`:
 Under `[MSDOS]`:
 
 - `exec=` Name of the executable
+- `args=` Default arguments to pass
 - `passArgs=<true/false>` Passes arguments from the main MultiPatcher application down, along with the `/MPC` argument.
 - `batchMode=<true/false>` Run `Exec=` under `system()` (The COMMAND.COM Shell). Must be set to TRUE if `Exec=` is a batch script.
 - `pauseOnQuit=<true/false>` Pause for one keypress after `Exec=` finishes.
+
+Under literally every other `[<winver>]` section:
+- `exec=` Name of the executable
+- `args=` Default arguments to pass
