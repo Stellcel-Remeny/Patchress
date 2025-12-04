@@ -35,5 +35,5 @@ custom_target(
 Then, replace:
 
 - ```<src_c_file>``` with the name of your .C file,
-- ```<tcc_output_exe>``` with the name of your generated .EXE file,
-- ```<name>``` with the name of your app
+- ```<tcc_output_exe>``` with the name of your generated .EXE file (will be always equal to the name as your .C file, but change extension to .EXE),
+- ```<name>``` with the 8 character-long name of your app (must be same as the dos utility's src dir name)
