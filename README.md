@@ -27,13 +27,12 @@ MultiPatcher:
 ## Architecture
 
 - MS-DOS uses a 16-bit terminal application made using the TurboC 3 compiler.
-- Windows 3.1 uses a 16-bit VisualBasic 4.0 application.
-- Windows 95-ME and Windows NT 3.1 - Windows 2000 share a single 32-bit application made using Visual Basic 4.
-- Windows XP and Windows Vista+ use an application made using Delphi.
+- Windows 3.1, 95-Me and NT 3.1 - XP share a 16-bit VisualBasic 4.0 application.
+- Windows Vista and above use an application made using Delphi.
 
-In order to provide a seamless experience, 'Patcher.bat' was added. This batch file tries to automatically figure out whether you are running MS-DOS or Windows. If it detects that you are running MS-DOS, it launches 'patchx16.exe'. Otherwise, it launches 'patchx32.exe'.
+In order to provide a seamless experience, 'Patcher.bat' was added. This batch file tries to automatically figure out whether you are running MS-DOS or Windows. If it detects that you are running MS-DOS, it launches 'patchx16.exe'. If it detects that you are running Windows 3.1, 95-Me, or NT3.1-XP, it launches 'patchg16.exe'. If it detects that you are running Windows Vista and above, it launches 'patchg32.exe'.
 
-The 'RES/' folder contains required files for MultiPatcher to function properly. Inside 'RES/MODERN', it contains the Delphi application. The patches, utilities, etc. are located inside 'RES/' with specific corresponding directories.
+The 'RES/' folder contains required files for MultiPatcher to function properly. Inside 'RES/DATA', it contains the files required by any of the MultiPatcher user interfaces. The patches, utilities, etc. are located inside 'RES/' with specific corresponding directories.
 
 - If the directory contains the file 'lfn.ini', MultiPatcher treats it as a menu. To view more, refer [Structure of LFN.INI](docs/ini_structures.md#structure-of-lfnini)
 - If the directory contains the file 'info.ini', MultiPatcher treats it as an entry. To view more, refer [Structure of INFO.INI](docs/ini_structures.md#structure-of-infoini)
