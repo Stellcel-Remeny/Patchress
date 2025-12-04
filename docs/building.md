@@ -33,7 +33,7 @@ You will need a copy of Microsoft Visual Basic 4.0 16-bit to compile this applic
 1. Open Microsoft Visual Basic 4.0 16-bit
 2. Open the project in `source/VB4'
 3. Make necessary modifications and compile it using the File menu in VB4.
-4. Copy the resulting .EXE file as `source/BASE/Patchg16.exe`
+4. Copy the resulting .EXE file as `source/BASE/Patchg16.exe` along with the `DATA/` folder.
 5. Recompile the whole project using meson.
 
 ## Tips
