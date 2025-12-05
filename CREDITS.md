@@ -28,6 +28,10 @@
 - 4DOS
 - Alky for applications
 
+## Test
+
+- Microsoft Cheese Terminator
+
 ## MultiPatcher Information
 
 - Compiler used: TurboC 3.0
