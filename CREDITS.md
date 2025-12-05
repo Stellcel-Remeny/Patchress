@@ -26,6 +26,7 @@
 ## Utilities
 
 - 4DOS
+- Alky for applications
 
 ## MultiPatcher Information
 

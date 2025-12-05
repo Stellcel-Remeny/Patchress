@@ -1,0 +1,23 @@
+Alky for Applications 1.0 -> 1.1 changes
+========================================
+
+KERNEL32
+- memory corruption-related bug fixes
+- GetVersionA API now returns Windows Vista version numbers
+
+COMCTL32
+- XTaskDialog 1.06 implemented (http://www.naughter.com/xtaskdialog.html)
+This resolves crashing found in applications such as Solitaire and mspaint.
+This also enables proper uninstallation of Windows Sidebar gadgets.
+
+MSVCRT
+- Various bug fixes
+
+INSTALLER
+- Fixed NLSAPI installation bug on 64-bit platforms.
+- Fixed NLSAPI uninstallation bug
+- Added Sidebar post-KB943411 hack to installer
+
+MISC
+- Additional API added for future Windows 7 work
+- New versioning text on all libraries (e.g. alky_1.1_trunk_032308-000051)
