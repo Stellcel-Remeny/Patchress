@@ -164,7 +164,7 @@ Begin VB.Form welcome
    End
    Begin VB.Label Label1 
       BackStyle       =   0  'Transparent
-      Caption         =   "vbGUI: 1.1, VB4"
+      Caption         =   "vbGUI: 1.2, VB4"
       BeginProperty Font 
          name            =   "MS Sans Serif"
          charset         =   1
@@ -245,6 +245,10 @@ Private Sub Command2_Click()
 End Sub
 
 Private Sub Form_Load()
+    If InStr(App.Path, " ") > 0 Then
+        MsgBox "Application path cannot have spaces."
+        Unload Me
+    End If
     Debug.Print ""
     Debug.Print "NEW SESSION"
     Randomize
