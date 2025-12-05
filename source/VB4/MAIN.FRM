@@ -19,6 +19,27 @@ Begin VB.Form main
    Visible         =   0   'False
    WhatsThisHelp   =   -1  'True
    Width           =   9075
+   Begin VB.TextBox DescBox 
+      BackColor       =   &H00808080&
+      BeginProperty Font 
+         name            =   "MS Sans Serif"
+         charset         =   0
+         weight          =   400
+         size            =   9.75
+         underline       =   0   'False
+         italic          =   0   'False
+         strikethrough   =   0   'False
+      EndProperty
+      ForeColor       =   &H00FFFFFF&
+      Height          =   1815
+      Left            =   360
+      Locked          =   -1  'True
+      MultiLine       =   -1  'True
+      ScrollBars      =   2  'Vertical
+      TabIndex        =   24
+      Top             =   2760
+      Width           =   4455
+   End
    Begin VB.CommandButton backButton 
       Caption         =   "Go up  <---"
       Enabled         =   0   'False
@@ -181,7 +202,7 @@ Begin VB.Form main
          italic          =   0   'False
          strikethrough   =   0   'False
       EndProperty
-      ForeColor       =   &H00FFFFFF&
+      ForeColor       =   &H00000000&
       Height          =   495
       Left            =   360
       TabIndex        =   12
@@ -263,7 +284,7 @@ Begin VB.Form main
       Height          =   495
       Left            =   360
       TabIndex        =   7
-      Top             =   2520
+      Top             =   2160
       Width           =   4455
    End
    Begin VB.Label Author 
@@ -278,10 +299,10 @@ Begin VB.Form main
          strikethrough   =   0   'False
       EndProperty
       ForeColor       =   &H00FFFFFF&
-      Height          =   735
+      Height          =   375
       Left            =   360
       TabIndex        =   6
-      Top             =   1680
+      Top             =   1800
       Width           =   4455
    End
    Begin VB.Label Description 
@@ -361,14 +382,17 @@ Sub resetDisplayEntry()
     ' Display defaults
     Author.Caption = ""
     Version.Caption = ""
-    Description.Caption = "Select an entry to view its information right here!"
+    'Description.Caption = "Select an entry to view its information right here!"
+    DescBox.Visible = False
+    'Description.Visible = True
+    DescBox.Text = ""
     execLabel.Caption = ""
 End Sub
 
 Sub displayEntry(ByVal relativePath As String)
     ' Get info.ini path
     Dim iniPath As String
-    iniPath = FullCurPath & "\" & relativePath & "\INFO.INI"
+    iniPath = FullCurDir & "\" & relativePath & "\INFO.INI"
     Debug.Print "ENTRY RELATIVE PATH: " & relativePath
     ' Populate executable
     EntryExec = ReadIniStr(WinVer, "Exec", iniPath)
@@ -376,7 +400,9 @@ Sub displayEntry(ByVal relativePath As String)
     ' Display information
     Author.Caption = "Author: " & ReadIniStr("MAIN", "Author", iniPath)
     Version.Caption = "Version: " & ReadIniStr("MAIN", "Version", iniPath)
-    Description.Caption = "Description: " & ReadIniStr("MAIN", "Description", iniPath)
+    DescBox.Text = ReadIniStr("MAIN", "Description", iniPath)
+    Description.Visible = False
+    DescBox.Visible = True
     execLabel.Caption = "Command: " & EntryExec & " " & EntryArgs
 End Sub
 

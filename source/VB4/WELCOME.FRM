@@ -3,18 +3,18 @@ Begin VB.Form welcome
    BorderStyle     =   1  'Fixed Single
    Caption         =   "Welcome to MultiPatcher"
    ClientHeight    =   6045
-   ClientLeft      =   8190
-   ClientTop       =   2355
+   ClientLeft      =   10590
+   ClientTop       =   3900
    ClientWidth     =   8955
    Height          =   6555
-   Left            =   8130
+   Left            =   10530
    LinkTopic       =   "main"
    MaxButton       =   0   'False
    MinButton       =   0   'False
    Picture         =   "WELCOME.frx":0000
    ScaleHeight     =   6045
    ScaleWidth      =   8955
-   Top             =   1905
+   Top             =   3450
    WhatsThisHelp   =   -1  'True
    Width           =   9075
    Begin VB.CommandButton WINBUTTON 
@@ -128,6 +128,7 @@ Begin VB.Form welcome
       Width           =   5895
    End
    Begin VB.Timer starttimer 
+      Enabled         =   0   'False
       Interval        =   1
       Left            =   8400
       Top             =   120
@@ -163,7 +164,7 @@ Begin VB.Form welcome
    End
    Begin VB.Label Label1 
       BackStyle       =   0  'Transparent
-      Caption         =   "vbGUI: 1.0, VB4"
+      Caption         =   "vbGUI: 1.1, VB4"
       BeginProperty Font 
          name            =   "MS Sans Serif"
          charset         =   1
@@ -246,13 +247,19 @@ End Sub
 Private Sub Form_Load()
     Debug.Print ""
     Debug.Print "NEW SESSION"
+    Randomize
     'Center Window
     Me.Left = (Screen.Width - Me.Width) \ 2
     Me.Top = (Screen.Height - Me.Height) \ 2
     ' Play startup sound
-    Debug.Print "Playing VBBEGIN.WAV"
     Dim s$
-    s = App.Path & "\DATA\VBBEGIN.WAV"
+    If (Int(Rnd * 20) = 0) Then
+        Debug.Print "Playing VBSTART.WAV"
+        s = App.Path & "\DATA\VBSTART.WAV"
+    Else
+        Debug.Print "Playing VBBEGIN.WAV"
+        s = App.Path & "\DATA\VBBEGIN.WAV"
+    End If
     PlayWavAsync s
     ' Populate Windows versions
     WinMap(0) = "nt31"
