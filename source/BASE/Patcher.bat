@@ -26,9 +26,12 @@ patchg32.exe %1 %2 %3 %4 %5 %6 %7 %8 %9
 goto END
 
 :WIN9X
-REM Windows 3.1/95/98/ME
+REM Windows 95/98/ME
+REM Windows 3.1 will also try this, but it will likely fail to run the GUI app.
+REM In my case, it tries to relaunch WIN.COM, and it fails.
 if not exist patchg16.exe goto PATCH_GUI16_NOT_FOUND
 patchg16.exe %1 %2 %3 %4 %5 %6 %7 %8 %9
+echo If you are using Windows 3.1, run PATCHG32.EXE.
 goto END
 
 :MSDOS
