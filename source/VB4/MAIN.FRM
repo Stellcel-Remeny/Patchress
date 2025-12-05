@@ -3,19 +3,19 @@ Begin VB.Form main
    BorderStyle     =   1  'Fixed Single
    Caption         =   "Remeny MultiPatcher"
    ClientHeight    =   6045
-   ClientLeft      =   9000
-   ClientTop       =   3915
+   ClientLeft      =   10215
+   ClientTop       =   4770
    ClientWidth     =   8955
    Enabled         =   0   'False
    Height          =   6555
-   Left            =   8940
+   Left            =   10155
    LinkTopic       =   "main"
    MaxButton       =   0   'False
    MinButton       =   0   'False
    Picture         =   "MAIN.frx":0000
    ScaleHeight     =   6045
    ScaleWidth      =   8955
-   Top             =   3465
+   Top             =   4320
    Visible         =   0   'False
    WhatsThisHelp   =   -1  'True
    Width           =   9075
@@ -32,7 +32,7 @@ Begin VB.Form main
       EndProperty
       ForeColor       =   &H00FFFFFF&
       Height          =   1815
-      Left            =   360
+      Left            =   240
       Locked          =   -1  'True
       MultiLine       =   -1  'True
       ScrollBars      =   2  'Vertical
@@ -44,9 +44,9 @@ Begin VB.Form main
       Caption         =   "Go up  <---"
       Enabled         =   0   'False
       Height          =   615
-      Left            =   4560
+      Left            =   120
       TabIndex        =   8
-      Top             =   240
+      Top             =   120
       Visible         =   0   'False
       Width           =   615
    End
@@ -171,6 +171,242 @@ Begin VB.Form main
       Top             =   5640
       Width           =   735
    End
+   Begin VB.Label Label4 
+      BackStyle       =   0  'Transparent
+      Caption         =   "Red = Menu"
+      BeginProperty Font 
+         name            =   "MS Sans Serif"
+         charset         =   0
+         weight          =   700
+         size            =   8.25
+         underline       =   0   'False
+         italic          =   0   'False
+         strikethrough   =   0   'False
+      EndProperty
+      ForeColor       =   &H000000FF&
+      Height          =   255
+      Left            =   5400
+      TabIndex        =   35
+      Top             =   0
+      Width           =   1095
+   End
+   Begin VB.Label Label3 
+      BackStyle       =   0  'Transparent
+      Caption         =   "Green = Entry"
+      BeginProperty Font 
+         name            =   "MS Sans Serif"
+         charset         =   0
+         weight          =   700
+         size            =   8.25
+         underline       =   0   'False
+         italic          =   0   'False
+         strikethrough   =   0   'False
+      EndProperty
+      ForeColor       =   &H0000C000&
+      Height          =   255
+      Left            =   6600
+      TabIndex        =   34
+      Top             =   0
+      Width           =   1215
+   End
+   Begin VB.Label itemArrow 
+      Alignment       =   1  'Right Justify
+      BackStyle       =   0  'Transparent
+      Caption         =   "->"
+      BeginProperty Font 
+         name            =   "MS Sans Serif"
+         charset         =   0
+         weight          =   700
+         size            =   18
+         underline       =   0   'False
+         italic          =   0   'False
+         strikethrough   =   0   'False
+      EndProperty
+      ForeColor       =   &H00000000&
+      Height          =   495
+      Index           =   8
+      Left            =   4680
+      TabIndex        =   33
+      Top             =   5040
+      Visible         =   0   'False
+      Width           =   495
+   End
+   Begin VB.Label itemArrow 
+      Alignment       =   1  'Right Justify
+      BackStyle       =   0  'Transparent
+      Caption         =   "->"
+      BeginProperty Font 
+         name            =   "MS Sans Serif"
+         charset         =   0
+         weight          =   700
+         size            =   18
+         underline       =   0   'False
+         italic          =   0   'False
+         strikethrough   =   0   'False
+      EndProperty
+      ForeColor       =   &H00000000&
+      Height          =   495
+      Index           =   7
+      Left            =   4680
+      TabIndex        =   32
+      Top             =   4440
+      Visible         =   0   'False
+      Width           =   495
+   End
+   Begin VB.Label itemArrow 
+      Alignment       =   1  'Right Justify
+      BackStyle       =   0  'Transparent
+      Caption         =   "->"
+      BeginProperty Font 
+         name            =   "MS Sans Serif"
+         charset         =   0
+         weight          =   700
+         size            =   18
+         underline       =   0   'False
+         italic          =   0   'False
+         strikethrough   =   0   'False
+      EndProperty
+      ForeColor       =   &H00000000&
+      Height          =   495
+      Index           =   6
+      Left            =   4680
+      TabIndex        =   31
+      Top             =   3840
+      Visible         =   0   'False
+      Width           =   495
+   End
+   Begin VB.Label itemArrow 
+      Alignment       =   1  'Right Justify
+      BackStyle       =   0  'Transparent
+      Caption         =   "->"
+      BeginProperty Font 
+         name            =   "MS Sans Serif"
+         charset         =   0
+         weight          =   700
+         size            =   18
+         underline       =   0   'False
+         italic          =   0   'False
+         strikethrough   =   0   'False
+      EndProperty
+      ForeColor       =   &H00000000&
+      Height          =   495
+      Index           =   5
+      Left            =   4680
+      TabIndex        =   30
+      Top             =   3240
+      Visible         =   0   'False
+      Width           =   495
+   End
+   Begin VB.Label itemArrow 
+      Alignment       =   1  'Right Justify
+      BackStyle       =   0  'Transparent
+      Caption         =   "->"
+      BeginProperty Font 
+         name            =   "MS Sans Serif"
+         charset         =   0
+         weight          =   700
+         size            =   18
+         underline       =   0   'False
+         italic          =   0   'False
+         strikethrough   =   0   'False
+      EndProperty
+      ForeColor       =   &H00000000&
+      Height          =   495
+      Index           =   4
+      Left            =   4680
+      TabIndex        =   29
+      Top             =   2640
+      Visible         =   0   'False
+      Width           =   495
+   End
+   Begin VB.Label itemArrow 
+      Alignment       =   1  'Right Justify
+      BackStyle       =   0  'Transparent
+      Caption         =   "->"
+      BeginProperty Font 
+         name            =   "MS Sans Serif"
+         charset         =   0
+         weight          =   700
+         size            =   18
+         underline       =   0   'False
+         italic          =   0   'False
+         strikethrough   =   0   'False
+      EndProperty
+      ForeColor       =   &H00000000&
+      Height          =   495
+      Index           =   3
+      Left            =   4680
+      TabIndex        =   28
+      Top             =   2040
+      Visible         =   0   'False
+      Width           =   495
+   End
+   Begin VB.Label itemArrow 
+      Alignment       =   1  'Right Justify
+      BackStyle       =   0  'Transparent
+      Caption         =   "->"
+      BeginProperty Font 
+         name            =   "MS Sans Serif"
+         charset         =   0
+         weight          =   700
+         size            =   18
+         underline       =   0   'False
+         italic          =   0   'False
+         strikethrough   =   0   'False
+      EndProperty
+      ForeColor       =   &H00000000&
+      Height          =   495
+      Index           =   2
+      Left            =   4680
+      TabIndex        =   27
+      Top             =   1440
+      Visible         =   0   'False
+      Width           =   495
+   End
+   Begin VB.Label itemArrow 
+      Alignment       =   1  'Right Justify
+      BackStyle       =   0  'Transparent
+      Caption         =   "->"
+      BeginProperty Font 
+         name            =   "MS Sans Serif"
+         charset         =   0
+         weight          =   700
+         size            =   18
+         underline       =   0   'False
+         italic          =   0   'False
+         strikethrough   =   0   'False
+      EndProperty
+      ForeColor       =   &H00000000&
+      Height          =   495
+      Index           =   1
+      Left            =   4680
+      TabIndex        =   26
+      Top             =   840
+      Visible         =   0   'False
+      Width           =   495
+   End
+   Begin VB.Label itemArrow 
+      Alignment       =   1  'Right Justify
+      BackStyle       =   0  'Transparent
+      Caption         =   "->"
+      BeginProperty Font 
+         name            =   "MS Sans Serif"
+         charset         =   0
+         weight          =   700
+         size            =   18
+         underline       =   0   'False
+         italic          =   0   'False
+         strikethrough   =   0   'False
+      EndProperty
+      ForeColor       =   &H00000000&
+      Height          =   495
+      Index           =   0
+      Left            =   4680
+      TabIndex        =   25
+      Top             =   240
+      Visible         =   0   'False
+      Width           =   495
+   End
    Begin VB.Label Label1 
       Alignment       =   2  'Center
       BackStyle       =   0  'Transparent
@@ -204,7 +440,7 @@ Begin VB.Form main
       EndProperty
       ForeColor       =   &H00000000&
       Height          =   495
-      Left            =   360
+      Left            =   240
       TabIndex        =   12
       Top             =   4680
       Width           =   4455
@@ -226,7 +462,7 @@ Begin VB.Form main
       Left            =   1080
       TabIndex        =   11
       Top             =   5160
-      Width           =   4095
+      Width           =   3855
       WordWrap        =   -1  'True
    End
    Begin VB.Label Label2 
@@ -282,7 +518,7 @@ Begin VB.Form main
       EndProperty
       ForeColor       =   &H00FFFFFF&
       Height          =   495
-      Left            =   360
+      Left            =   240
       TabIndex        =   7
       Top             =   2160
       Width           =   4455
@@ -300,7 +536,7 @@ Begin VB.Form main
       EndProperty
       ForeColor       =   &H00FFFFFF&
       Height          =   375
-      Left            =   360
+      Left            =   240
       TabIndex        =   6
       Top             =   1800
       Width           =   4455
@@ -320,7 +556,7 @@ Begin VB.Form main
       EndProperty
       ForeColor       =   &H00FFFFFF&
       Height          =   1455
-      Left            =   360
+      Left            =   240
       TabIndex        =   5
       Top             =   3120
       Width           =   4455
@@ -337,6 +573,7 @@ Begin VB.Form main
          italic          =   0   'False
          strikethrough   =   0   'False
       EndProperty
+      ForeColor       =   &H0000000F&
       Height          =   375
       Left            =   8640
       TabIndex        =   3
@@ -387,6 +624,9 @@ Sub resetDisplayEntry()
     'Description.Visible = True
     DescBox.Text = ""
     execLabel.Caption = ""
+    ' Reset startlabel
+    startlabel.ForeColor = &HF&
+    startlabel.FontBold = False
 End Sub
 
 Sub displayEntry(ByVal relativePath As String)
@@ -404,6 +644,9 @@ Sub displayEntry(ByVal relativePath As String)
     Description.Visible = False
     DescBox.Visible = True
     execLabel.Caption = "Command: " & EntryExec & " " & EntryArgs
+    ' Startlabel look change
+    startlabel.ForeColor = &H4000&
+    startlabel.FontBold = True
 End Sub
 
 
@@ -435,23 +678,24 @@ Sub GetItems()
 
     Do While item <> ""
     
-        If item <> "." And item <> ".." Then
+        If item <> "." And item <> ".." And Not InCollection(menus, item) And Not InCollection(entries, item) Then
             prefix = FullCurDir & item
 
+            ' Added extra condition to deal with pesky dir$ bug about repetition.
             If (GetAttr(prefix) And vbDirectory) = vbDirectory Then
 
                 ' -------- MENU ----------
                 If FileExists(prefix & "\LFN.INI") Then
                     If ReadIniBool("OS", WinVer, prefix & "\LFN.INI", False) Then
                         Debug.Print "FOUND MENU: " & item
-                        menus.Add item
+                        menus.Add item, item
                     End If
 
                 ' -------- ENTRY ----------
                 ElseIf FileExists(prefix & "\INFO.INI") Then
                     If ReadIniBool("OS", WinVer, prefix & "\INFO.INI", False) Then
                         Debug.Print "FOUND ENTRY: " & item
-                        entries.Add item
+                        entries.Add item, item
                     End If
                 End If
 
@@ -485,12 +729,14 @@ Sub populateItems(ByVal Page As Integer)
     Debug.Print "TOTAL MENUS: " & menus.Count
     Debug.Print "TOTAL ENTRIES: " & entries.Count
 
-    ' Enable all buttons first
+    ' Enable all buttons and text first
     Dim i As Integer
     For i = 0 To itemList.Count - 1
         itemList(i).Enabled = True
         itemList(i).Caption = ""
         itemList(i).Visible = True
+        itemArrow(i).ForeColor = &HF 'black
+        itemArrow(i).Visible = True
     Next i
 
     ' Reset entry details
@@ -511,9 +757,9 @@ Sub populateItems(ByVal Page As Integer)
                         FullCurDir & "\" & menus.item(itemPos) & "\LFN.INI")
 
             If longName = "" Then longName = menus.item(itemPos)
-
-            itemList(Index).Caption = "[MENU] " & longName
-            itemList(Index).BackColor = &H8000000F
+            
+            itemList(Index).Caption = longName
+            itemArrow(Index).ForeColor = &HFF& ' red
 
         ' ---------- ENTRIES ----------
         ElseIf itemPos <= menus.Count + entries.Count Then
@@ -529,13 +775,15 @@ Sub populateItems(ByVal Page As Integer)
             If longName = "" Then longName = entries.item(entryPos)
 
             itemList(Index).Caption = longName
-            itemList(Index).BackColor = &H4000&
+            itemArrow(Index).ForeColor = &HC000& ' green
 
         ' ---------- NO ITEM ----------
         Else
             itemList(Index).Caption = ""
             itemList(Index).Enabled = False
             itemList(Index).Visible = False
+            itemArrow(Index).ForeColor = &HF ' black
+            itemArrow(Index).Visible = False
         End If
 
         Index = Index + 1
@@ -699,14 +947,17 @@ Private Sub startbutton_Click()
             Select Case ext
                 Case ".msi"
                     ' 16-bit -> 32-bit bridge via Service Manager
-                    cmd = "msiexec /i """ & exePath & """ " & EntryArgs
+                    cmd = "msiexec /i " & exePath & " " & EntryArgs
                 Case Else
                     ' .exe / .com (16 or 32 bit auto-detected)
-                    cmd = """" & exePath & """ " & EntryArgs
+                    cmd = exePath & " " & EntryArgs
             End Select
-            
-            Debug.Print "Command: " & cmd
-            Shell cmd, 1
+            If Len(cmd) > 120 Then
+                MsgBox "Command is over 120 characters."
+            Else
+                Debug.Print "Command: " & cmd
+                Shell cmd, vbNormalFocus
+            End If
         End If
     End If
 End Sub
