@@ -15,6 +15,14 @@ Declare Function GetPrivateProfileInt Lib "KERNEL" _
 
 Public WinVer As String
 
+Function InCollection(c As Collection, k As String) As Boolean
+    On Error Resume Next
+    Dim v
+    v = c.item(k)
+    InCollection = (Err.Number = 0)
+    Err.Clear
+End Function
+
 Function GetParentDir(ByVal p As String) As String
     Dim i As Integer
 
