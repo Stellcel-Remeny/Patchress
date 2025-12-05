@@ -23,7 +23,7 @@ Begin VB.Form main
       BackColor       =   &H00808080&
       BeginProperty Font 
          name            =   "MS Sans Serif"
-         charset         =   0
+         charset         =   1
          weight          =   400
          size            =   9.75
          underline       =   0   'False
@@ -681,6 +681,8 @@ Private Sub startbutton_Click()
     If Not selectedEntry = "" Then
         Debug.Print "[Relpath] Running entry: " & selectedEntry
         Dim exePath As String
+        Dim ext As String
+        Dim cmd As String
         exePath = FullCurDir & selectedEntry & "\" & EntryExec
         If EntryExec = "" Then
             MsgBox "Executable must be specified under [" & WinVer & "] in key 'Exec=', but no exec value was specified."
@@ -688,8 +690,19 @@ Private Sub startbutton_Click()
             MsgBox "Executable specified '" & exePath & "' was not found."
         Else
             ' Execute the application
-            Debug.Print "Command: " & exePath & " " & EntryArgs
-            Shell exePath & " " & EntryArgs
+            ext = LCase$(Right$(exePath, 4))
+            
+            Select Case ext
+                Case ".msi"
+                    ' 16-bit -> 32-bit bridge via Service Manager
+                    cmd = "msiexec /i """ & exePath & """ " & EntryArgs
+                Case Else
+                    ' .exe / .com (16 or 32 bit auto-detected)
+                    cmd = """" & exePath & """ " & EntryArgs
+            End Select
+            
+            Debug.Print "Command: " & cmd
+            Shell cmd
         End If
     End If
 End Sub
