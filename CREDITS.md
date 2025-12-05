@@ -8,6 +8,7 @@
 ## Drivers
 
 - Cutemouse for MS-DOS
+- CREGFIX by Mintsuki
 - DOS IDE CD Driver by Microsoft
 - HIMEM.EXE for MS-DOS
 - RAMDisk Driver for MS-DOS
