@@ -38,5 +38,5 @@ You will need a copy of Microsoft Visual Basic 4.0 16-bit to compile this applic
 
 ## Tips
 
--You can view ```meson_options.txt``` and enable/edit more options in local.conf.
--To fully rebuild, delete builddir and bin.
+- You can view ```meson_options.txt``` and enable/edit more options in local.conf.
+- To fully rebuild, delete builddir and bin.

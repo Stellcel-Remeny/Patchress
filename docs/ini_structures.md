@@ -3,6 +3,7 @@
 
 28th November, 2025 9:16PM
 29th November, 2025 8:02AM
+4th December, 2025 9:39PM
 
 ## Menus and LFN.INI
 
@@ -29,6 +30,10 @@ Under `[MAIN]`:
 Under `[OS]`:
 
 - `msdos=<true/false>` To show under DOS, set to `true`.
+- `w31=<true/false>` To show under Windows 3.1, set to `true`.
+- `w95=<true/false>` To show under Windows 95, set to `true`.
+
+... and so on for each of these options: `w98`, `wme`, `nt31`, `nt35`, `nt351`, `nt4`, `w2k`, and `wxp`
 
 ## Structure of INFO.INI
 
@@ -42,10 +47,19 @@ Under `[MAIN]`:
 Under `[OS]`:
 
 - `msdos=<true/false>` To show under DOS, set to `true`.
+- `w31=<true/false>` To show under Windows 3.1, set to `true`.
+- `w95=<true/false>` To show under Windows 95, set to `true`.
+
+... and so on for each of these options: `w98`, `wme`, `nt31`, `nt35`, `nt351`, `nt4`, `w2k`, and `wxp`
 
 Under `[MSDOS]`:
 
 - `exec=` Name of the executable
+- `args=` Default arguments to pass
 - `passArgs=<true/false>` Passes arguments from the main MultiPatcher application down, along with the `/MPC` argument.
 - `batchMode=<true/false>` Run `Exec=` under `system()` (The COMMAND.COM Shell). Must be set to TRUE if `Exec=` is a batch script.
 - `pauseOnQuit=<true/false>` Pause for one keypress after `Exec=` finishes.
+
+Under literally every other `[<winver>]` section:
+- `exec=` Name of the executable
+- `args=` Default arguments to pass
