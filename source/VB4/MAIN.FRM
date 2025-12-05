@@ -408,6 +408,9 @@ End Sub
 
 
 Sub GetItems()
+    Static IsScanning As Integer
+    If IsScanning <> 0 Then Exit Sub
+    IsScanning = -1
 
     Screen.MousePointer = vbHourglass
 
@@ -462,7 +465,7 @@ Sub GetItems()
     Debug.Print "Count of ENTRIES " & entries.Count
 
     Screen.MousePointer = vbDefault
-
+    IsScanning = 0
 End Sub
 
 
@@ -605,6 +608,7 @@ Private Sub Form_Load()
     FullCurDir = App.Path & "\RES\"
 
     ' Play select sound
+    StopWav
     Debug.Print "Playing VBSELECT.WAV"
     PlayWavAsync App.Path & "\DATA\VBSELECT.WAV"
 
@@ -648,7 +652,7 @@ Private Sub itemList_Click(Index As Integer)
     ' ---------- MENU ----------
     If globalPos <= menus.Count Then
 
-        Page = 1
+        curPage = 1
         currentDir = currentDir & menus.item(globalPos) & "\"
 
         GetItems
@@ -702,7 +706,7 @@ Private Sub startbutton_Click()
             End Select
             
             Debug.Print "Command: " & cmd
-            Shell cmd
+            Shell cmd, 1
         End If
     End If
 End Sub
