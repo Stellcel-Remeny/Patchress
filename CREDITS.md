@@ -19,9 +19,10 @@
 
 - FIX95CPUPatch by LoneCrusader
 - PatchMem for Win9x by RLOEW
+- W3xstart
 - Windows 1.0 Setver change
 - Windows 3.1 AHCIFIX.386 by PluMGMK
-- W3xstart
+- Windows Me DOS mode patch by Reines
 
 ## Utilities
 

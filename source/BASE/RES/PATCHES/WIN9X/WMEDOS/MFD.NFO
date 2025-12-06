@@ -1,0 +1,184 @@
+      ş                                                       úşÜ
+      İ          Ü                     Üşú   ÜÜÜ                 ÛÜ
+     ÜÛÜ       ÜÛÛ                   ÜÛÜ  ÜÛÛßÛÛÛ                Û²Ş
+    ş ÛÛ²Ü   ÜÛÛ²Ş    ú             ŞÛÛİİŞÛÛ  Û²Ş                Û²Ş
+    ú ÛÛ²ŞÛÜÛßÛÛ²Ş     ş    İ        ßÛß Û²Ş  Ûß                 Û²Ş
+      ÛÛ²Ş Û  ÛÛ²Ş    ÜÜÛÜÜ ÛÜ     ÜÜÜÜÜÜÛ²Ş     ÜÜÜÜÜ     ÜÜÜÜÜÜÛ²Ş
+      ÛÛ²Ş İ  ÛÛ²Ş ÜÛÛß Û²Ş ÛÛÛÜßÛÛÜ Û²Ş Û²Ş  Ü ßÛß Û²Ş ÜÛÛß Û²Ş Û²ŞÜÛ²Ü
+      ÛÛ²Ş    ÛÛ²Ş Û²Ş  Û²Ş Û²Ş  Û²Ş Û²Ş Û²ŞÜÛİ² Û  Û²Ş Û²Ş Üßß  Û²Ş  ß
+      ÛÛ²Ş    ÛÛ²Ş Û²Ş  Û²Ş Û²Ş  Û²Ş Û²Ş Û²Ş ßß Üİ Ûß    ßßßÜÜ   Û²Ş  ÛÜ
+      ÛÛ²Ş    ÛÛ²Ş Û²Ş  Û²Ş Û²Ş  Û²Ş Û²Ş Û²Ş  Û²Ş ßÜÜÜ  ÜÜß Û²ÛÜ Û²Ş  Û²Ş ú
+      ÛÛ²Ş    ÛÛ²Ş Û²Ş  Û²Ş Û²Ş  Û²Ş Û²İ Û²Ş  Û²Ş  Û²Ş Û²Ş  ÛÛ²Ş Û²Ş  Û²Ş  ş
+      ÛÛ²Ş    ÛÛ²Ş Û²Ş  Û²Ş Û²Ş  Û²Ş ÛÛ  Û²Ş  Û²Ş  Û²Ş Û²Ş  ÛÛ²Ş Û²Ş  Û²Ş  Ş
+  ÜÜÜ ÛÛ²Ş ÜÜ ÛÛ²Ş  ßßÛÜÛ²Ş Û²Ş  Ûß  ÛİÜ Û²Ş ÜÜ ßÛÜÛ²Ş Û²ÛÜÛßß ÜÜ ßßÛÜÛ²Ş ÜÜÛÜ
+ Û²²² ÛÛ²Ş ²² ÛÛ²ß ²²ÜÜÜÜ Ş Ûß ÜÜÜÜ² Û ² Û²Ş ²²²ÜÜÜÜÜÜÜÜÜÜÜÜÜ²²²²²² Üß ÜÜÜ²²²Û
+ ßÛßß ÛÛ²ß ßß ß   ßßßßßßß ş   ßßßßßß İ ß Û²Ş ßßßßßßßßßßßßßßßßßßßßß ş  ßßßßßßß
+  İ   ß                  ß               Ûß    roy/sac            ú
+  ş                     ş                İ
+   ú                     ú               ş
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+³°±²Û²±°            Real DOS-Mode Patch for Windows ME v1.3            °±²Û²±°³
+³ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ³
+³ SUPPLIER : Reines                    ³ RELEASE DATE : 08/15/00              ³
+³ CRACKER  : Reines                    ³ NO. OF DISKS : 1                     ³
+³ PACKAGER : Evel                      ³ OPER. SYSTEM : Windows ME            ³
+³ TESTER   : GMouser                   ³ PROTECTION   : Patch                 ³
+³ TYPE     : Windows ME Patch          ³                                      ³
+³ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ³
+³ REQUIREMENTS: Windows 9x/NT/2000, 32 MB RAM, P-133                          ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+³ RELEASE NOTES : ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+ Did you ever wonder why Windows ME, which is based on the Windows 9x kernel,
+ can't access Real DOS-Mode? Did you think that Windows ME architecture
+ doesn't allow it?
+
+ Well, it seems that Microsoft simply decided to hide this option in Windows
+ ME, for some unknown reason...
+
+ This patch will modify "IO.SYS", "COMMAND.COM" and "REGENV32.EXE" in order to
+ unhide the Real DOS-Mode on Windows ME systems, resulting in a similar boot
+ process to the one available in Windows 9x. This will allow, for example, to
+ reach DOS directly by pressing "Shift-F8" at boot-up, to use "CONFIG.SYS" and
+ "AUTOEXEC.BAT" before Windows loads, and to set up a startup menu.
+
+ Compability:
+ ÄÄÄÄÄÄÄÄÄÄÄ
+ - This patch was tested only with the final release of Win ME (build
+   4.90.3000). It might be compatible with other (future or previous) builds
+   as well.
+
+ - If you are using a NON-US version of Win ME you will probably not be able
+   to use versions prior to v1.3 as the files that are patched seem to be
+   country specific. We have updated our current release to reflect this. If
+   you use the US version then you will not experience any differences between
+   v1.1, v1.2 and v1.3.
+
+ Change log:
+ ÄÄÄÄÄÄÄÄÄÄÄ
+ v1.3 - Allows patching of non-standard versions of IO.SYS and COMMAND.COM.
+        This adds full compability with non-US editions of Windows ME and
+        might also allow to patch other (future or previous) builds as well.
+
+ v1.2 - Allows patching of non-standard versions of REGENV32.EXE (for instance,
+        on non-US editions of Windows ME).
+
+ v1.1 - Initial public release.
+
+ v1.0 - Internal release.
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+³ INSTALL NOTES : ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+ In order to install this patch, follow the instructions below carefully.
+
+ Note that whenever the instructions that follow refer to "C:\WINDOWS", you
+ should specify the correct directory in which Windows ME is installed.
+
+ Stage 1:
+ ÄÄÄÄÄÄÄÄ
+ Before applying the patch, complete the following tasks:
+
+ 1. Create a temp directory and copy into it "C:\WINDOWS\COMMAND.COM",
+    "C:\WINDOWS\COMMAND\EBD\IO.SYS" and "C:\WINDOWS\SYSTEM\REGENV32.EXE".
+
+ 2. Make sure that the three files are writable, by running from the temp
+    directory "ATTRIB -R -H -S *.*".
+
+ Stage 2:
+ ÄÄÄÄÄÄÄÄ
+ When you complete the tasks above, execute from the temp directory you
+ created the included patch "WINMEDOS.COM".
+
+ Stage 3:
+ ÄÄÄÄÄÄÄÄ
+ Once the patch completes successfully, perform the following tasks in order
+ to complete the installation:
+
+ 1. Copy the patched files to their destination, overwriting the original ones:
+    * "IO.SYS" to "C:\".
+    * "COMMAND.COM" to both "C:\WINDOWS\" and "C:\".
+    * "REGENV32.EXE" to "C:\WINDOWS\SYSTEM".
+
+ 2. Edit "C:\CONFIG.SYS" and "C:\AUTOEXEC.BAT" changing them as described below:
+    * "Add to "CONFIG.SYS" the line: "DEVICE=C:\WINDOWS\IFSHLP.SYS.
+    * "Add to the bottom of "AUTOEXEC.BAT" the line: "C:\WINDOWS\WIN.COM".
+
+ That's it! Once these tasks are completed, DOS will be ready for use on the
+ first reboot.
+
+
+ Additional Notes:
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ-
+ In case you wish to create a startup menu that lets you choose between Windows
+ and DOS at boot-up, it can be done by editing "CONFIG.SYS" and "AUTOEXEC.BAT".
+ The syntax of the startup menu is identical to the syntax on Win 9x systems.
+ Keep in mind that the option configured to launch Win ME has to include the
+ appropriate lines that load "IFSHLP.SYS" and run "WIN.COM" (as shown above).
+
+ Note that The line stating "Starting Windows Emergency Boot..." that you will
+ see at startup has no effect at all on Windows. It appears because the patch
+ is using the IO.SYS provided with the Windows ME Emergency BootDisk.
+
+
+ Enjoy this fine release from TEAM MFD :)
+                                                                Reines/MFD
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+³                                                                             ³
+³ MANIFEST NEWS : Our website is semi-functional right now, it has a user     ³
+³ ~~~~~~~~~~~~~   forum and we are currently working on other things so       ³
+³                 visit www.manifest-destiny.net today!                       ³
+³                                                                             ³
+³                 WE ABSOLUTELY DO NOT SUPPORT WEBSITES OR INDIVIDUALS THAT   ³
+³                 REPACKAGE OUR RELEASES. Our releases include BOTH the app   ³
+³                 AND the crack. If you download a release that contains the  ³
+³                 crack ONLY we will not support any problems with it. This   ³
+³                 is because too many software companys will update their     ³
+³                 program to kill the current crack. Then Joe Lamer comes to  ³
+³                 us and says "YOU GUYS SUCK, YOUR SHIT DOESNT WORK". Yeah    ³
+³                 well get our OFFICIAL RELEASE if you want support. If a     ³
+³                 crack of ours isn't working and you downloaded our          ³
+³                 OFFICIAL RELEASE we will help you out to get it working.    ³
+³                 If you got a REPACKAGED RELEASE then you are SOL, and see   ³
+³                 the detail below regarding our policy of distributions.     ³
+³                                                                             ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+³°±²Û²±°                   MANiFEST DESTiNY MEMBERSHiP                 °±²Û²±°³
+³ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ³
+³ MEMBERS: NOT FOR YOUR EYES                                                  ³
+³ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ³
+³ SiTES  : NOT FOR YOUR EYES                                                  ³
+³ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ³
+³°±²Û²±°                    MANiFEST DESTiNY GREETS                    °±²Û²±°³
+³ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ³
+³                                                                             ³
+³ GROUP    : NOBODY COZ WE HATE YOU ALL                                       ³
+³ ~~~~~                                                                       ³
+³ PERSONAL : NOBODY COZ WE HATE YOU ALL                                       ³
+³ ~~~~~~~~                                                                    ³
+³ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ³
+³                                                                             ³
+³ APPLY TO JOIN     :  WE ARE A CLOSED GROUP SO FUCK OFF                      ³
+³ ~~~~~~~~~~~~~~~~~~~                                                         ³
+³                                                                             ³
+³         NOTE: WE DO NOT MAIL/FTP/DCC OUR RELEASES, SO DO NOT ASK.           ³
+³                                                                             ³
+³ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ³
+³                                                                             ³
+³ CONTACT INFO :          IRC   : #BEARCAVE (EFNet)                           ³
+³ ~~~~~~~~~~~~            WWW   : http://www.manifest-destiny.net             ³
+³                         EMAIL : evel@manifest-destiny.net                   ³
+³                                                                             ³
+³ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ³
+³    MANiFEST DESTiNY NFO (c) FngSaiYuk of Superior Art Creations (SAC) 1998  ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+ ß ß²ß ÛÛ³ Last Updated [02/08/00] by Dr. Evil    MFD est. 07/15/1998 ³ÛÛ ß²ß ß
+ÛÛÛÜÜÜÛÛ²ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ²ÛÛÜÜÜÛÛÛ
+²ÛÛÛÛÛÛ²ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß²ÛÛÛÛÛÛ²
