@@ -26,13 +26,7 @@ int main(int argc, char* argv[]) {
     FILE *autoexec_bat;
     (void)argc;
     // Check for arguments
-    if (!arg_check(argv, "/ni")) flags.animate = true;
-    if (arg_check(argv, "/v")) { // Verbose/Debug mode
-        flags.verbose = true;
-        if (arg_check(argv, "/vp")) flags.v_pause = true;
-        if (arg_check(argv, "/vlog")) flags.v_log = true;
-        if (arg_check(argv, "/vw")) flags.v_word_by_word = true;
-    }
+    validate_mpc_args(argv);
 
     get_screen_size();
 

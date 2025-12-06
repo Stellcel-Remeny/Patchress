@@ -503,24 +503,19 @@ int main(int argc, char *argv[]) {
     if (arg_check(argv, "/?")) {
         printf("\n  MultiPatcher Arguments\n"
              "===========================\n\n"
-             "  /ni   = Disable animations\n"
-             "  /v    = Verbose mode\n"
-             "  /vp   = Verbose mode with pauses on statusbar update (needs /v)\n"
-             "  /vlog = Verbose mode with logging (needs /v)\n"
-             "  /vw   = Wait before printing each word (needs /v)\n"
-             "  /?    = Show this help message\n"
+             "  /ni      = Disable animations\n"
+             "  /v       = Verbose mode\n"
+             "  /vp      = Verbose mode with pauses on statusbar update (needs /v)\n"
+             "  /vlog    = Verbose mode with logging (needs /v)\n"
+             "  /vw      = Wait before printing each word (needs /v)\n"
+             "  /vstat   = Show status messages as debug messages instead (needs /v)\n"
+             "  /?       = Show this help message\n"
              "\n");
         return 0;
     }
 
     // Check for arguments
-    if (!arg_check(argv, "/ni")) flags.animate = true;
-    if (arg_check(argv, "/v")) { // Verbose/Debug mode
-        flags.verbose = true;
-        if (arg_check(argv, "/vp")) flags.v_pause = true;
-        if (arg_check(argv, "/vlog")) flags.v_log = true;
-        if (arg_check(argv, "/vw")) flags.v_word_by_word = true;
-    }
+    validate_mpc_args(argv);
 
     get_screen_size(); // Fill screen_rows and screen_cols before doing anything.
     join(mpc_args, argv + 1); // Join all arguments into a single string

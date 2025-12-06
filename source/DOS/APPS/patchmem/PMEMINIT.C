@@ -20,26 +20,6 @@ void quit(int ret) {
     exit(ret);
 }
 
-int save_attrs(const char *file, int *out_attr) {
-    int a = _chmod(file, 0, 0);     /* read */
-    if (a < 0) return -1;
-    *out_attr = a;
-    return 0;
-}
-
-int clear_RHS(const char *file) {
-    int a = _chmod(file, 0, 0);     /* read current attrs    */
-    if (a < 0) return -1;
-
-    a &= ~(0x01 | 0x02 | 0x04);     /* clear R, H, S         */
-
-    return _chmod(file, 1, a);      /* write new attrs       */
-}
-
-int restore_attrs(const char *file, int original) {
-    return _chmod(file, 1, original);
-}
-
 int main(int argc, char* argv[]) {
     char win_path[60] = {0};
     char tmp[80];
@@ -48,13 +28,7 @@ int main(int argc, char* argv[]) {
     FILE *msdos_sys;
     (void)argc;
     // Check for arguments
-    if (!arg_check(argv, "/ni")) flags.animate = true;
-    if (arg_check(argv, "/v")) { // Verbose/Debug mode
-        flags.verbose = true;
-        if (arg_check(argv, "/vp")) flags.v_pause = true;
-        if (arg_check(argv, "/vlog")) flags.v_log = true;
-        if (arg_check(argv, "/vw")) flags.v_word_by_word = true;
-    }
+    validate_mpc_args(argv);
 
     get_screen_size();
 
@@ -130,7 +104,7 @@ int main(int argc, char* argv[]) {
     if (file_exists("C:\\MSDOS.SYS")) {
         print_page("Making backup of C:\\MSDOS.SYS...");
         // Save original attributes
-        if (save_attrs("C:\\MSDOS.SYS", &msdos_sys_attrs) != 0) {
+        if (save_attrs(&msdos_sys_attrs, "C:\\MSDOS.SYS") != 0) {
             print_page(" Error: Unable to get attributes of C:\\MSDOS.SYS.\n"
                        " Make sure you have read permissions to that file.\n\n"
                        " Press F3 to exit.");
@@ -218,7 +192,7 @@ int main(int argc, char* argv[]) {
 
         // Restore attributes (don't check, it is inaccurate for some reason)
         status("Restoring original attributes to C:\\MSDOS.SYS");
-        (void)restore_attrs("C:\\MSDOS.SYS", msdos_sys_attrs);
+        (void)restore_attrs(msdos_sys_attrs, "C:\\MSDOS.SYS");
     }
 
     print_page(" Operation completed successfully.\n"
