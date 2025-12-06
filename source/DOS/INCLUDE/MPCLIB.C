@@ -16,7 +16,7 @@
 
 // ---[ Global variables ]--- //
 int screen_rows = 0, screen_cols = 0;
-Flags flags = { false, false, false, false, false };
+Flags flags = { false, false, false, false, false, false };
 
 // ---[ Functions ]--- //
 
@@ -186,6 +186,14 @@ bool arg_check(char* arr[], char* item) {
 void status(const char *fmt, ...) {
     va_list args;
     struct text_info saved_attr;
+    // If we are told to show status messages as debug messages,
+    // just pass fmt and args into dbg().
+    if (flags.v_status_as_debug) {
+        va_start(args, fmt);
+        dbg(fmt, args);
+        va_end(args);
+        return;
+    }
     // Save current position and color scheme
     save_pos_and_color(saved_attr);
 
@@ -623,6 +631,59 @@ int remove_file(const char *fmt, ...) {
     return 0;
 }
 
+// Deletes a folder and its contents recursively
+// Returns 0 on success, 1 on failure
+int remove_folder(const char *fmt, ...) {
+    struct ffblk f;
+    char path[MAXPATH];
+    char full[MAXPATH];
+    va_list args;
+    int done, rc;
+
+    /* build base path from fmt */
+    va_start(args, fmt);
+    vsprintf(path, fmt, args);
+    va_end(args);
+
+    /* scan everything in the folder */
+    sprintf(full, "%s\\*.*", path);
+    done = findfirst(full, &f,
+        FA_RDONLY | FA_HIDDEN | FA_SYSTEM | FA_DIREC | FA_ARCH);
+
+    while (!done) {
+        if (strcmp(f.ff_name, ".") && strcmp(f.ff_name, "..")) {
+            sprintf(full, "%s\\%s", path, f.ff_name);
+
+            if (f.ff_attrib & FA_DIREC) {
+                /* recurse into subdirectory */
+                rc = remove_folder("%s", full);
+                if (rc != 0) return -1;
+            } else {
+                /* clear R/H/S and delete file */
+                if (_chmod(full, 1, FA_ARCH) < 0) return -1;
+                if (remove(full) != 0) return -1;
+            }
+        }
+        done = findnext(&f);
+    }
+
+    /* remove the now-empty directory */
+    if (rmdir(path) != 0)
+        return -1;
+
+    return 0;
+}
+
+// Moves a file by copying and removing
+// Returns 0 on success, 1 on failure
+int move_file(const char *src, const char *dst) {
+    if (copy_file(src, dst) != 0)
+        return 1;
+    if (remove(src) != 0)
+        return 1;
+    return 0;
+}
+
 // Splits a string into argv array
 char **build_argv(const char *prog_name, const char *arg_str) {
     int argc = 0;
@@ -816,6 +877,9 @@ bool yesno(const bool enable_F3, const char *fmt, ...) {
 }
 
 // Appends to a file
+// Returns:
+//   0 = Success
+//  -1 = Failure
 int file_append(const char *fname, const char *fmt, ...) {
     va_list args;
 
@@ -832,6 +896,9 @@ int file_append(const char *fname, const char *fmt, ...) {
 }
 
 // Prepends to a file by cgpt
+// Returns:
+//   0 = Success
+//  -1 = Failure
 int file_prepend(const char *fname, const char *fmt, ...) {
     FILE *in, *out;
     va_list ap;
@@ -883,4 +950,84 @@ char *fmt_str(const char *fmt, ...) {
     vsprintf(buffer, fmt, args);
     va_end(args);
     return buffer;
+}
+
+// Saves attributes of a file
+// 0 = Success
+int save_attrs(int *out_attr, const char *fmt, ...) {
+    char file[MAXPATH];
+    int a = 0;
+    va_list args;
+
+    va_start(args, fmt);
+    vsprintf(file, fmt, args);
+    va_end(args);
+
+    {
+        a = _chmod(file, 0, 0);
+        if (a < 0) return -1;
+        *out_attr = a;
+        return 0;
+    }
+}
+
+// Clears Readonly, Hidden, System Attributes of a file
+// 0 = Success
+int clear_RHS(const char *fmt, ...) {
+    char file[MAXPATH];
+    int a, now;
+    va_list args;
+
+    va_start(args, fmt);
+    vsprintf(file, fmt, args);
+    va_end(args);
+
+    a = _chmod(file, 0, 0);
+    if (a < 0) return -1;
+
+    a &= ~(0x01 | 0x02 | 0x04);
+    _chmod(file, 1, a);   // ignore return
+
+    /* cgpt fix - VERIFY instead of trusting return value */
+    now = _chmod(file, 0, 0);
+    if (now >= 0 && !(now & (0x01 | 0x02 | 0x04)))
+        return 0;
+
+    return -1;
+}
+
+
+// Restores attributes of a file
+// 0 = Success
+int restore_attrs(int original, const char *fmt, ...) {
+    char file[MAXPATH];
+    va_list args;
+
+    va_start(args, fmt);
+    vsprintf(file, fmt, args);
+    va_end(args);
+
+    return _chmod(file, 1, original);
+}
+
+// Checks a given argv array for all valid parameters
+void validate_mpc_args(char *argv[]) {
+    /* Reset flags */
+    flags.animate = false;
+    flags.verbose = false;
+    flags.v_pause = false;
+    flags.v_log = false;
+    flags.v_word_by_word = false;
+    flags.v_status_as_debug = false;
+
+    /* Populate flags */
+    if (!arg_check(argv, "/ni")) flags.animate = true;
+
+    if (arg_check(argv, "/v")) { // Verbose/Debug mode
+        flags.verbose = true;
+        if (arg_check(argv, "/vp"))    flags.v_pause = true;
+        if (arg_check(argv, "/vlog"))  flags.v_log = true;
+        if (arg_check(argv, "/vw"))    flags.v_word_by_word = true;
+        if (arg_check(argv, "/vstat")) flags.v_status_as_debug = true;
+    }
 }

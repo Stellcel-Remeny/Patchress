@@ -60,6 +60,7 @@ typedef struct {
     bool v_pause;
     bool v_log;
     bool v_word_by_word;
+    bool v_status_as_debug;
 } Flags;
 
 // ---[ Global Variables ]--- //
@@ -90,6 +91,8 @@ bool file_exists(const char *fmt, ...);
 int dir_exists(const char *fmt, ...);
 int copy_file(const char *src, const char *dst);
 int remove_file(const char *fmt, ...);
+int remove_folder(const char *fmt, ...);
+int move_file(const char *src, const char *dst);
 char **build_argv(const char *prog_name, const char *arg_str);
 void join(char *o, char *a[]);
 void input(char str_buffer[], const int length, const char *default_str);
@@ -98,6 +101,10 @@ bool yesno(const bool enable_F3, const char *fmt, ...);
 int file_append(const char *fname, const char *fmt, ...);
 int file_prepend(const char *fname, const char *fmt, ...);
 char *fmt_str(const char *fmt, ...);
+int save_attrs(int *out_attr, const char *fmt, ...);
+int clear_RHS(const char *fmt, ...);
+int restore_attrs(int original, const char *fmt, ...);
+void validate_mpc_args(char *argv[]);
 
 // End of extern "C" block
 #ifdef __cplusplus
