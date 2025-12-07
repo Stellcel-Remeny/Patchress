@@ -1,0 +1,18 @@
+DEVICE=ECHO.SYS W/e/l/c/o/m/e /t/o M/i/n/i-W/i/n/d/o/w/s...
+DEVICE=ECHO.SYS C/o/p/y/r/i/g/h/t C/h/i/n/a DOS U/n/i/o/n. A/l/l /r/i/g/h/t/s /r/e/s/e/r/v/e/d.
+DEVICE=ECHO.SYS [/M/o/d/i/f/i/e/d /f/o/r /M/u/l/t/i/P/a/t/c/h/e/r/]
+
+DEVICE=HIMEMX.EXE /MAX=250000
+DEVICEHIGH=VIDE-CDD.SYS /D:IDE-CD
+SHELL=COMMAND.COM /P /E:640
+DOS=HIGH,UMB,AUTO
+NUMLOCK=OFF
+FILES=30
+BUFFERS=20,0
+LASTDRIVE=26
+STACKS=9,256
+SET TEMP=C:\
+SET TMP=C:\
+SET COMSPEC=A:\COMMAND.COM
+COMMENT Made by Wengier and Roy, China DOS Union
+COMMENT All rights reserved. 2002-2004.
