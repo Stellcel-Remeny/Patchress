@@ -324,6 +324,7 @@ int main(int argc, char* argv[]) {
     // Clean temporary directory
     status("Cleaning temporary files...");
     chdir(".."); // So we can delete the directory
+    _chdrive((toupper(cwd[0]) - 'A') + 1);
     if (remove_folder("C:\\_TMPMPC") != 0) {
         print_page(" Warning: Unable to remove temporary directory C:\\_TMPMPC.\n"
                    " Please remove it manually.\n\n"
