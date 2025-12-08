@@ -1,0 +1,78 @@
+This is the ninth and possibly last release of the XrX Add Bar Utility, 
+
+Please report any problems with the exact steps that create the problem
+to XrX Computer Applications support@xrx.ca
+
+The program should be self explanitory.
+
+New for Version 2.3
+  The expiry date has been removed.
+  A display bug when the program was run under Windows XP has been fixed.
+  (Not sure why it was being run under XP as it only generates 95/98/ME logos,
+  but the bug was there so I fixed it)
+
+Future plans....
+  This branch is more or less on hold, hoping MS will bring back a decent startup 
+  logo scheme in a future Windows.  I'm currently working on a tool for creating
+  Wallpaper images for multiple monitors, I hate the fact that the wallpaper 
+  duplicates itself on the two monitors, I want a different background on each 
+  monitor, there are a couple programs out there that do this, but they neeed to
+  be running all the time which isn't necessary, if a single bitmap is created
+  that has the multiple images layed out correctly, it can be installed as a tiled 
+  wallpaper and each monitor will show it's own background.
+
+New for Version 2.2
+
+  Ability to select colors from current image (down arrow beside color indicator), 
+  expiry date pushed out past 2002.
+
+New for Version 2.1
+
+  About box with Contact Information added, wierd quirk with some jpegs fixed,
+  beta indicator removed, expiry date pushed out past 2001.
+
+New for Version 2.0.5.2
+
+  Minor update to install routine, minor memory leak fixed, Expiry date
+  push out past 2000.
+
+New for Version 2.0.4.23
+  
+  Fixed a major bug that would cause the program to not startup on some systems.
+
+New for Version 2.0.3.20
+
+  Nothing that the user will see, a whole bunch of internal changes, 
+  the animation routine has been rewritten (5th time)  New add 
+  animated text routine was added, but discovered a major bug (locked
+  up two different test systems) so it's been disabled until the bug
+  can be tracked down and exterminated.  The install routine had a
+  couple fixes to correct problems that showed up on some older systems.
+  
+  Pushed the expiry date way out, it looks to be a busy year.
+  
+  Direction of animated bar corrected.
+  
+  Slight change to the color stepping routine for adding a bar (really 
+  meant for the add animated text routine, but...)
+  
+
+New For Version 2.0:
+
+  Preview the created logo.
+
+  Loads multiple image formats:
+	JPEG, BMP, DIB, PCX, PBM, PNG, TGA, TIF
+	
+  Reduces Colors
+
+  Resizes Images
+  
+  Dithered Bar
+  
+  Direction of Bar Motion Selectable
+
+Known Problems:
+
+	Install Gives no Feedback except when backing up originals
+	
