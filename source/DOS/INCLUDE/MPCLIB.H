@@ -38,6 +38,10 @@ extern "C" {
 #define LEFT_ARROW    27
 
 // ---[ Save and restore screen items ]--- //
+//
+// 'var' must be declared in your code as:
+//    struct text_info var;
+//
 // Save position and color (text attributes):
 #define save_pos_and_color(var) gettextinfo(&var);
 // Save position:
