@@ -30,6 +30,7 @@
 
 - 4DOS
 - Alky for applications
+- Microsoft Layer for Unicode for Win9x
 - SD shutdown utilities by crgimenes
 - XrX Logo Utility
 - XrX AddBar
