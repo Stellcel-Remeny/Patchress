@@ -20,6 +20,7 @@
 
 - FIX95CPUPatch by LoneCrusader
 - PatchMem for Win9x by RLOEW
+- SIMD95 by JHRobotics
 - W3xstart
 - Windows 1.0 Setver change
 - Windows 3.1 AHCIFIX.386 by PluMGMK
