@@ -369,7 +369,9 @@ void user_select_item(const char *init_short_dir){
 
     int total_items = 0, selected_item = 0,
         num_menus = 0, num_entries = 0,
-        key = -1;
+        key = -1, i = 0;
+
+    struct text_info current_pos;
 
     Entry *entry = (Entry *)malloc(sizeof(Entry));
     if (!entry) crash("Failed to allocate memory for Entry");
@@ -415,7 +417,10 @@ void user_select_item(const char *init_short_dir){
         } else {
             // We found something.
             dbg("CASE: FOUND.");
-            print_page("\n Please select an item from below.\n\n");
+            print_page("\n RED = Menu  GREEN = Entry\n"
+                       " Please select an item from below.\n\n"
+                      ); // <-- my face rn
+            
             // Get the number of menus and entries
             num_menus = count_arrays(menus);
             num_entries = count_arrays(entries);
@@ -426,8 +431,27 @@ void user_select_item(const char *init_short_dir){
             get_fancy_names(fancy_names, menus, entries, current_directory);
 
             status("  ENTER = Select  UP = Previous  DOWN = Next  ESC = Go back  F3 = Exit");
-            // Show selector
+
+            // Show the arrow pointer thingys //
             cprintf("     ");
+            save_pos_and_color(current_pos);
+            // For all stuff in Menus, we shall print a Red arrow.
+            textcolor(LIGHTRED);
+            for (i = 0; i < num_menus; i++) {
+                // Go to current x pos - 2. We will print arrows in this column.
+                gotoxy(current_pos.curx - 2, current_pos.cury + i);
+                cprintf("%c", RIGHT_ARROW);
+            }
+            // For all stuff in Entries, we shall print a Green arrow.
+            textcolor(GREEN);
+            for (i = 0; i < num_entries; i++) {
+                // Go to current x pos - 2. We will print arrows in this column.
+                gotoxy(current_pos.curx - 2, current_pos.cury + num_menus + i);
+                cprintf("%c", RIGHT_ARROW);
+            }
+            // Return to original
+            restore_pos_and_color(current_pos);
+            // Show selector
             selected_item = selector(true, true, fancy_names);
 
             if (selected_item == -2) {
