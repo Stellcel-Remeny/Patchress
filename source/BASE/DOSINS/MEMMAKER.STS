@@ -1,0 +1,80 @@
+[MemmakerData]
+State=UNDO/DONE 7477
+AvailConvMemoryBefore=541136
+AvailUpperMemoryBefore=0
+UsedUpperMemoryBefore=90736
+WindowsUpperMemoryBefore=0
+EMSUpperMemoryBefore=65536
+AltSysFiles=False
+WindowsXlat=False
+CustomMode=True
+AutoexecBatCheckSum=29806 
+ConfigSysCheckSum=38403 
+SystemIniCheckSum=0     
+WindowsLocation=D:\PWIN98
+
+[SizeData]
+
+Command=D:\PWIN98\DBLBUFF.SYS /D+
+Line=8
+FinalSize=3024
+MaxSize=3024
+FinalUpperSizes=0
+MaxUpperSizes=0
+ProgramType=DEVICE
+
+Command=D:\PWIN98\SETVER.EXE
+Line=14
+FinalSize=896
+MaxSize=17408
+FinalUpperSizes=0
+MaxUpperSizes=0
+ProgramType=DEVICE
+
+Command=D:\PWIN98\COMMAND\ANSI.SYS
+Line=15
+FinalSize=4352
+MaxSize=9712
+FinalUpperSizes=0
+MaxUpperSizes=0
+ProgramType=DEVICE
+
+Command=D:\PWIN98\IFSHLP.SYS
+Line=16
+FinalSize=2912
+MaxSize=3712
+FinalUpperSizes=0
+MaxUpperSizes=0
+ProgramType=DEVICE
+
+Command=D:\PWIN98\SYSTEM\SMARTIDE.SYS /D:CDROM
+Line=17
+FinalSize=11408
+MaxSize=13712
+FinalUpperSizes=0
+MaxUpperSizes=0
+ProgramType=DEVICE
+
+Command=D:\PWIN98\RAMDRIVE.SYS 512 /A
+Line=18
+FinalSize=1488
+MaxSize=12672
+FinalUpperSizes=0
+MaxUpperSizes=0
+ProgramType=DEVICE
+
+Command=D:\PWIN98\COMMAND\DOSKEY TYPE=TYPE $*$B MORE
+Line=8
+FinalSize=5744
+MaxSize=17088
+FinalUpperSizes=0
+MaxUpperSizes=0
+ProgramType=PROGRAM
+
+Command=CALL D:\PWIN98\DOSSTART.BAT
+Line=12
+FinalSize=40720
+MaxSize=78768
+FinalUpperSizes=15936 16400 1328 
+MaxUpperSizes=16624 16400 19808 
+ProgramType=BATCH
