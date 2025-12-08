@@ -1,0 +1,438 @@
+
+# Changelog
+
+## v0.4
+
+### Added items [DOS Interface]
+
+- Added 3XSTART
+- Added CREGFIX
+- Added FIX95CPU
+- Added HIMEMX
+- Added RAMDISK driver for MS-DOS
+
+### Interface improvements
+
+- Ability to use `pauseOnQuit=` variable under `[MSDOS]` in `INFO.INI`.
+- Added 16-bit GUI interface for Windows 3.1/95/98/Me, NT3.1/3.5/3.51/4.0, Windows 2000, and Windows XP! [No stuff added yet]
+- Fixed bug where DOS interface would not reset current directory, if sub program `chdir()`s into another directory.
+- Includes VB4 16-bit Runtime for old Windows versions without the runtime.
+- Toggleable Boolean in `INFO.INI` and `LFN.INI` to show/hide items under various windows versions.
+- Updated `PATCHER.BAT` to correctly distinguish between windows versions and DOS.
+
+### Compile time improvements
+
+- Improved code structure in PATCHX16.C file.
+- Sped up DOS apps compile time by reusing .OBJ files.
+
+### MPCLIB.C improvements
+
+- Added `file_prepend()`
+- Added `input_num()`
+- Fixed most pointer declaration warnings in TurboC.
+- Other stuff I forgot
+
+## v0.3
+
+- Fixed "Null Pointer Assignment" when closing
+- New setting "batchMode=" in INFO.INI files, which lets you run Batch files
+- Fixed 4DOS's INFO.INI
+- Converted 80*50 DOS MODE from .BAT into .EXE
+- Added Cutemouse
+- Added XMGR.SYS
+- Added Windows 3.1 AHCIFIX.386
+- Added Windows 3.1 VBESVGA Modern video drivers
+- Added Windows 1.0 256 Color drivers (but still requires floppy, so don't try it I guess)
+- Added Patchmem for Win9x
+
+## v0.2.1
+
+- Working Windows 1.0 Setver patch
+- Passes arguments to sub programs
+- Ability to edit arguments before running sub programs
+- Updated info.ini structure
+- Added input() in MPCLIB.C
+
+## v0.2
+
+-Uses TurboC, Meson & friends to do the compilation job.
+-Added window close animation
+-Better animations
+-Moved code to save and restore color and position out of functions
+
+## v0.1
+
+Broken release, latest one based on the OpenWatcom compiler.
+
+## v0.0.1
+
+Initial release.
+Features an unpolished version of MS-DOS Patchress only.
+
+============================================
+        Old Changelog [Whatsnew.txt]        
+  Basically nothing to do with current MPC.
+============================================
+
+100_Major: Internet Release version, Completed option 4, Completed option 5!
+build 99 - 100; 2nd Jan, 24 ; WOO 100, AWESOME!
+98_Major: Completed option 3
+build 96 - 98; 1st Jan, 24 (2024) ; HAPPY NEW YEAR!
+build 90 - 95; 31st Dec, 23 ; The new years eve!
+89_Major: Completed option 2
+build 86 - 89; 30th Dec, 23
+build 82 - 85; 29th Dec, 23
+80_Major: Completed option 1 (but unpolished), introduced options to restart or go back to options.
+build 77 - 81; 28th Dec, 23
+74_Major: Completed the option scroll list
+build 67 - 76; 27th Dec, 23
+build 62 - 66; 23rd Dec, 23
+build 49 - 61; 22nd Dec, 23
+build 40 - 48; 21st Dec, 23
+build 33 - 40; 20th Dec, 23
+31_Major: DrawBoot("topdown") Completed.
+build 1 - 32; 19th Dec, 23 (2023)
+
+Now only showing the dates for each build & Also highlights the major builds.
+versions not made, only builds - LPP style.
+______________________________________________________________________________________________________________________________________
+MultiBoot System Essentials (MSE) #MultiPatcher+ / \ #19th Dec, 2023
+__________________________________________________|___________________________________________________________________________________
+
+NTPatcher (4.0 - 6.1) and LPP (1.0 - 2.0) gets created, 4 Month break (28th Aug, 2023 - 19th Dec, 2023 #3 Months, 21 days)
+______________________________________________________________________________________________________________________________________
+
+MultiPatcher Turbo V0.1.5 = Unfinished app splitting (with communicator)
+
+MultiPatcher Turbo Optimized V0.1.4 - 25th of August, 2023
+-----------------------------------------------------------
+
+This version has a new Quit program, which is fully external. However, it isn't able to communicate with the main program through return values. Even if all the return values requested are set to 1, it would still return 0.
+
+MultiPatcher Turbo V0.1.3 = Unfinished MS-DOS System testing (with some QuickBasic?)
+
+MultiPatcher Turbo Optimized V0.1.2
+------------------------------------
+
+This version fixed the unresponsive loop issue and waits for the user to press F3 at the first screen to exit the program.
+
+MultiPatcher Turbo Optimized V0.1.1
+------------------------------------
+
+This version now exits immediately after outputting the 1st screen of the program.
+
+MultiPatcher Turbo Optimized V0.1.0 - 20th of August, 2023
+-----------------------------------------------------------
+
+This version (incomplete) has some code copied from the previous version, optimized. Note that it doesn't provide a way to exit out of the program yet.
+
+MultiPatcher Rewritten V0.5.6 - 18th of August, 2023
+-----------------------------------------------------
+
+This version has *some* stack overflow issues fixed, and has a modified better-looking exit dialog animation.
+Bug: If any key that isn't used by the program is pressed, the program will end in an unresponsive infinite loop. Example: Pressing 'E' at the options selector causes the program to become unresponsive.
+Bug : Application will crash if more void instructions are added. Entire program has to be separated and optimized.
+
+=========================
+Above versions are dated.
+=========================
+
+MultiPatcher Rewritten V0.5.5
+------------------------------
+
+This version now has less delay between the '...' and 'Loading MultiPatcher' animations at the beginning if it's launched with the Program Option Selector. If it isn't launched with it, it will have the normal delays.
+
+MultiPatcher Rewritten V0.5.4
+------------------------------
+
+This version has added 3 more screens to the ending animation.
+
+MultiPatcher Rewritten V0.5.3
+------------------------------
+
+This version has a gradient falling curtain animation if the user decides to exit the program.
+
+MultiPatcher Rewritten V0.5.2
+------------------------------
+
+This version has an animation for the exit dialog that won't be visible if it's started with no animations enabled.
+
+MultiPatcher Rewritten V0.5.1
+------------------------------
+
+Version 0.5.1 has a more complete load options menu that can start the program in different modes. It can also exit if the user presses the F3 key. Likewise, this can also lead to stack overflow issues, because it uses the old IF jump statements rather than a Loop.
+
+MultiPatcher Rewritten V0.5.0
+------------------------------
+
+This version has the ability to change the screen from Blue background to Black background and color text to monochrome text, and the opposite. This can also lead to Stack Overflow issues. It also replaced the 'Use the up and down keys to move...' to 'Use the ↑ and ↓ keys to move the highlight to your choice' text on the second portion of the program. It also changed the 'LoopKeyX2' text to just 'LoopKey'. It also accepts parameters when starting. '/??' displays help, while '/?' loads an incomplete load options menu. It also has special deveoper mode options available (for the developer).
+
+MultiPatcher Rewritten V0.4.8
+------------------------------
+
+This version, in addition to checking for the directory, now also checks for the existance of file 'NTDRV.UTL' inside the directory. If it doesn't exist, it would stop and display another message.
+
+MultiPatcher Rewritten V0.4.7
+------------------------------
+
+This version now checks for the existance of directory 'utilfs'. If it doesn't exist, it would just stop and display a message.
+
+MultiPatcher Rewritten V0.4.6
+------------------------------
+
+This version now has a smooth transition from bottom to top when the user presses the ENTER key on the first portion to the second portion of the program.
+
+MultiPatcher Rewritten V0.4.5
+------------------------------
+
+This version has fixed the over-dots animation issue, and now also prints two extra dots when the tranisition from black to blue background is being applied. It can also move from all the eight options, and brings up the exit dialog when the F3 key is pressed.
+
+MultiPatcher Rewritten V0.4.2
+------------------------------
+
+This version makes it so that the title heading bar also moves when it's animating the text from top to bottom. However, it displayes '...........' before the '═════' without any animation (bug). It also makes it so that it would make a top to bottom transition from the black background to blue background. This one also has the ability to move the option bar from first to second and second to first using the up and down arrow keys, but lost the ability to bring the exit dialog OR the ability to exit the program when the F3 key is pressed on the second portion of the program (bug). However, this can lead to Stack overflow issues, which would display a corrupt screen and becomes unresponsive (bug).
+
+MultiPatcher Rewritten V0.4.1
+------------------------------
+
+This version now has yet another animation after '......' when it's loading the text from top to bottom.
+
+MultiPatcher Rewritten V0.4.0
+------------------------------
+
+This version now has a starting animation with '......' and also changed the key used for exiting the program from 'Q' to 'F3'.
+
+MultiPatcher Rewritten V0.3.8
+------------------------------
+
+Changed the 'To quit the MultiPatcher program, press F3' to 'To quit the MultiPatcher program, press Q' text on the welcome screen.
+
+MultiPatcher Rewritten V0.3.7
+------------------------------
+
+This version now has a proper popup message with proper shadows depending on which portion it is displayed when the user presses the Q key to exit the program. The user can press the ENTER key on the message to stay, or Q again to quit the program. This version also has two portions, first being the welcome screen, and the second being the options screen. The options screen does not accept the arrow keys, so the bar doesn't move. It also doesn't clear the screen when exiting (bug). It also displays message 'To quit the MultiPatcher program, press F3' instead of 'Q' on the welcome screen.
+
+MultiPatcher Rewritten V0.3.5
+------------------------------
+
+This version now exits when the user presses the Q key, displaying message 'bordertest' and 'hello'. Bordertest message is written on a center-ish place on the screen, while 'hello' is written on the left side of the screen. Both of then display in a red text on a gray background. It also exits when the user presses the ENTER key, but doesn't display any message. Any other keys are not registered.
+
+MultiPatcher Rewritten V0.3.0
+------------------------------
+
+This version has a proper keybar that does not occupy two lines by writing the text FIRST and THEN writing the welcome text. It also waits for ANY key presses to exit. It also changed the wording 'LoopKeyyX2' to 'LoopKeyX2'. It also hides the DOS cursor, but it doesn't make it visible after exiting the program (bug).
+
+MultiPatcher Rewritten V0.2.2
+------------------------------
+
+This version re-introduced the keybar, but it occupies two lines (bug). It does not wait for any user key presses.
+
+MultiPatcher Rewritten V0.2.1
+------------------------------
+
+This version corrected the spacing.
+
+MultiPatcher Rewritten V0.2.0
+------------------------------
+
+This version has a more detailed welcome screen and changed 'Wintelic' to 'LoopKeyyX2'. It can also output text with custom colors. The spacing is not quite right.
+
+MultiPatcher Rewritten V0.1.1
+------------------------------
+
+This version has a finalized-looking title heading bar.
+
+MultiPatcher Rewritten V0.1.0
+------------------------------
+
+This version changes the backround color to Blue and outputs the title text (MultiPatcher Setup by Wintelic). The title heading bar is not fully finalized.
+
+MultiPatcher Rewritten V0.0.3
+------------------------------
+
+This hello world program now clears screen before outputting the text.
+
+MultiPatcher Rewritten V0.0.1 (Turbo C++)
+------------------------------------------
+
+Basic Hello World program.
+
+
+MultiPatcher BASIC V0.7.1 & V0.7.2
+-----------------------------------
+
+Improved the 2nd option
+
+MultiPatcher BASIC V0.7
+------------------------
+
+Started implementing the 2nd option
+
+MultiPatcher BASIC V0.6.5 and V0.6.7
+-------------------------------------
+
+Minor update
+
+MultiPatcher BASIC V0.6.4
+--------------------------
+
+Started implementing the 7th option (ATAPI update) however the title gets glitched, and commands may not work correctly.
+
+MultiPatcher BASIC V0.6.2
+--------------------------
+
+This version fixed the reversed 'Y' and 'N' options on the universal exit screen and created a new ending screen for the 8th option.
+
+MultiPatcher BASIC V0.6.1
+--------------------------
+
+Fixed the one block difference issue and made it so that it would restart from the option selection screen rather than restarting the whole program.
+
+MultiPatcher BASIC V0.6
+------------------------
+
+Completed the 3rd option, however there is a one block difference in the wordings used at the end of the 3rd option.
+
+MultiPatcher BASIC V0.5.9
+--------------------------
+
+Added and changed some wordings at the end of the 1st option.
+
+MultiPatcher BASIC V0.5.8
+--------------------------
+
+Changed the commands used in the first option.
+
+MultiPatcher BASIC V0.5.7
+--------------------------
+
+Changed the commands used in the first option.
+
+MultiPatcher BASIC V0.5.6
+--------------------------
+
+Minor update
+
+MultiPatcher BASIC V0.5.5
+--------------------------
+
+Added the ability to restart the program at the end of an option, but it would restart the whole program instead of going to the selection screen (bug). This version also has some functionality for the 1st selection option.
+
+MultiPatcher BASIC V0.5.2
+--------------------------
+
+Added new line "Program's output:" at the end of the 4th selection option.
+
+MultiPatcher BASIC V0.5.1
+--------------------------
+
+Fixed the universal exit screen's stay selection's title glitch.
+
+MultiPatcher BASIC V0.5
+------------------------
+
+This version has made the 4th option exit screen more finalized.
+
+MultiPatcher BASIC V0.4.4
+--------------------------
+
+Added an universal exit screen, but the controls are reversed (Y and N). The title (MultiPatcher Setup by Wintelic) would glitch if the stay option is selected. Added new wordings to the 4th option's exit screen, but the colors are inverted (bug).
+
+MultiPatcher BASIC V0.4.3
+--------------------------
+
+Added an exit screen which would wait for the user to press the Q key, and then exit the program (only visible if the 4th option is selected).
+
+MultiPatcher BASIC V0.4.2
+--------------------------
+
+Testing? the fourth option
+
+MultiPatcher BASIC V0.4.1
+--------------------------
+
+Minor update which made some change to the 4th option's functionality.
+
+MultiPatcher BASIC V0.4
+------------------------
+
+This version either doesn't break the whole program when the selection is NTPatcher and exit itself, OR it launches NTPatcher and then exit itself. It would also exit itself after the user decides to install it, which the previous versions didn't and just stuck there. It also has completed? the fourth option.
+
+MultiPatcher BASIC V0.3
+------------------------
+
+Added a license agreement screen that the user would need to agree to before proceeding. The selection bar would also go to the bottom if the user presses the UP key at the very top, or if the user presses the DOWN key at the very bottom (aka. restart). This version also disables the path selection if the user selects NTPatcher, but the program itself breaks if the user selects NTPatcher.
+
+MultiPatcher BASIC V0.2
+------------------------
+
+This version re-enabled the directory capturer if the user selects ANY option.
+
+
+Next (upward) versions are not dated.
+
+MultiPatcher BASIC V0.1 - 14th of July, 2023
+---------------------------------------------
+
+Replaced the Realboot wordings with MultiPatcher and implemented a new system where you can choose different options. The option selector would not go back to the top or the bottom if the user presses the UP key if the bar is at the very top, or the DOWN key if the bar is at the very bottom. This version also accidentaly disabled the directory capturer.
+
+
+Realboot v0.5.8
+----------------
+
+Minor update
+
+Realboot v0.5.7 - 27th of June, 2023
+-------------------------------------
+
+Introduced a new custom user input capturing method which doesn't overflow past the 40 character something intended limit. You can also press the ENTER key, which would go on to the final part of the program. However, it would break the limit if the key pressed is a special key (eg. arrow keys) - (bug).
+
+Realboot v0.5.6 - 20th of June, 2023
+-------------------------------------
+
+Added some notice after the user inputs the directory.
+
+Realboot v0.5.5 - 19th of June, 2023
+-------------------------------------
+
+This version now captures user input for the Windows directory. However, it doesn't stop when it reaches the limit (40 something characters) - (bug). It also lets the user see what they had typed when the user presses the ENTER key, but it would show a 'directory invalid' screen if the input given is blank, or "" (nothing) and the user can also press the ESC key to re-input the directory.
+
+Realboot v0.5.0
+----------------
+
+This version updated the previous 'Y' for continue key with the ENTER key. This version also displayed words which tell the user what the acceptible keys do. This version also introduced mutliple portions of the program, which means when pressing something like ENTER, it would go to a 'next' screen. The next screen is not finalized. When pressing the 'Q' key, it would clear the screen before exiting.
+
+Realboot v0.4.1
+----------------
+
+Updated the 'Info' wording.
+
+Realboot v0.4.0
+----------------
+
+This version fixed the double line issue with the keybar.
+
+Realboot v0.3.1
+----------------
+
+This version fixed the blank blue line at the bottom issue, and filled the last block on the first line of the keybar.
+
+RealBoot v0.3
+--------------
+
+This version now requires the user to press the Q key to Quit, displaying "Exiting" message. The user can also press Y, which will print "hello". Any other key will not be registered.
+
+RealBoot v0.2 - 18th of June, 2023
+-----------------------------------
+
+Welcome screen has more information and a broken keybar is added, which takes up two lines, another blank blue line at the very bottom, and has a character gap at the end of the first line (bug).
+
+RealBoot v0.1 (QuickBasic 4.5) - 17th of June, 2023
+----------------------------------------------------
+
+Groundwork for later builds. It can change the background to blue no matter what, even if ANSI isn't loaded. This one has no other functionality, and automatically exits.
+
+RealBoot Batch Patch (Original one used in the MultiBoot System)
+-----------------------------------------------------------------
+
+Batch based script that would replace Windows 3.1's system files with those from Windows 3.1 Beta Build 026d to enable Real boot support. It would change the screen color to BLUE if ANSI is loaded, or no change if ANSI isn't loaded. It would only start if a path is specified upon starting. Example: SETUP.BAT C:\WIN31
