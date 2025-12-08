@@ -31,6 +31,7 @@
 - 4DOS
 - Alky for applications
 - SD shutdown utilities by crgimenes
+- XrX Logo Utility
 
 ## Test
 
