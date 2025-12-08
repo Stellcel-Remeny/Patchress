@@ -31,6 +31,12 @@ extern "C" {
 #define DOWN_KEY      80
 #define TILDE_KEY     96
 
+// ---[ ASCII symbol codes ]--- //
+#define UP_ARROW      24
+#define DOWN_ARROW    25
+#define RIGHT_ARROW   26
+#define LEFT_ARROW    27
+
 // ---[ Save and restore screen items ]--- //
 // Save position and color (text attributes):
 #define save_pos_and_color(var) gettextinfo(&var);
