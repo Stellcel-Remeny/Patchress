@@ -4,6 +4,7 @@
 ## Cosmetics/Visual Changes
 
 - Change MS-DOS lines to 50 lines
+- VESAMAN MandelBrot from Falcosoft
 
 ## Drivers
 
