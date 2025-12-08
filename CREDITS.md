@@ -28,10 +28,16 @@
 
 - 4DOS
 - Alky for applications
+- SD shutdown utilities by crgimenes
 
 ## Test
 
 - Microsoft Cheese Terminator
+
+## Other
+
+- Mini Windows 3.11 by China Dos Union
+- CSMWrap by FlyGoat
 
 ## MultiPatcher Information
 
