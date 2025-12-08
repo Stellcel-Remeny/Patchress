@@ -1,0 +1,6 @@
+A simple Mandelbrot set with 150 maximum iteration in 1024x768x8 VESA SVGA fullscreen graphics mode. 
+Source code included (TASM Syntax).
+
+falco
+zbacsko@falcosoft.hu
+http://falcosoft.hu
