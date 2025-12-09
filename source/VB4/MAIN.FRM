@@ -3,19 +3,19 @@ Begin VB.Form main
    BorderStyle     =   1  'Fixed Single
    Caption         =   "Remeny MultiPatcher"
    ClientHeight    =   6045
-   ClientLeft      =   10215
-   ClientTop       =   4770
+   ClientLeft      =   4515
+   ClientTop       =   3390
    ClientWidth     =   8955
    Enabled         =   0   'False
    Height          =   6555
-   Left            =   10155
+   Left            =   4455
    LinkTopic       =   "main"
    MaxButton       =   0   'False
    MinButton       =   0   'False
    Picture         =   "MAIN.frx":0000
    ScaleHeight     =   6045
    ScaleWidth      =   8955
-   Top             =   4320
+   Top             =   2940
    Visible         =   0   'False
    WhatsThisHelp   =   -1  'True
    Width           =   9075
@@ -176,7 +176,7 @@ Begin VB.Form main
       Caption         =   "Red = Menu"
       BeginProperty Font 
          name            =   "MS Sans Serif"
-         charset         =   0
+         charset         =   1
          weight          =   700
          size            =   8.25
          underline       =   0   'False
@@ -195,7 +195,7 @@ Begin VB.Form main
       Caption         =   "Green = Entry"
       BeginProperty Font 
          name            =   "MS Sans Serif"
-         charset         =   0
+         charset         =   1
          weight          =   700
          size            =   8.25
          underline       =   0   'False
@@ -215,7 +215,7 @@ Begin VB.Form main
       Caption         =   "->"
       BeginProperty Font 
          name            =   "MS Sans Serif"
-         charset         =   0
+         charset         =   1
          weight          =   700
          size            =   18
          underline       =   0   'False
@@ -237,7 +237,7 @@ Begin VB.Form main
       Caption         =   "->"
       BeginProperty Font 
          name            =   "MS Sans Serif"
-         charset         =   0
+         charset         =   1
          weight          =   700
          size            =   18
          underline       =   0   'False
@@ -259,7 +259,7 @@ Begin VB.Form main
       Caption         =   "->"
       BeginProperty Font 
          name            =   "MS Sans Serif"
-         charset         =   0
+         charset         =   1
          weight          =   700
          size            =   18
          underline       =   0   'False
@@ -281,7 +281,7 @@ Begin VB.Form main
       Caption         =   "->"
       BeginProperty Font 
          name            =   "MS Sans Serif"
-         charset         =   0
+         charset         =   1
          weight          =   700
          size            =   18
          underline       =   0   'False
@@ -303,7 +303,7 @@ Begin VB.Form main
       Caption         =   "->"
       BeginProperty Font 
          name            =   "MS Sans Serif"
-         charset         =   0
+         charset         =   1
          weight          =   700
          size            =   18
          underline       =   0   'False
@@ -325,7 +325,7 @@ Begin VB.Form main
       Caption         =   "->"
       BeginProperty Font 
          name            =   "MS Sans Serif"
-         charset         =   0
+         charset         =   1
          weight          =   700
          size            =   18
          underline       =   0   'False
@@ -347,7 +347,7 @@ Begin VB.Form main
       Caption         =   "->"
       BeginProperty Font 
          name            =   "MS Sans Serif"
-         charset         =   0
+         charset         =   1
          weight          =   700
          size            =   18
          underline       =   0   'False
@@ -369,7 +369,7 @@ Begin VB.Form main
       Caption         =   "->"
       BeginProperty Font 
          name            =   "MS Sans Serif"
-         charset         =   0
+         charset         =   1
          weight          =   700
          size            =   18
          underline       =   0   'False
@@ -391,7 +391,7 @@ Begin VB.Form main
       Caption         =   "->"
       BeginProperty Font 
          name            =   "MS Sans Serif"
-         charset         =   0
+         charset         =   1
          weight          =   700
          size            =   18
          underline       =   0   'False
@@ -641,7 +641,6 @@ Sub displayEntry(ByVal relativePath As String)
     Author.Caption = "Author: " & ReadIniStr("MAIN", "Author", iniPath)
     Version.Caption = "Version: " & ReadIniStr("MAIN", "Version", iniPath)
     DescBox.Text = ReadIniStr("MAIN", "Description", iniPath)
-    Description.Visible = False
     DescBox.Visible = True
     execLabel.Caption = "Command: " & EntryExec & " " & EntryArgs
     ' Startlabel look change
@@ -820,6 +819,10 @@ Private Sub backButton_Click()
     End If
 End Sub
 
+
+Private Sub Form_Activate()
+
+End Sub
 
 Private Sub nextButton_Click()
     ' Increase page number
