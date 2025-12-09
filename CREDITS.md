@@ -21,6 +21,7 @@
 - FIX95CPUPatch by LoneCrusader
 - KernelEx
 - PatchMem for Win9x by RLOEW
+- Patcher9x by JHRobotics
 - SIMD95 by JHRobotics
 - W3xstart
 - Windows 1.0 Setver change

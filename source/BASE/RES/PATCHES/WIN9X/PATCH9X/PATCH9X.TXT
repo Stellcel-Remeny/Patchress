@@ -1,0 +1,39 @@
+Patch for Windows 3.11/9x for run on newest CPUs - AMD ZEN 2+, Intel Tiger Lake+
+Version: 0.9.90
+
+Usage:
+patch9x.exe [options] [path]
+  or
+patch9x.exe [options] <batch function> <batch arguments>
+path: path to installed windows directory or directory with windows installation
+options:
+	-h,/?: print this help
+	-v: print program version
+	-auto,-y: use default actions (if path given) and don't bother user
+	-no-backup: don't backup files before modify
+	-force-w3: when patching VMM32.VXD, leave it as W3 file
+	-force-w4: when patching VMM32.VXD, always compress to W4 file
+	-select: comma separated selected patches:
+		tlb - TLB patches
+		speeddrv - CPU speed patch fix for system VXDs
+		speedndis - CPU speed patch for NDIS.VXD/NDIS.386
+		speed - speeddrv + speedndis
+		mem - memory limit patch
+		creg - CPU registry cleanup on startup
+		all - all patches (default)
+	-unselect: comma separated patches (reversing -select)
+	-reverse: uninstall patches
+	-millennium: ignored, Me patch is included in TLB set
+
+When running without arguments, program operate in interactive mode (ask user)
+
+Batch mode functions:
+	--cab-list                archive.cab
+	--cab-extract             archive.cab file1 [file2 [...]]
+	--cabs-extract            dir-to-search file1 [file2 [...]]
+	--vxd-list                archive.vxd
+	--vxd-extract             archive.vxd file1 [file2 [...]]
+	--vxd-convert             archive.vxd
+	--vxd-extract-all         archive.vxd [destination-dir]
+	--mz-strip                [--replace] [--dump] mzfile.{exe|dll|vxd} out.bin
+	--patch                   <patches> file.vxd [file2.vxd [...]]
