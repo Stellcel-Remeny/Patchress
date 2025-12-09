@@ -1,0 +1,14 @@
+;MS-DOS 7.10 System Configuration File
+;(C)Copyright Microsoft Corp 1981-1999
+
+[Options]
+DisableLog=1
+DoubleBuffer=0
+SystemReg=0
+BootGUI=0
+
+;For compatiblity with Windows 9x GUI only:
+
+[Paths]
+windir=.
+winbootdir=.
