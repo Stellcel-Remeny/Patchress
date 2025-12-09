@@ -52,12 +52,58 @@ Function FileExists(ByVal fname As String) As Boolean
 End Function
 
 Function ReadIniStr(section As String, key As String, file As String) As String
-    Dim buffer As String * 256
-    Dim length As Integer
+    Dim f As Integer
+    Dim line As String
+    Dim curSection As String
+    Dim p As Integer
+    Dim value As String
 
-    Debug.Print "Reading " & file & " Sect " & section & " Key " & key
-    length = GetPrivateProfileString(section, key, "", buffer, Len(buffer), file)
-    ReadIniStr = Left$(buffer, length)
+    On Error GoTo Fail
+    f = FreeFile
+    Open file For Input As #f
+
+    Do Until EOF(f)
+        Line Input #f, line
+        line = Trim$(line)
+
+        If Len(line) = 0 Then GoTo NextLine
+        If Left$(line, 1) = ";" Then GoTo NextLine
+
+        ' Section header
+        If Left$(line, 1) = "[" And Right$(line, 1) = "]" Then
+            curSection = Mid$(line, 2, Len(line) - 2)
+            GoTo NextLine
+        End If
+
+        ' Key match
+        If LCase$(curSection) = LCase$(section) Then
+            p = InStr(line, "=")
+            If p > 0 Then
+                If LCase$(Left$(line, p - 1)) = LCase$(key) Then
+                    value = Trim$(Mid$(line, p + 1))
+
+                    ' Strip one pair of surrounding quotes, if there is.
+                    If Len(value) >= 2 Then
+                        If (Left$(value, 1) = """" And Right$(value, 1) = """") _
+                        Or (Left$(value, 1) = "'" And Right$(value, 1) = "'") Then
+                            value = Mid$(value, 2, Len(value) - 2)
+                        End If
+                    End If
+
+                    ReadIniStr = value
+                    Close #f
+                    Exit Function
+                End If
+            End If
+        End If
+
+NextLine:
+    Loop
+
+Fail:
+    On Error Resume Next
+    If f <> 0 Then Close #f
+    ReadIniStr = ""
 End Function
 
 Function ReadIniBool(section As String, key As String, file As String, defaultValue As Boolean) As Boolean
@@ -77,27 +123,50 @@ Function ReadIniInt(section As String, key As String, file As String) As Integer
     ReadIniInt = GetPrivateProfileInt(section, key, 0, file)
 End Function
 
-'
 Sub PlayWavAsync(filename$)
-    mciSendString "open """ & filename$ & """ type waveaudio alias snd", 0, 0, 0
-    mciSendString "play snd from 0", 0, 0, 0   ' async by default in Win16
-End Sub
+    ' by chatgpt vibe code
+    ' and sound STILL does not work in win9x bruh
+    Dim cmd As String
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-Sub StopWav()
-    mciSendString "stop snd", 0, 0, 0
+    ' Always close previous alias (Win95 requires this)
     mciSendString "close snd", 0, 0, 0
+
+    ' ---- Windows 3.1 ONLY ----
+    If InStr(1, WinVer, "3", vbTextCompare) > 0 Then
+        ' Win3.1: NO quotes, MUST use WAVE
+        cmd = "open " & filename$ & " type WAVE alias snd"
+
+    ' ---- Windows 95 / 98 / ME ----
+    ElseIf InStr(1, WinVer, "95", vbTextCompare) > 0 _
+       Or InStr(1, WinVer, "98", vbTextCompare) > 0 _
+       Or InStr(1, WinVer, "ME", vbTextCompare) > 0 Then
+
+        ' Win95 family: NO quotes, BUT MUST use waveaudio
+        cmd = "open " & filename$ & " type waveaudio alias snd"
+
+    ' ---- Windows NT / 2000 / XP ----
+    Else
+        ' NT family: quotes + waveaudio
+        cmd = "open """ & filename$ & """ type waveaudio alias snd"
+    End If
+
+    ' Open + async play
+    mciSendString cmd, 0, 0, 0
+    mciSendString "play snd", 0, 0, 0
 End Sub
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
