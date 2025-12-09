@@ -1,7 +1,11 @@
-DEVICE=ECHO.SYS W/e/l/c/o/m/e /t/o M/i/n/i-W/i/n/d/o/w/s...
-DEVICE=ECHO.SYS C/o/p/y/r/i/g/h/t C/h/i/n/a DOS U/n/i/o/n. A/l/l /r/i/g/h/t/s /r/e/s/e/r/v/e/d.
-DEVICE=ECHO.SYS [/M/o/d/i/f/i/e/d /f/o/r /M/u/l/t/i/P/a/t/c/h/e/r/]
+;[MENU]
+;MENUITEM=W31SVGA,Start Mini-Windows 3.1 in 1024x768
+;MENUITEM=W31VGA,Start Mini-Windows 3.1 [VGA mode]
+;MENUITEM=MPCDOS,Start MultiPatcher for MS-DOS
+;MENUITEM=DOS,MS-DOS 7.1 Prompt
+;MENUDEFAULT=W31SVGA,30
 
+[COMMON]
 DEVICE=HIMEMX.EXE /MAX=250000
 DEVICEHIGH=VIDE-CDD.SYS /D:IDE-CD
 SHELL=COMMAND.COM /P /E:640
@@ -16,3 +20,11 @@ SET TMP=A:\TEMP
 SET COMSPEC=A:\COMMAND.COM
 COMMENT Made by Wengier and Roy, China DOS Union
 COMMENT All rights reserved. 2002-2004.
+
+;[W31SVGA]
+
+;[W31VGA]
+
+;[MPCDOS]
+
+;[DOS]
