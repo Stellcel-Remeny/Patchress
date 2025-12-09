@@ -54,7 +54,7 @@ if not exist %ramdrive%\dready.com goto copyerr
 echo.
 echo MiniWindows has been extracted successfully.
 set comspec=%ramdrive%\command.com
-set path=%ramdrive%\
+set path=%ramdrive%\;%PATH%
 
 echo Copying system settings...
 echo.
@@ -106,7 +106,7 @@ cls
 echo.
 echo Removing Mini-Windows from memory... please wait...
 set comspec=a:\command.com
-set path=a:\;%CDROM%:\DOSINS
+set path=a:\;%CDROM%:\DOSINS;%CDROM%:\
 xmsdsk /u /y > nul
 echo Now Mini-Windows has been successfully removed from the memory.
 echo Made by Wengier and Roy, China DOS Union.
@@ -121,4 +121,5 @@ echo.
 echo CD drive might be in: %CDROM%
 echo.
 echo Type "WIN" to start Mini-Windows again if you want!
+echo Type "patcher" to start MultiPatcher!
 echo.
