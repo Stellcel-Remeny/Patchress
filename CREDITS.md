@@ -3,6 +3,7 @@
 
 ## Cosmetics/Visual Changes
 
+- Calmira Shell for Windows 3.1
 - Change MS-DOS lines to 50 lines
 - VESAMAN MandelBrot from Falcosoft
 
