@@ -34,7 +34,10 @@
 - 4DOS
 - Alky for applications
 - Blacklight shutdown utility
+- LegacyUpdate
 - Microsoft Layer for Unicode for Win9x
+- Paragon NTFS for Win9x/Me
+- SciTech Display Doctor 7
 - XrX Logo Utility
 - XrX AddBar
 
