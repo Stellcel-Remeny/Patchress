@@ -31,7 +31,8 @@
 
 ## Utilities
 
-- 4DOS
+- 4DOS by JP Software
+- 4NT 8.02 by JP Software
 - 7-Zip 4.65 by Igor Pavlov
 - Alky for applications
 - Blacklight shutdown utility
