@@ -32,6 +32,7 @@
 ## Utilities
 
 - 4DOS
+- 7-Zip 4.65 by Igor Pavlov
 - Alky for applications
 - Blacklight shutdown utility
 - LegacyUpdate
