@@ -3,19 +3,19 @@ Begin VB.Form main
    BorderStyle     =   1  'Fixed Single
    Caption         =   "Remeny MultiPatcher"
    ClientHeight    =   6045
-   ClientLeft      =   4515
-   ClientTop       =   3390
+   ClientLeft      =   9360
+   ClientTop       =   4515
    ClientWidth     =   8955
    Enabled         =   0   'False
    Height          =   6555
-   Left            =   4455
+   Left            =   9300
    LinkTopic       =   "main"
    MaxButton       =   0   'False
    MinButton       =   0   'False
    Picture         =   "MAIN.frx":0000
    ScaleHeight     =   6045
    ScaleWidth      =   8955
-   Top             =   2940
+   Top             =   4065
    Visible         =   0   'False
    WhatsThisHelp   =   -1  'True
    Width           =   9075
@@ -164,7 +164,7 @@ Begin VB.Form main
       Width           =   1095
    End
    Begin VB.CommandButton exitButton 
-      Caption         =   "Exit"
+      Caption         =   "Return"
       Height          =   375
       Left            =   8040
       TabIndex        =   0
@@ -804,6 +804,10 @@ End Sub
 
 
 Private Sub backButton_Click()
+    ' Play select sound
+    Debug.Print "Playing VBSELECT.WAV"
+    PlayWavAsync App.Path & "\DATA\VBSELECT.WAV"
+    
     ' Only go up if we are not in init dir
     If Not currentDir = initDir Then
         ' Go up one directory in relative directory
@@ -820,11 +824,11 @@ Private Sub backButton_Click()
 End Sub
 
 
-Private Sub Form_Activate()
-
-End Sub
-
 Private Sub nextButton_Click()
+    ' Play select sound
+    Debug.Print "Playing VBSELECT.WAV"
+    PlayWavAsync App.Path & "\DATA\VBSELECT.WAV"
+    
     ' Increase page number
     curPage = curPage + 1
     ' Enable previous button
@@ -834,6 +838,10 @@ Private Sub nextButton_Click()
 End Sub
 
 Private Sub previousButton_click()
+    ' Play select sound
+    Debug.Print "Playing VBSELECT.WAV"
+    PlayWavAsync App.Path & "\DATA\VBSELECT.WAV"
+    
     ' Decrease page number
     curPage = curPage - 1
     ' If page is 1 (first page), disable previous button
@@ -844,6 +852,15 @@ End Sub
 
 
 Private Sub exitButton_Click()
+    ' Play select sound
+    Debug.Print "Playing VBSELECT.WAV"
+    PlayWavAsync App.Path & "\DATA\VBSELECT.WAV"
+    
+    welcome.Enabled = True
+    welcome.Visible = True
+    Me.Enabled = False
+    Me.Visible = False
+    Load welcome
     Unload Me
 End Sub
 
@@ -859,7 +876,6 @@ Private Sub Form_Load()
     FullCurDir = App.Path & "\RES\"
 
     ' Play select sound
-    StopWav
     Debug.Print "Playing VBSELECT.WAV"
     PlayWavAsync App.Path & "\DATA\VBSELECT.WAV"
 
@@ -899,6 +915,10 @@ Private Sub itemList_Click(Index As Integer)
     globalPos = (curPage - 1) * 9 + (Index + 1)
 
     Debug.Print "CLICK BTN:"; Index; " GLOBAL POS:"; globalPos
+    
+    ' Play select sound
+    Debug.Print "Playing VBSELECT.WAV"
+    PlayWavAsync App.Path & "\DATA\VBSELECT.WAV"
 
     ' ---------- MENU ----------
     If globalPos <= menus.Count Then
@@ -934,6 +954,10 @@ End Sub
 
 Private Sub startbutton_Click()
     If Not selectedEntry = "" Then
+        ' Play select sound
+        Debug.Print "Playing VBSELECT.WAV"
+        PlayWavAsync App.Path & "\DATA\VBSELECT.WAV"
+        
         Debug.Print "[Relpath] Running entry: " & selectedEntry
         Dim exePath As String
         Dim ext As String
