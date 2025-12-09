@@ -3,18 +3,18 @@ Begin VB.Form welcome
    BorderStyle     =   1  'Fixed Single
    Caption         =   "Welcome to MultiPatcher"
    ClientHeight    =   6045
-   ClientLeft      =   10590
-   ClientTop       =   3900
+   ClientLeft      =   4980
+   ClientTop       =   2565
    ClientWidth     =   8955
    Height          =   6555
-   Left            =   10530
+   Left            =   4920
    LinkTopic       =   "main"
    MaxButton       =   0   'False
    MinButton       =   0   'False
    Picture         =   "WELCOME.frx":0000
    ScaleHeight     =   6045
    ScaleWidth      =   8955
-   Top             =   3450
+   Top             =   2115
    WhatsThisHelp   =   -1  'True
    Width           =   9075
    Begin VB.CommandButton WINBUTTON 
@@ -164,7 +164,7 @@ Begin VB.Form welcome
    End
    Begin VB.Label Label1 
       BackStyle       =   0  'Transparent
-      Caption         =   "vbGUI: 1.2, VB4"
+      Caption         =   "vbGUI: 1.3, VB4"
       BeginProperty Font 
          name            =   "MS Sans Serif"
          charset         =   1
@@ -241,6 +241,10 @@ End Sub
 
 
 Private Sub Command2_Click()
+    ' Play select sound
+    Debug.Print "Playing VBSELECT.WAV"
+    PlayWavAsync App.Path & "\DATA\VBSELECT.WAV"
+    
     Unload Me
 End Sub
 
@@ -257,7 +261,7 @@ Private Sub Form_Load()
     Me.Top = (Screen.Height - Me.Height) \ 2
     ' Play startup sound
     Dim s$
-    If (Int(Rnd * 20) = 0) Then
+    If (Int(Rnd * 50) = 0) Then
         Debug.Print "Playing VBSTART.WAV"
         s = App.Path & "\DATA\VBSTART.WAV"
     Else
@@ -276,11 +280,6 @@ Private Sub Form_Load()
     WinMap(7) = "w95"
     WinMap(8) = "w98"
     WinMap(9) = "wme"
-End Sub
-
-
-Private Sub Form_Unload(Cancel As Integer)
-    StopWav
 End Sub
 
 
@@ -321,7 +320,6 @@ End Sub
 
 Private Sub startbutton_Click()
     If Not WinVer = "" Then
-        StopWav
         main.Enabled = True
         main.Visible = True
         Load main
@@ -395,6 +393,8 @@ Private Sub WINBUTTON_Click(Index As Integer)
     WinVer = WinMap(Index)
     main.Enabled = True
     main.Visible = True
+    Me.Enabled = False
+    Me.Visible = False
     Load main
     Unload Me
 End Sub
