@@ -1,0 +1,2 @@
+%CDROM%:
+patcher.bat
