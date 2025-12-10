@@ -1,6 +1,57 @@
 
 # Changelog
 
+## v0.5
+
+### New Items
+
+- Added 4NT 8.02
+- Added 7-zip 4.65
+- Added AlkyForApplications
+- Added BlackLight Shutdown Utility for DOS
+- Added Calmira Shell
+- Added KernelEx
+- Added LegacyUpdate
+- Added Microsoft Cheese Terminator (win3.1 testing)
+- Added Microsoft Layer for Unicode
+- Added NOT-ENABLED Simd95
+- Added Paragon NTFS for win9x/Me
+- Added Patch to enable DOS Mode under Windows Me
+- Added Patcher9x
+- Added SciTech Display Doctor
+- Added VESAMAN Mandelbrot [cosmetics]
+- Added XRX Logo and Addbar utilities
+
+### VB4 GUI app Improvements
+
+- Added arrows to distinguish Menus from Entries.
+- Fixed a bug where items are duplicated if number of items is greater than 4.
+- Fixed bugs with showing entry information.
+- Improved WAVfile playback (still no sound in Win9x?)
+- `.MSI` file support (launches `MSIEXEC.EXE`)
+- Refined iniGetStr code for Windows 3.1.
+- Replaced Exit button with Return button.
+
+### MS-DOS app Improvements
+
+- Added arrows to distinguish Menus from Entries.
+- Added `/vstat` parameter to treat `status()` messages as `dbg()` messages.
+
+### New MPCLIB.C Functions
+
+- Common function for `MPCLIB` based DOS apps: `validate_mpc_args()`
+- Data attribute functions: `clear_rhs()`, `save_attr()`, `restore_attrs()`
+- Data manipulation functions: `move_file()`, `remove_folder()`
+
+### General Improvements
+
+- Added `autorun.inf`
+- Added unused CSMWrap file, in case if anyone can figure out how to boot iso from it.
+- Automatically executes VB4 Runtime Setup if the runtime isn't found.
+- Bootable ISO image using customized Mini Windows 3.1
+- New `.BAT` file in source code to generate the bootable ISO Image
+- `PATCHER.BAT`'s file structure is updated.
+
 ## v0.4
 
 ### Added items [DOS Interface]
