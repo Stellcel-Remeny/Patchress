@@ -12,8 +12,9 @@ MultiPatcher can bundle utilities, patches, visual system modifications, or driv
 MultiPatcher:
 
 - is lightweight
-- can run under MS-DOS, Win3.1 & NT, till the latest and crappiest Win11
+- can run under MS-DOS, Win3.1 & NT, till the latest and crappiest Win11 (future)
 - is your one-stop shop to make your computer pretty (or fix it)
+- contains bootable Mini Windows 3.1 and MS-DOS
 - provides an easy to use interface
 - tries making system modifications more robust
 - doesn't track you
