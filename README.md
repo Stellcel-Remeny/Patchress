@@ -18,11 +18,11 @@ MultiPatcher:
 - tries making system modifications more robust
 - doesn't track you
 
-## Screenshots
+## Preview
 
-![Patchress under MS-DOS](media/patchress_dos.gif)
-![Patchress under Windows NT 4](media/patchress_nt4.png)
-![Patchress under Windows 7](media/patchress_nt61.png)
+![MultiPatcher running under MS-DOS to fix Win95](media/mpc_dos.gif)
+![MultiPatcher's bootable Mini Windows 3.1 Interface](media/mpc_mwin.gif)
+![MultiPatcher GUI Legacy running under Windows XP](media/mpc_wxp.png)
 
 ## Architecture
 
