@@ -1,1 +1,2 @@
 the changes you make here will not take effect.
+You must copy the stuff in here, into the BOOT.IMG file found in source/BASE/BOOT.IMG using a tool like PowerISO.
