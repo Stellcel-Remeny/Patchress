@@ -1,2 +1,5 @@
 the changes you make here will not take effect.
 You must copy the stuff in here, into the BOOT.IMG file found in source/BASE/BOOT.IMG using a tool like PowerISO.
+
+Modifications listed here, are the modifications made to a vanilla copy of China Dos Union's Mini Windows 3.1.
+(Some files are moved into DOSINS folder by the way)

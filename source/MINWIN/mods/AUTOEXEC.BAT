@@ -8,7 +8,8 @@ SET DIRCMD=/OGN /4
 SET PROMPT=$P$G
 SET CDROM=Z
 
-LH SHSUCDX /D:IDE-CD /L:%CDROM%
+LH SHSUCDX /D:IDE-CD 
+LH SHSUCDX /D:ELTORITO /L:%CDROM%
 SET PATH=%PATH%;%CDROM%:\DOSINS;%CDROM%:\
 
 TM /R=30 /D=250
@@ -35,8 +36,6 @@ ECHO Mini-Windows 3.11 by China DOS Union
 ECHO Made by Wengier and Roy. All rights reserved.
 WRITEXT 0+ 1 "Any comments, please come to the forum at: " -f15 http://dosbbs.2ya.com/ -f7
 ECHO Modified for use with MultiPatcher.
-ECHO.
-ECHO CD drive might be in: %CDROM%
 ECHO.
 ECHO Type "WIN" to start Mini-Windows!
 ECHO Type "patcher" to start MultiPatcher!

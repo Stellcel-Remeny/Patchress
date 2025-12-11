@@ -48,9 +48,7 @@ GOTO END
 :nextstep
 pkunzjr -o a:\mwfw3.zip %RAMDRIVE%\
 copy a:\command.com %ramdrive%\ > nul
-copy a:\dready.com %ramdrive%\ > nul
 if not exist %ramdrive%\win.com goto copyerr
-if not exist %ramdrive%\dready.com goto copyerr
 echo.
 echo MiniWindows has been extracted successfully.
 set comspec=%ramdrive%\command.com
@@ -65,33 +63,8 @@ if not %lfn%#==1# inifile %ramdrive%\system.ini [boot] network.drv=;
 %ramdrive%
 win.com
 
-:disk
-cls
-dready a:
-if errorlevel 2 goto loop
-if not exist a:\MWCONFIG\nul goto cfgerr
-if not exist a:\mwfw3.zip goto cfgerr
-a:
 a:\win.bat _quit_
 goto continue
-
-:loop
-cls
-echo Error!!!
-echo.
-echo No diskette in Drive A!
-echo Please insert the Mini-Windows Diskette and press Enter when ready...
-pause > nul
-goto disk
-
-:cfgerr
-cls
-echo Error!!!
-echo.
-echo The Diskette in the drive is not the Mini-Windows Diskette.
-echo Please insert the Mini-Windows Diskette and press Enter when ready...
-pause > nul
-goto disk 
 
 :copyerr
 cls
@@ -117,8 +90,6 @@ cls
 echo Thanks for using Mini-Windows 3.11!
 echo By Wengier and Roy, China DOS Union. All rights reserved.
 writext 0+ 1 "Any comments, please come to the forum at: " -f15 http://dosbbs.2ya.com/ -f7
-echo.
-echo CD drive might be in: %CDROM%
 echo.
 echo Type "WIN" to start Mini-Windows again if you want!
 echo Type "patcher" to start MultiPatcher!
